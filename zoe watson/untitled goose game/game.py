@@ -63,7 +63,7 @@ class Goose:
             self.pos.x += 1280
         
         #checks if you're off screen right
-        elif self.pos.x >= 1280:
+        elif self.pos.x >= 1280: # TODO: replace 1280 with a variable representing screen width
             self.pos.x -= 1280
 
         # TODO: come back next time and make the goose do vertical loop-around
