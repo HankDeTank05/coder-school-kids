@@ -1,0 +1,62 @@
+'''
+stuff we need to make an obby
+game objects
+- player character
+	- properties
+		- health
+		- position (vector2)
+	- actions
+		- jump
+		- run
+- platform (to stand on, can move or can be stationary)
+	- properties
+		- position (vector2)
+		- solid
+		- shape
+			- circle
+			- rectangle
+	- actions
+		- move (or not) (along predetermined path)
+		- move player (cannot push player)
+- hazards (hurt you, make you restart)
+	- properties
+		- position (vector2)
+		- not solid
+		- damage dealt
+		- shape
+			- rectangle
+			- circle
+			- triangle
+	- actions
+		- spin
+		- move (along predetermined path)
+		- hurts player
+- obstacles (don't hurt you, but get in your way)
+	- properties
+		- position (vector2)
+		- solid
+		- shape
+			- rectangle
+			- circle
+			- triangle
+	- actions
+		- move (or not) (along predetermined path)
+		- push/move the player
+- enemies (hurt you and chase you)
+	- properties
+		- position (vector2)
+		- not solid
+	- actions
+		- damages player (when colliding with them)
+		- chases player
+- checkpoints
+	- properties
+		- position (vector2)
+		- not solid
+
+other things
+- levels
+	- objects
+	- starting point
+	- goal
+'''
