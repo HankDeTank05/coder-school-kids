@@ -24,22 +24,48 @@ for y in range(GRID_HEIGHT):
     for x in range(GRID_WIDTH):
         grid[y].append(None)
         
-snake_head = pygame.math.Vector2(GRID_WIDTH //2,GRID_HEIGHT //2)
-grid[int(snake_head.y)][int(snake_head.x)] = "s0"
-snake_dir=pygame.math.Vector2(0,-1)
+segments = 5
+snake_start = pygame.math.Vector2(GRID_WIDTH //2,GRID_HEIGHT //2)
+snake_pos = []
+for i in range(segments):
+    snake_pos.append(snake_start + pygame.math.Vector2(0, i))
+    print(snake_pos[i])
+
+# grid[int(snake_head.y)][int(snake_head.x)] = "s0"
+snake_dir = pygame.math.Vector2(0,-1)
 
 def snake_update():
     global snake_head
     global snake_dir
+
     keys=pygame.key.get_pressed()
+    # TODO: come back next time and prevent 180 deg turns (or find a way to allow it without snake overlapping itself)
+    if keys[pygame.K_w] == True:
+        snake_dir = pygame.math.Vector2(0, -1)
     if keys[pygame.K_s] == True:
-        snake_dir=pygame.math.Vector2(0,1)
-    grid[int(snake_head.y)][int(snake_head.x)] =None
-    snake_head=snake_head+snake_dir
-    grid[int(snake_head.y)][int(snake_head.x)] = "s0"
+        snake_dir = pygame.math.Vector2(0, 1)
+    if keys[pygame.K_a] == True:
+        snake_dir = pygame.math.Vector2(-1, 0)
+    if keys[pygame.K_d] == True:
+        snake_dir = pygame.math.Vector2(1, 0)
+
+    # grid[int(snake_head.y)][int(snake_head.x)] = None
+
+    # snake_head = snake_head + snake_dir
+    snake_head = snake_pos[0] + snake_dir # calculate new head pos
+    snake_pos.insert(0, snake_head)
+    snake_pos.pop()
+
+    # grid[int(snake_head.y)][int(snake_head.x)] = "s0"
     
 def draw_snake():
-	pygame.draw.rect(surface=screen,color=COLOR_RED,rect=pygame.Rect(snake_head.x * TILE_SIZE,snake_head.y * TILE_SIZE,TILE_SIZE,TILE_SIZE))
+    for i in range(segments):
+        pygame.draw.rect(surface=screen,
+                    color=COLOR_RED,
+                    rect=pygame.Rect(snake_pos[i].x * TILE_SIZE,
+                                    snake_pos[i].y * TILE_SIZE,
+                                    TILE_SIZE,
+                                    TILE_SIZE))
 
 def draw_gridlines():
     
@@ -70,6 +96,6 @@ while running:
     # flip() the display to put your work on screen
     pygame.display.flip()
 
-    clock.tick(1)  # limits FPS to 60
+    clock.tick(15)  # limits FPS to 60
 
 pygame.quit()
