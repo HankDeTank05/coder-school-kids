@@ -17,50 +17,73 @@ BLUE=(0,0,255)
 
 player_speed=500
 
-pos=pygame.math.Vector2(5,720/2)
-facing=pygame.math.Vector2(1,0)
+player_pos = pygame.math.Vector2(5,720/2)
+player_facing=pygame.math.Vector2(1,0)
 size=50
 
+"""player functions"""
+
 def player_update(_dt):
-    global pos
-    global facing
+    global player_pos
+    global player_facing
     pos_delta=pygame.math.Vector2(0,0)
-    facing = pygame.math.Vector2(0,0)
+    player_facing = pygame.math.Vector2(0,0)
     
     keys=pygame.key.get_pressed()
     if keys[pygame.K_w]:
         #move up
         pos_delta.y-=player_speed
         #look up
-        facing.y -= 1
+        player_facing.y -= 1
     if keys[pygame.K_a]:
         #move left
         pos_delta.x-=player_speed
         #look left
-        facing.x -= 1
+        player_facing.x -= 1
     if keys[pygame.K_s]:
         #move down
         pos_delta.y+=player_speed
         #look down
-        facing.y += 1
+        player_facing.y += 1
     if keys[pygame.K_d]:
         #move right
         pos_delta.x+=player_speed
         #look down
-        facing.x += 1
+        player_facing.x += 1
+    if keys[pygame.K_SPACE]:
+        bullet_create(player_pos, player_facing)
 
     if pos_delta.x != 0 and pos_delta.y != 0:
         pos_delta.normalize_ip()
         pos_delta *= player_speed
-        facing.normalize_ip()
+        player_facing.normalize_ip()
 
-
-    pos_delta*=_dt
-    pos+=pos_delta
+    pos_delta *= _dt
+    player_pos = player_pos + pos_delta
 
 def player_draw():
-    pygame.draw.circle(screen, GREEN, pos, size)
-    pygame.draw.line(screen, RED, pos, pos + facing * size)
+    pygame.draw.circle(screen, GREEN, player_pos, size)
+    pygame.draw.line(screen, RED, player_pos, player_pos + player_facing * size)
+
+"""bullet functions"""
+
+bullet_speed = 200
+bullet_radius = 20
+bullet_pos = None
+bullet_dir = None
+bullet_pos_delta = None
+
+def bullet_create(_pos, _dir):
+    global bullet_pos,bullet_dir
+    bullet_pos = _pos
+    bullet_dir = _dir
+    #cauculate bullet pos delta
+
+def bullet_update(_dt):
+    pass
+
+def bullet_draw():
+    pass
 
 
 #main game loop
@@ -71,8 +94,10 @@ while running == True:
 
     screen.fill(BLACK)
 
+    # step 1: update stuff
     player_update(dt)
-    
+
+    # step 2: draw stuff
     player_draw()
 
     pygame.display.flip()
