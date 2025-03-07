@@ -1,3 +1,4 @@
+
 import pgzrun
 import pygame
 
@@ -28,25 +29,24 @@ rot = 0
 down_held = False
 
 def make_t():
-    global t
+    global t, tpos, rot
     t[0] = Rect((150, 0), (SQUARE_SIZE, SQUARE_SIZE))
     t[1] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
     t[2] = Rect((140, 0), (SQUARE_SIZE, SQUARE_SIZE))
     t[3] = Rect((160, 0), (SQUARE_SIZE, SQUARE_SIZE))
+    tpos = pygame.math.Vector2(15,0)
+    rot = 0
+
 
 """
 BLOCK MOVEMENT FUNCTIONS
 """
 
 def place_on_board():
-    pos = pygame.math.Vector2(t[0].x / SQUARE_SIZE, t[0].y / SQUARE_SIZE)
-    grid[int(pos.y)][int(pos.x)] = t[0]
-    pos = pygame.math.Vector2(t[1].x / SQUARE_SIZE, t[1].y / SQUARE_SIZE)
-    grid[int(pos.y)][int(pos.x)] = t[1]
-    pos = pygame.math.Vector2(t[2].x / SQUARE_SIZE, t[2].y / SQUARE_SIZE)
-    grid[int(pos.y)][int(pos.x)] = t[2]
-    pos = pygame.math.Vector2(t[3].x / SQUARE_SIZE, t[3].y / SQUARE_SIZE)
-    grid[int(pos.y)][int(pos.x)] = t[3]
+
+    for i in range(4):
+        pos = pygame.math.Vector2(t[i].x / SQUARE_SIZE, t[i].y / SQUARE_SIZE)
+        grid[int(pos.y)][int(pos.x)] = t[i]
 
 def block_fall(schedule = True):
     canfall = True
@@ -121,6 +121,10 @@ def block_rotate_left():
     rot -= 90
     if rot < 0:
         rot = 270
+
+def block_rotate_right():
+    global rot
+    
         
 """
 EVENT HOOKS
