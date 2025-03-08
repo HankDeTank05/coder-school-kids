@@ -6,8 +6,11 @@ from pygame.locals import *
 
 pygame.init()
 
+WIDTH = 1280 
+HEIGHT = 720
+
 # create the surface we're going to draw on
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 dt = 0
 
 # define some colors
@@ -17,6 +20,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
 BROWN = (153, 76, 0)
+GREEN = (100, 190, 50)
 
 # set the game to run at 60fps
 clock = pygame.time.Clock()
@@ -35,7 +39,7 @@ class Goose:
     """
 
     # constructor function (creates a goose object)
-    def __init__(self,_x, _y):
+    def __init__(self, _x, _y):
         self.pos = pygame.math.Vector2(_x, _y)
         self.speed = 1000
 
@@ -60,13 +64,20 @@ class Goose:
 
         #checks if you're off screen left
         if self.pos.x < 0:
-            self.pos.x += 1280
+            self.pos.x += WIDTH
         
         #checks if you're off screen right
-        elif self.pos.x >= 1280: # TODO: replace 1280 with a variable representing screen width
-            self.pos.x -= 1280
+        elif self.pos.x >= WIDTH: 
+            self.pos.x -= WIDTH
 
         # TODO: come back next time and make the goose do vertical loop-around
+
+        #checks if you're off the screen on the top 
+        if self.pos.y < 0:
+            self.pos.y += HEIGHT
+
+        elif self.pos.y >= HEIGHT:
+            self.pos.y -= HEIGHT
 
     # draw the goose
     def draw(self, _surface):
@@ -116,6 +127,29 @@ class Goose:
         r_eye_center = head_center + pygame.math.Vector2(0,-4)
         pygame.draw.circle(_surface, eye_color, r_eye_center, eye_radius)
 
+class Object:
+
+    def __init__(self, _x, _y):
+        self.pos = pygame.math.Vector2(_x, _y)
+
+class Box(Object):
+
+    def __init__(self, _x, _y):
+        super().__init__(_x, _y)
+        self.has_goose = False
+
+    def draw(self, _surface):
+        """
+        this is how the box should look
+        |\          /|
+        | \________/ |
+        \ | inside | /
+         \|________|/
+          |        |
+          |________|
+        """
+        pass # TODO draw the ineractable box :)
+
 quacK = Goose(150, 150)
 
 while True:
@@ -124,7 +158,7 @@ while True:
             pygame.quit()
             sys.exit()
 
-    screen.fill(BLACK)
+    screen.fill(GREEN)
 
     # update stuff
     keys = pygame.key.get_pressed()
