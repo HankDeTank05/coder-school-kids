@@ -32,22 +32,52 @@ for i in range(segments):
     print(snake_pos[i])
 
 # grid[int(snake_head.y)][int(snake_head.x)] = "s0"
+dir_up = pygame.math.Vector2(0, -1)
+dir_down = pygame.math.Vector2(0, 1)
+dir_left = pygame.math.Vector2(-1, 0)
+dir_right = pygame.math.Vector2(1, 0)
+
 snake_dir = pygame.math.Vector2(0,-1)
+
+move_queue = []
 
 def snake_update():
     global snake_head
     global snake_dir
 
-    keys=pygame.key.get_pressed()
-    # TODO: come back next time and prevent 180 deg turns (or find a way to allow it without snake overlapping itself)
-    if keys[pygame.K_w] == True:
-        snake_dir = pygame.math.Vector2(0, -1)
-    if keys[pygame.K_s] == True:
-        snake_dir = pygame.math.Vector2(0, 1)
-    if keys[pygame.K_a] == True:
-        snake_dir = pygame.math.Vector2(-1, 0)
-    if keys[pygame.K_d] == True:
-        snake_dir = pygame.math.Vector2(1, 0)
+    if len(move_queue) == 0: #if there is nothing left in the move_queue
+        # read for input
+        keys=pygame.key.get_pressed()
+        # TODO: come back next time and prevent 180 deg turns (or find a way to allow it without snake overlapping itself)
+        if keys[pygame.K_w] == True:
+            if snake_dir != dir_down:
+                # no 180
+                snake_dir = dir_up 
+            else:
+                #do 180 turn
+                move_queue.append(dir_left)
+                move_queue.append(dir_up)
+        if keys[pygame.K_s] == True:
+            if snake_dir != dir_up:
+                # no 180
+                snake_dir = dir_down
+            else:
+                #do 180 turn
+                move_queue.append(dir_right)
+                move_queue.append(dir_down)
+        if keys[pygame.K_a] == True:  
+            if snake_dir != dir_right:
+                #no 180
+                snake_dir =  dir_left
+            else:
+                #do 180 turn
+                move_queue.append(dir_down)
+                move_queue.append(dir_left)
+        if keys[pygame.K_d] == True and snake_dir != dir_left:
+            snake_dir = dir_right
+    else:# there is somthing left in move_queue
+        snake_dir = move_queue[0]
+        move_queue.pop(0)
 
     # grid[int(snake_head.y)][int(snake_head.x)] = None
 
