@@ -1,4 +1,5 @@
 import pygame
+import copy
 
 pygame.init()
 WIDTH=1280
@@ -18,7 +19,7 @@ BLUE=(0,0,255)
 player_speed=500
 
 player_pos = pygame.math.Vector2(5,720/2)
-player_facing=pygame.math.Vector2(1,0)
+player_facing = pygame.math.Vector2(1,0)
 size=50
 
 """player functions"""
@@ -27,36 +28,32 @@ def player_update(_dt):
     global player_pos
     global player_facing
     pos_delta=pygame.math.Vector2(0,0)
-    player_facing = pygame.math.Vector2(0,0)
+    #player_facing = pygame.math.Vector2(0,0)
     
     keys=pygame.key.get_pressed()
+    # TODO: come back and figure out a way to prevent diagonal-movement key releases from reading as straightine directions sometimes
     if keys[pygame.K_w]:
         #move up
-        pos_delta.y-=player_speed
-        #look up
-        player_facing.y -= 1
+        pos_delta.y -= player_speed
     if keys[pygame.K_a]:
         #move left
-        pos_delta.x-=player_speed
-        #look left
-        player_facing.x -= 1
+        pos_delta.x -= player_speed
     if keys[pygame.K_s]:
         #move down
-        pos_delta.y+=player_speed
-        #look down
-        player_facing.y += 1
+        pos_delta.y += player_speed
     if keys[pygame.K_d]:
         #move right
-        pos_delta.x+=player_speed
-        #look down
-        player_facing.x += 1
+        pos_delta.x += player_speed
     if keys[pygame.K_SPACE]:
         bullet_create(player_pos, player_facing)
+
+    if pos_delta.length_squared() > 0:
+        player_facing = copy.deepcopy(pos_delta)
+        player_facing.normalize_ip()
 
     if pos_delta.x != 0 and pos_delta.y != 0:
         pos_delta.normalize_ip()
         pos_delta *= player_speed
-        player_facing.normalize_ip()
 
     pos_delta *= _dt
     player_pos = player_pos + pos_delta
@@ -69,15 +66,13 @@ def player_draw():
 
 bullet_speed = 200
 bullet_radius = 20
-bullet_pos = None
-bullet_dir = None
-bullet_pos_delta = None
+bullet_pos = []
+bullet_dir = []
 
 def bullet_create(_pos, _dir):
     global bullet_pos,bullet_dir
-    bullet_pos = _pos
-    bullet_dir = _dir
-    #cauculate bullet pos delta
+    bullet_pos.append(_pos)
+    bullet_dir.append(_dir)
 
 def bullet_update(_dt):
     pass
