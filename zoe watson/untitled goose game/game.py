@@ -14,13 +14,15 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 dt = 0
 
 # define some colors
+# NOTE: if you want more, this website has a lot of colors to pick from: https://html-color.codes/
 ORANGE = (255, 153, 51)
 YELLOW = (255, 255, 0)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
 BROWN = (153, 76, 0)
-GREEN = (100, 190, 50)
+GREEN = (141, 182, 0)
+LIGHT_PURPLE = (177, 156, 217)
 
 # set the game to run at 60fps
 clock = pygame.time.Clock()
@@ -134,6 +136,7 @@ class Object:
 
 class Box(Object):
 
+    # constructor
     def __init__(self, _x, _y):
         super().__init__(_x, _y)
         self.has_goose = False
@@ -148,7 +151,17 @@ class Box(Object):
           |        |
           |________|
         """
-        pass # TODO draw the ineractable box :)
+        box_width = 30
+        box_height = 50
+        box_front = pygame.Rect(self.pos.x - box_width/2, #box front X positiom
+                                self.pos.y - box_height, #box front Y positiom
+                                , # TODO: give the box front a width
+                                ) # TODO: give the box front a height
+        pygame.draw.rect(_surface, LIGHT_PURPLE, )
+        if self.has_goose == True:
+            pass
+        elif self.has_goose == False:
+            pass # TODO: come back next time and finish drawing the rest of the (open) box
 
 quacK = Goose(150, 150)
 
