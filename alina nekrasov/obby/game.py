@@ -2,6 +2,7 @@
 import pygame
 import common as c
 import player
+import platform as plat
 
 def run():
 	# pygame setup
@@ -13,6 +14,7 @@ def run():
 
 	#create game variables
 	p1 = player.Player()
+	platform = plat.Platform(0, 105, 100, 50, c.LIGHT_PURPLE)
 
 	while running:
 		# poll for events
@@ -26,9 +28,11 @@ def run():
 
 		# PART 1: UPDATE
 		p1.update(delta_time)
-		
+		platform.update(delta_time)
+
 		# PART 2: DRAW
 		p1.draw(SCREEN)
+		platform.draw(SCREEN)
 
 		# flip() the display to put your work on screen
 		pygame.display.flip()
