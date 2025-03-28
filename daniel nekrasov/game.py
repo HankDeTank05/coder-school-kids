@@ -66,19 +66,33 @@ def player_draw():
 
 bullet_speed = 200
 bullet_radius = 20
-bullet_pos = []
-bullet_dir = []
+bullet = []
+#bullet_dir = []
 
 def bullet_create(_pos, _dir):
-    global bullet_pos,bullet_dir
-    bullet_pos.append(_pos)
-    bullet_dir.append(_dir)
+  global bullet_pos,bullet_dir
+  bullet_pos.append(_pos.copy())
+  bullet_dir.append(_dir.copy())
+
 
 def bullet_update(_dt):
-    pass
+    global bullet_pos , bullet_dir
+    for i in range(len(bullet_pos)):
+        bullet_pos[i] += bullet_dir[i] * bullet_speed * _dt
+
+    bullets_remove = [i for i in range(len(bullet_pos))
+                      if bullet_pos[i].x < 0 or bullet_pos[i].x > WIDTH or
+                      bullet_pos[i].y < 0 or bullet_pos[i].y > HEIGHT]
+    
+    for i in reversed(bullets_remove):
+        del bullet_pos[i]
+        del bullet_dir[i]
+
 
 def bullet_draw():
-    pass
+    for pos in bullet_pos:
+        pygame.draw.circle(screen, BLUE, (int(pos.x), int(pos.x)),bullet_radius)
+
 
 
 #main game loop
@@ -91,10 +105,10 @@ while running == True:
 
     # step 1: update stuff
     player_update(dt)
-
+    bullet_update(dt)
     # step 2: draw stuff
     player_draw()
-
+    bullet_draw()
     pygame.display.flip()
 
     dt=clock.tick(60)/1000
