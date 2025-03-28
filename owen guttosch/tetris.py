@@ -10,10 +10,15 @@ TILE_HEIGHT = 40
 WIDTH = TILE_WIDTH * SQUARE_SIZE
 HEIGHT = TILE_HEIGHT * SQUARE_SIZE
 
+BACKGROUND_COLOR = (10, 115, 2)
+
+GRAY = (128, 128, 128)
 PURPLE = (255, 0, 255)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 BLUE = (0, 0, 128)
+LIGHT_BLUE = (135, 206, 250)
+
 grid = []
 
 for y in range(TILE_HEIGHT):
@@ -32,17 +37,50 @@ tetro_color = None
 down_held = False
 
 def make_tetro():
-    tetrominos = ["t", 'o', 's', 'z', 'l', 'j', 'i']
-    choice = random.randint(0,len(tetrominos))
-    global tetro, tetro_pos, tetro_rot
+    #              0    1    2    3    4    5    6
+    tetrominos = ['t', 'o', 's', 'z', 'l', 'j', 'i']
+    choice = random.randint(0, len(tetrominos) - 1)
+    print(choice)
+    global tetro, tetro_pos, tetro_rot, tetro_color
+    tetro[0] = Rect((150, 0), (SQUARE_SIZE, SQUARE_SIZE))
     if tetrominos[choice] == 't':
-        tetro[0] = Rect((150, 0), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[1] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect((140, 0), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect((160, 0), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = PURPLE
     elif tetrominos[choice] == 'o':
-        pass
+        tetro[1] = Rect((160, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((160, 10), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_color = BLACK
+    elif tetrominos[choice] == 's':
+        tetro[1] = Rect((160, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((140, 10), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_color = BLACK
+    elif tetrominos[choice] == 'z':
+        tetro[1] = Rect((140, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((160, 10), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_color = BLACK
+    elif tetrominos[choice] == 'l':
+        tetro[0] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect((150, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((150, 20), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((160, 20), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_color = BLACK
+    elif tetrominos[choice] == 'j':
+        tetro[0] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect((150, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((150, 20), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((140, 20), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_color = BLACK
+    elif tetrominos[choice] == 'i':
+        tetro[0] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect((150, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((150, 20), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((150, 30), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_color = BLACK
     tetro_pos = pygame.math.Vector2(15,0)
     tetro_rot = 0
 
@@ -66,7 +104,7 @@ def block_fall(schedule = True):
             canfall = False
             break
     if canfall == False: #check if t2 can move down
-        # don'tetro fall
+        # don't fall
         place_on_board()
         make_tetro()
     else:
@@ -187,7 +225,7 @@ def update():
         block_fall(False)
 
 def draw():
-    screen.fill((10, 115, 2))
+    screen.fill(BACKGROUND_COLOR)
 
     #draws the grid
     for y in range(0, HEIGHT, SQUARE_SIZE):
@@ -199,11 +237,11 @@ def draw():
                 square = Rect((x, y), (SQUARE_SIZE, SQUARE_SIZE))
                 screen.draw.rect(square, (255, 255, 255))
             else:
-                screen.draw.filled_rect(grid[y_index][x_index], PURPLE)
+                screen.draw.filled_rect(grid[y_index][x_index], GRAY) # TODO: come back and make the grid remember the color of the tetrominos
 
     #draws the tetromino
     for i in range(4):
-        screen.draw.filled_rect(tetro[i], PURPLE)
+        screen.draw.filled_rect(tetro[i], tetro_color)
     
 
 pgzrun.go()
