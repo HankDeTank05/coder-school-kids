@@ -1,31 +1,25 @@
 # Example file showing a basic pygame "game loop"
 import pygame
-
-GRID_WIDTH = 160
-GRID_HEIGHT = 90
-TILE_SIZE = 5
-SCREEN_WIDTH = GRID_WIDTH * TILE_SIZE
-SCREEN_HEIGHT = GRID_HEIGHT * TILE_SIZE
-
-COLOR_BLACK = (0,0,0)
-COLOR_RED = (155,0,0)
+import common as c 
+import snake
+import random
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+screen = pygame.display.set_mode((c.SCREEN_WIDTH,c.SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
 grid = []
 
-for y in range(GRID_HEIGHT):
+for y in range(c.GRID_HEIGHT):
     grid.append([])
-    for x in range(GRID_WIDTH):
+    for x in range(c.GRID_WIDTH):
         grid[y].append(None)
         
-
+'''
 segments = 5
-snake_start = pygame.math.Vector2(GRID_WIDTH //2,GRID_HEIGHT //2)
+snake_start = pygame.math.Vector2(c.GRID_WIDTH //2,c.GRID_HEIGHT //2)
 snake_pos = []
 for i in range(segments):
     snake_pos.append(snake_start + pygame.math.Vector2(0, i))
@@ -37,7 +31,9 @@ for i in range(segments):
 snake_dir = pygame.math.Vector2(0,-1)
 
 move_queue = []
+'''
 
+'''
 def snake_update():
     global snake_head
     global snake_dir
@@ -90,7 +86,9 @@ def snake_update():
     snake_pos.pop()
 
     # grid[int(snake_head.y)][int(snake_head.x)] = "s0"
-    
+'''
+
+'''
 def draw_snake():
     for i in range(segments):
         pygame.draw.rect(surface=screen,
@@ -99,14 +97,19 @@ def draw_snake():
                                     snake_pos[i].y * TILE_SIZE,
                                     TILE_SIZE,
                                     TILE_SIZE))
+'''
 
 def draw_gridlines():
     
-    for pixel_x in range(0, SCREEN_WIDTH, TILE_SIZE):
-        pygame.draw.line(surface = screen,color = COLOR_BLACK,start_pos=(pixel_x,0),end_pos=(pixel_x,SCREEN_HEIGHT))
+    for pixel_x in range(0, c.SCREEN_WIDTH, c.TILE_SIZE):
+        pygame.draw.line(surface = screen,color = c.COLOR_BLACK,start_pos=(pixel_x,0),end_pos=(pixel_x,c.SCREEN_HEIGHT))
         
-    for pixel_y in range(0,SCREEN_HEIGHT, TILE_SIZE):
-        pygame.draw.line(surface = screen, color = COLOR_BLACK, start_pos = (0, pixel_y), end_pos=(SCREEN_WIDTH,pixel_y))
+    for pixel_y in range(0,c.SCREEN_HEIGHT, c.TILE_SIZE):
+        pygame.draw.line(surface = screen, color = c.COLOR_BLACK, start_pos = (0, pixel_y), end_pos=(c.SCREEN_WIDTH,pixel_y))
+
+dir_all =[c.DIR_DOWN, c.DIR_LEFT, c.DIR_RIGHT, c.DIR_UP]
+start_dir = dir_all[random.randrange(len(dir_all))] 
+player_snake = snake.Snake(c.GRID_WIDTH //2, c.GRID_HEIGHT //2, start_dir)
 
 #Maiin game loop
 while running:
@@ -120,11 +123,11 @@ while running:
     screen.fill("purple")
 
     #part 1: update
-    snake_update()
+    player_snake.update()
     
 	#part 2: draw
     draw_gridlines()
-    draw_snake()
+    player_snake.draw(screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()

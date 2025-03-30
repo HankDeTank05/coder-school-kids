@@ -12,7 +12,7 @@ class Snake:
         for i in range(5):
             self.pos.append(snake_start + build_segments)
             print(self.pos[i])
-        self.move_queue
+        self.move_queue = []
 
     def update(self):
 
@@ -60,3 +60,12 @@ class Snake:
             snake_head = self.pos[0] + self.dir # calculate new head pos
             self.pos.insert(0, snake_head)
             self.pos.pop()
+
+    def draw(self, screen):
+        for i in range(len(self.pos)):
+            pygame.draw.rect(surface=screen, 
+                                color=c.COLOR_RED,
+                                rect=pygame.Rect(self.pos[i].x * c.TILE_SIZE,
+                                                 self.pos[i].y * c.TILE_SIZE,
+                                                 c.TILE_SIZE,
+                                                 c.TILE_SIZE))
