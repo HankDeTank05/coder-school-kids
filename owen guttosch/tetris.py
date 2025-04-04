@@ -2,7 +2,7 @@ import pgzrun
 import pygame
 import random
 
-SQUARE_SIZE = 10
+SQUARE_SIZE = 20
 
 TILE_WIDTH = 30
 TILE_HEIGHT = 40
@@ -16,7 +16,9 @@ GRAY = (128, 128, 128)
 PURPLE = (255, 0, 255)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
+DARK_YELLOW = (97, 95, 18)
 BLUE = (0, 0, 128)
+LIGHT_BROWN = (182, 145, 131)
 LIGHT_BLUE = (135, 206, 250)
 
 grid = []
@@ -42,46 +44,46 @@ def make_tetro():
     choice = random.randint(0, len(tetrominos) - 1)
     print(choice)
     global tetro, tetro_pos, tetro_rot, tetro_color
-    tetro[0] = Rect((150, 0), (SQUARE_SIZE, SQUARE_SIZE))
+    tetro[0] = Rect((15 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+    tetro_pos = pygame.math.Vector2(15,0)
     if tetrominos[choice] == 't':
-        tetro[1] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((140, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((160, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((14 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((16 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = PURPLE
     elif tetrominos[choice] == 'o':
-        tetro[1] = Rect((160, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((160, 10), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect((16 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((16 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = BLACK
     elif tetrominos[choice] == 's':
-        tetro[1] = Rect((160, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((140, 10), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro_color = BLACK
+        tetro[1] = Rect((16 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((14 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_color = YELLOW
     elif tetrominos[choice] == 'z':
-        tetro[1] = Rect((140, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((160, 10), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro_color = BLACK
+        tetro[1] = Rect((14 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((16 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_color = LIGHT_BLUE
     elif tetrominos[choice] == 'l':
-        tetro[0] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[1] = Rect((150, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((150, 20), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((160, 20), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro_color = BLACK
+        tetro[1] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((15 * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((16 * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_pos = pygame.math.Vector2(15,1)
+        tetro_color = BLUE
     elif tetrominos[choice] == 'j':
-        tetro[0] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[1] = Rect((150, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((150, 20), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((140, 20), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro_color = BLACK
+        tetro[1] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((15 * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((14 * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_pos = pygame.math.Vector2(15,1)
+        tetro_color = DARK_YELLOW
     elif tetrominos[choice] == 'i':
-        tetro[0] = Rect((150, 10), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[1] = Rect((150, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((150, 20), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((150, 30), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro_color = BLACK
-    tetro_pos = pygame.math.Vector2(15,0)
+        tetro[1] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((15 * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((15 * SQUARE_SIZE, 3 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro_pos = pygame.math.Vector2(15,1)
+        tetro_color = LIGHT_BROWN
     tetro_rot = 0
 
 
@@ -223,6 +225,14 @@ clock.schedule(block_fall, 0.5)
 def update():
     if down_held == True:
         block_fall(False)
+    #make sure that it's impossible to go off screen (left side)
+    for i in range(4):
+        while tetro[i].x < 0:
+            block_move_right()
+    #make sure that it's impossible to go off screen (right side)
+    for i in range(4):
+        while tetro[i].x >= WIDTH:
+            block_move_left()
 
 def draw():
     screen.fill(BACKGROUND_COLOR)
