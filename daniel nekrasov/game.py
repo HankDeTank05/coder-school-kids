@@ -22,15 +22,20 @@ player_pos = pygame.math.Vector2(5,720/2)
 player_facing = pygame.math.Vector2(1,0)
 size=50
 
+prev_m1_state = False
+prev_m2_state = False
+
 """player functions"""
 
 def player_update(_dt):
     global player_pos
     global player_facing
+    global prev_m1_state, prev_m2_state
     pos_delta=pygame.math.Vector2(0,0)
     #player_facing = pygame.math.Vector2(0,0)
     
     keys=pygame.key.get_pressed()
+    mouse_buttons = pygame.mouse.get_pressed()
     # TODO: come back and figure out a way to prevent diagonal-movement key releases from reading as straightine directions sometimes
     if keys[pygame.K_w]:
         #move up
@@ -44,19 +49,33 @@ def player_update(_dt):
     if keys[pygame.K_d]:
         #move right
         pos_delta.x += player_speed
-    if keys[pygame.K_SPACE]:
+
+    # detemine state for left mouse button
+    current_m1_state = mouse_buttons[0]
+    current_m2_state = mouse_buttons[1]
+    # TODO: come back and move the following lines of code if there are problems with aiming direction
+    if prev_m1_state == False and current_m1_state == True:
+        #shoot
         bullet_create(player_pos, player_facing)
 
-    if pos_delta.length_squared() > 0:
-        player_facing = copy.deepcopy(pos_delta)
-        player_facing.normalize_ip()
-
+    
+    # fix diagonal movement so it isn't faster than straightline speed
     if pos_delta.x != 0 and pos_delta.y != 0:
         pos_delta.normalize_ip()
         pos_delta *= player_speed
 
     pos_delta *= _dt
-    player_pos = player_pos + pos_delta
+    player_pos += pos_delta #move player
+
+    # caluculate facing direction
+    player_facing = pygame.mouse.get_pos() - player_pos
+    player_facing.normalize_ip()
+
+    # set prev states for next frame
+    prev_m1_state = current_m1_state
+    prev_m2_state = current_m2_state
+
+
 
 def player_draw():
     pygame.draw.circle(screen, GREEN, player_pos, size)
@@ -66,8 +85,8 @@ def player_draw():
 
 bullet_speed = 200
 bullet_radius = 20
-bullet = []
-#bullet_dir = []
+bullet_pos = []
+bullet_dir = []
 
 def bullet_create(_pos, _dir):
   global bullet_pos,bullet_dir
@@ -76,7 +95,7 @@ def bullet_create(_pos, _dir):
 
 
 def bullet_update(_dt):
-    global bullet_pos , bullet_dir
+    global bullet_pos, bullet_dir
     for i in range(len(bullet_pos)):
         bullet_pos[i] += bullet_dir[i] * bullet_speed * _dt
 
@@ -106,6 +125,7 @@ while running == True:
     # step 1: update stuff
     player_update(dt)
     bullet_update(dt)
+
     # step 2: draw stuff
     player_draw()
     bullet_draw()
