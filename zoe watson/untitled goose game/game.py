@@ -23,7 +23,8 @@ GREY = (128, 128, 128)
 BROWN = (153, 76, 0)
 GREEN = (141, 182, 0)
 LIGHT_PURPLE = (177, 156, 217)
-
+NAVY = (0, 33, 71)
+GRASS_COLOR = (116,195,101)
 # set the game to run at 60fps
 clock = pygame.time.Clock()
 
@@ -151,27 +152,36 @@ class Box(Object):
           |        |
           |________|
         """
-        box_width = 30
+        box_width = 80
         box_height = 50
         box_front = pygame.Rect(self.pos.x - box_width/2, #box front X positiom
                                 self.pos.y - box_height, #box front Y positiom
-                                , # TODO: give the box front a width
-                                ) # TODO: give the box front a height
-        pygame.draw.rect(_surface, LIGHT_PURPLE, )
+                                box_width, 
+                                box_height)
+        pygame.draw.rect(_surface, LIGHT_PURPLE, box_front)
+
         if self.has_goose == True:
             pass
         elif self.has_goose == False:
-            pass # TODO: come back next time and finish drawing the rest of the (open) box
+            # TODO: come back next time and finish drawing the rest of the (open) box
+            inside_height = 30
+            box_inside = pygame.Rect(self.pos.x - box_width/2,
+                                     self.pos.y - box_height - inside_height, 
+                                     box_width, 
+                                     inside_height)
+            pygame.draw.rect(_surface, NAVY, box_inside)
 
 quacK = Goose(150, 150)
+box = Box(100, 100)
 
+# MAIN GAME LOOP
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
 
-    screen.fill(GREEN)
+    screen.fill(GRASS_COLOR)
 
     # update stuff
     keys = pygame.key.get_pressed()
@@ -179,6 +189,7 @@ while True:
 
     # draw stuff
     quacK.draw(screen)
+    box.draw(screen)
     
     pygame.display.flip()
 
