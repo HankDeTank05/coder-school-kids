@@ -107,9 +107,37 @@ def draw_gridlines():
     for pixel_y in range(0,c.SCREEN_HEIGHT, c.TILE_SIZE):
         pygame.draw.line(surface = screen, color = c.COLOR_BLACK, start_pos = (0, pixel_y), end_pos=(c.SCREEN_WIDTH,pixel_y))
 
+# TODO randomize start position
+start_x = random.randrange(c.GRID_WIDTH)
+start_y = random.randrange(c.GRID_HEIGHT)
+
+# randomize start direction
+left_max = c.EDGE_ZONE
+right_min = c.GRID_WIDTH - c.EDGE_ZONE
+top_max = c.EDGE_ZONE
+bottom_min = c.GRID_HEIGHT - c.EDGE_ZONE
 dir_all =[c.DIR_DOWN, c.DIR_LEFT, c.DIR_RIGHT, c.DIR_UP]
-start_dir = dir_all[random.randrange(len(dir_all))] 
-player_snake = snake.Snake(c.GRID_WIDTH //2, c.GRID_HEIGHT //2, start_dir)
+
+while True:
+    start_dir = dir_all[random.randrange(len(dir_all))] 
+
+    # if we start in the left edge zone and we start facing left...
+    if start_x <= left_max and start_dir == c.DIR_LEFT:
+        continue # ...Repick starting dir
+    # otherwise, if we start in the right edge zone and we start facing right...
+    elif start_x >= right_min and start_dir == c.DIR_RIGHT:
+        continue 
+    # if we start in the top edge zone and we start facing up...
+    if start_y <= top_max and start_dir == c.DIR_UP:
+        continue
+    #otherwise, if we start in the bottom edge zone and we start facing down...
+    elif start_y >= bottom_min and start_dir == c.DIR_DOWN:
+        continue 
+
+    break
+
+# create snake
+player_snake = snake.Snake(start_x, start_y, start_dir)
 
 #Maiin game loop
 while running:
