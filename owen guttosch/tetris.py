@@ -2,7 +2,7 @@ import pgzrun
 import pygame
 import random
 
-SQUARE_SIZE = 20
+SQUARE_SIZE = 12
 
 TILE_WIDTH = 30
 TILE_HEIGHT = 40
