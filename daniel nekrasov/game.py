@@ -66,6 +66,7 @@ def player_update(_dt):
 
     pos_delta *= _dt
     player_pos += pos_delta #move player
+    # player_pos = player_pos + pos_delta
 
     # caluculate facing direction
     player_facing = pygame.mouse.get_pos() - player_pos
@@ -85,32 +86,27 @@ def player_draw():
 
 bullet_speed = 200
 bullet_radius = 20
+# these are parrallel 
+#data at the same index in dffernt lists belongs to the same object
 bullet_pos = []
 bullet_dir = []
 
 def bullet_create(_pos, _dir):
-  global bullet_pos,bullet_dir
-  bullet_pos.append(_pos.copy())
-  bullet_dir.append(_dir.copy())
+  global bullet_pos, bullet_dir
+  bullet_pos.append(copy.deepcopy(_pos))
+  bullet_dir.append(copy.deepcopy(_dir) * bullet_speed)
+  print(bullet_pos[-1])
+  print(bullet_dir[-1])
 
 
 def bullet_update(_dt):
-    global bullet_pos, bullet_dir
-    for i in range(len(bullet_pos)):
-        bullet_pos[i] += bullet_dir[i] * bullet_speed * _dt
-
-    bullets_remove = [i for i in range(len(bullet_pos))
-                      if bullet_pos[i].x < 0 or bullet_pos[i].x > WIDTH or
-                      bullet_pos[i].y < 0 or bullet_pos[i].y > HEIGHT]
-    
-    for i in reversed(bullets_remove):
-        del bullet_pos[i]
-        del bullet_dir[i]
+    for index in range(len(bullet_pos)):
+        bullet_pos[index] += bullet_dir[index] * _dt
 
 
 def bullet_draw():
     for pos in bullet_pos:
-        pygame.draw.circle(screen, BLUE, (int(pos.x), int(pos.x)),bullet_radius)
+        pygame.draw.circle(screen, BLUE, pos, bullet_radius)
 
 
 
