@@ -3,6 +3,7 @@ import pygame
 import common as c 
 import snake
 import random
+import food as f 
 
 # pygame setup
 pygame.init()
@@ -102,10 +103,10 @@ def draw_snake():
 def draw_gridlines():
     
     for pixel_x in range(0, c.SCREEN_WIDTH, c.TILE_SIZE):
-        pygame.draw.line(surface = screen,color = c.COLOR_BLACK,start_pos=(pixel_x,0),end_pos=(pixel_x,c.SCREEN_HEIGHT))
+        pygame.draw.line(surface = screen,color = c.COLOR_BLACK,start_pos=(pixel_x,0),end_pos=(pixel_x, c.SCREEN_HEIGHT))
         
     for pixel_y in range(0,c.SCREEN_HEIGHT, c.TILE_SIZE):
-        pygame.draw.line(surface = screen, color = c.COLOR_BLACK, start_pos = (0, pixel_y), end_pos=(c.SCREEN_WIDTH,pixel_y))
+        pygame.draw.line(surface = screen, color = c.COLOR_BLACK, start_pos = (0, pixel_y), end_pos=(c.SCREEN_WIDTH, pixel_y))
 
 # TODO randomize start position
 start_x = random.randrange(c.GRID_WIDTH)
@@ -139,6 +140,8 @@ while True:
 # create snake
 player_snake = snake.Snake(start_x, start_y, start_dir)
 
+food = f.FoodManager()
+
 #Maiin game loop
 while running:
     # poll for events
@@ -156,6 +159,7 @@ while running:
 	#part 2: draw
     draw_gridlines()
     player_snake.draw(screen)
+    food.draw(screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()

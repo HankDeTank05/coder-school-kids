@@ -7,10 +7,11 @@ class Snake:
     def __init__(self, start_x, start_y, start_dir_move):
         self.pos = []
         self.dir = start_dir_move
+        # dir segments build in after the head.
         build_segments = start_dir_move * -1
         snake_start = pygame.math.Vector2(start_x, start_y)
         for i in range(5):
-            self.pos.append(snake_start + build_segments)
+            self.pos.append(snake_start + build_segments * i)
             print(self.pos[i])
         self.move_queue = []
 
@@ -69,3 +70,9 @@ class Snake:
                                                  self.pos[i].y * c.TILE_SIZE,
                                                  c.TILE_SIZE,
                                                  c.TILE_SIZE))
+            
+    def get_head_rect(self):
+        return pygame.Rect(self.pos[0].x * c.TILE_SIZE,
+                           self.pos[0].y * c.TILE_SIZE,
+                           c.TILE_SIZE,
+                           c.TILE_SIZE)
