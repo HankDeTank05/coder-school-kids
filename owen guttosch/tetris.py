@@ -4,7 +4,7 @@ import random
 
 SQUARE_SIZE = 12
 
-TILE_WIDTH = 30
+TILE_WIDTH = 20
 TILE_HEIGHT = 40
 
 WIDTH = TILE_WIDTH * SQUARE_SIZE
@@ -92,10 +92,26 @@ BLOCK MOVEMENT FUNCTIONS
 """
 
 def place_on_board():
-
+    # place the tetromino on the board
     for i in range(4):
         pos = pygame.math.Vector2(tetro[i].x / SQUARE_SIZE, tetro[i].y / SQUARE_SIZE)
         grid[int(pos.y)][int(pos.x)] = tetro[i]
+    # check if it's time to clear a line
+    lines_to_clear = []
+    for row in range(len(grid)):
+        tiles_filled = 0
+        for col in range(len(grid[row])):
+            if grid[row][col] is not None: # if the current cell is not empty, increase the counter
+                tiles_filled += 1
+        if tiles_filled == len(grid[row]): # if the current row is completely filled, add the row index to the list of lines to clear
+            lines_to_clear.append(row)
+    while len(lines_to_clear) > 0:
+        current_row = lines_to_clear[0]
+        lines_to_clear.pop(0)
+        # step 1: clear the line
+        for x in range(len(grid[current_row])):
+            grid[current_row][x] = None
+        # step 2: bring all the above lines down by one row
 
 def block_fall(schedule = True):
     canfall = True
@@ -120,13 +136,13 @@ def block_fall(schedule = True):
 def block_move_left():
     can_move_left = True
     for i in range(4):
-        if tetro[i].x <= 0:
+        grid_x = tetro[i].x // SQUARE_SIZE
+        grid_y = tetro[i].y // SQUARE_SIZE
+        # check if on left edge of screen or if grid space to the left is not empty
+        if tetro[i].x <= 0 or grid[grid_y][grid_x - 1] is not None:
             can_move_left = False
-            break
-    if can_move_left == False:
-        # don'tetro move left
-        pass
-    else:
+            break            
+    if can_move_left == True:
         # move left
         tetro_pos.x -= 1
         for i in range(4):
@@ -135,13 +151,13 @@ def block_move_left():
 def block_move_right():
     can_move_right = True
     for i in range(4):
-        if tetro[i].x >= WIDTH - SQUARE_SIZE:
+        grid_x = tetro[i].x // SQUARE_SIZE
+        grid_y = tetro[i].y // SQUARE_SIZE
+        # check if on right edge of screen or if grid space to the right is not empty
+        if tetro[i].x >= WIDTH - SQUARE_SIZE or grid[grid_y][grid_x + 1] is not None:
             can_move_right = False
             break
-    if can_move_right == False:
-        # don'tetro move right
-        pass
-    else:
+    if can_move_right == True:
         #move right
         tetro_pos.x += 1
         for i in range(4):
