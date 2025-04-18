@@ -26,7 +26,7 @@ def bullet_update(_dt):
     index = 0
     while index < len(bullet_pos):
         current_pos = bullet_pos[index]
-        if current_pos.x < 0 or current_pos.x > c.WIDTH or current_pos.y < 0 or current_pos.y > c.HEIGHT :
+        if current_pos.x < 0 or current_pos.x > c.SCREEN_WIDTH or current_pos.y < 0 or current_pos.y > c.SCREEN_HEIGHT :
             bullet_pos.pop(index)
             bullet_dir.pop(index)
         else:

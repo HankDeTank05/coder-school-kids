@@ -1,9 +1,9 @@
 import pygame
 
 pygame.init()
-WIDTH=1280
-HEIGHT=720
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+SCREEN_WIDTH=1280
+SCREEN_HEIGHT=720
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 WHITE=(255,255,255)
 GRAY=(128,128,128)

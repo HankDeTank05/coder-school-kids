@@ -12,7 +12,12 @@ player_speed=500
 
 player_pos = pygame.math.Vector2(5,720/2)
 player_facing = pygame.math.Vector2(1,0)
-size=50
+SIZE = 50
+
+BOUNDS_MIN_X = 0 + SIZE
+BOUNDS_MAX_X = c.SCREEN_WIDTH - SIZE
+BOUNDS_MIN_Y = 0 + SIZE
+BOUNDS_MAX_Y = c.SCREEN_HEIGHT - SIZE
 
 prev_m1_state = False
 prev_m2_state = False
@@ -21,6 +26,7 @@ def player_update(_dt):
     global player_pos
     global player_facing
     global prev_m1_state, prev_m2_state
+
     pos_delta=pygame.math.Vector2(0,0)
     #player_facing = pygame.math.Vector2(0,0)
     
@@ -58,6 +64,21 @@ def player_update(_dt):
     player_pos += pos_delta #move player
     # player_pos = player_pos + pos_delta
 
+    # prevents the player from walking off screen
+    if player_pos.x < BOUNDS_MIN_X: #if player is left of min x
+        #move player right until the player is not out of bounds 
+        player_pos.x = BOUNDS_MIN_X
+    elif player_pos.x > BOUNDS_MAX_X:#if player is right of max.x
+        #move player left
+        player_pos.x = BOUNDS_MAX_X
+
+    if player_pos.y < BOUNDS_MIN_Y: #if player is above of min y
+        #move player down
+        player_pos.y = BOUNDS_MIN_Y
+    elif player_pos.y > BOUNDS_MAX_Y: # if player is under of max y
+        #move player up
+        player_pos.y = BOUNDS_MAX_Y
+
     # caluculate facing direction
     player_facing = pygame.mouse.get_pos() - player_pos
     player_facing.normalize_ip()
@@ -66,8 +87,6 @@ def player_update(_dt):
     prev_m1_state = current_m1_state
     prev_m2_state = current_m2_state
 
-
-
 def player_draw():
-    pygame.draw.circle(c.screen, c.GREEN, player_pos, size)
-    pygame.draw.line(c.screen, c.RED, player_pos, player_pos + player_facing * size)
+    pygame.draw.circle(c.screen, c.GREEN, player_pos, SIZE)
+    pygame.draw.line(c.screen, c.RED, player_pos, player_pos + player_facing * SIZE)
