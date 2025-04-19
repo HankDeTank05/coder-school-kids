@@ -44,10 +44,11 @@ class Goose:
     # constructor function (creates a goose object)
     def __init__(self, _x, _y):
         self.pos = pygame.math.Vector2(_x, _y)
-        self.speed = 1000
+        self.speed = 500
 
     # update the goose
     def update(self, _keys, _dt):
+        # TODO make it a fast goose when shift key is pressed
         pos_delta = pygame.math.Vector2(0,0)
         if _keys[pygame.K_RIGHT]:
             pos_delta.x += self.speed
@@ -163,16 +164,24 @@ class Box(Object):
         if self.has_goose == True:
             pass
         elif self.has_goose == False:
-            # TODO: come back next time and finish drawing the rest of the (open) box
+            # Drawing the inside of the box
             inside_height = 30
             box_inside = pygame.Rect(self.pos.x - box_width/2,
                                      self.pos.y - box_height - inside_height, 
                                      box_width, 
                                      inside_height)
             pygame.draw.rect(_surface, NAVY, box_inside)
+            height_offset = 25
+            flap_width = 0.40 * box_width
+            left_flappy_points = [pygame.math.Vector2(box_inside.topleft), #yhis is the topright corner of the paralellogram/maybe rectangle
+                                  pygame.math.Vector2(box_front.topleft)] #yhis is the bottom right corner of the parallelogram/maybe rectangle
+            left_flappy_points.append(pygame.math.Vector2(left_flappy_points[1].x - flap_width, left_flappy_points[1].y - height_offset))#yhis is the bottom left corner of the parallelogram/maybe rectangle
+            left_flappy_points.append(pygame.math.Vector2(left_flappy_points[2].x, left_flappy_points[2].y - inside_height))#yhis is the topleft corner
+            pygame.draw.polygon(_surface, LIGHT_PURPLE, left_flappy_points)
+            # TODO: come back next time and finish drawing the rest of the (open) box
 
 quacK = Goose(150, 150)
-box = Box(100, 100)
+box = Box(100, 150)
 
 # MAIN GAME LOOP
 while True:
