@@ -12,6 +12,7 @@ running = True
 
 PEACH_PUFF = (255, 218, 185)
 DARK_SEA_GREEN = (143, 188, 143)
+BLACK = (0,0,0)
 
 #playar variables 
 p1_pstn = pygame.math.Vector2(100,100)
@@ -21,6 +22,7 @@ p1_stat_hp = 12
 p1_stat_attack = 12
 p1_stat_defense = 12
 
+
 p1_punch_damage = 6 
 p1_bonk_damage = 4 
 p1_bop_damage = 8
@@ -28,8 +30,23 @@ p1_bop_damage = 8
 #player functions 
 def draw_player():
     # draw player 
+
+    # we're drawing heads 
     pygame.draw.circle(SCREEN, PEACH_PUFF, p1_pstn, p1_size)
-    #TODO: come back next for drawing 
+
+    #we draw eyebrows
+    eyebrow_left_x = -30
+    eyebow_top_y = -10
+    eybrow_width = 29
+    eyebrow_height = 10
+    left_eyebrow = pygame.Rect(p1_pstn.x + eyebrow_left_x, p1_pstn.y + eyebow_top_y, eybrow_width, eyebrow_height)
+    pygame.draw.rect(SCREEN, BLACK,  left_eyebrow)
+
+    point_list = []
+    point_list.append(pygame.math.Vector2(p1_pstn.x,p1_pstn.y-5))
+    point_list.append(point_list[0].x+7,point_list[0].y-7)
+    #TODO come back add 3rd point
+    pygame.draw.polygon(SCREEN,BLACK,)
 
 #mr. enemy variables 
 enemy_pstn = pygame.math.Vector2(200, 100)
