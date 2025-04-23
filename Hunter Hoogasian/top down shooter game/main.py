@@ -81,9 +81,9 @@ while True:
     player_pos += player_pos_delta # player_pos = player_pos + player_pos_delta
 
     #This makes the movement look smooth
-    bullet_pos_delta *= delta_time
+    #bullet_pos_delta *= delta_time
     #make the bulet move
-    bullet_rect.move_ip(bullet_pos_delta.x, bullet_pos_delta.y)        
+    bullet_rect.move_ip(bullet_pos_delta.x * delta_time, bullet_pos_delta.y * delta_time)        
     
     ########
     # draw #
