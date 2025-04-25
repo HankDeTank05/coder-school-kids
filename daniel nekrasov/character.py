@@ -3,10 +3,27 @@ import pygame
 import common as c
 
 import bullet
-
+import entity
 """player functions"""
 
+class PlayableCharacter(entity.Entity):
 
+    #constructor
+    def __init__(self, color, speed):
+        super().__init__(
+            pygame.math.Vector2(5, 720/2), #starting pos
+            color, 
+            speed,
+            pygame.math.Vector2(1,0)#starting dir
+        )
+
+    def update(self, dt):
+        pass
+
+    def draw(self):
+        pygame.draw.circle(c.screen, self.color, self.pos, SIZE)
+        #get rid of the line under me (eventually)
+        pygame.draw.line(c.screen, c.RED, self.pos, self.pos + player_facing * SIZE)
 
 player_speed=500
 
