@@ -2,10 +2,10 @@ import pgzrun
 import pygame
 import random
 
-SQUARE_SIZE = 12
+SQUARE_SIZE = 20
 
-TILE_WIDTH = 20
-TILE_HEIGHT = 40
+TILE_WIDTH = 8
+TILE_HEIGHT = 15
 
 WIDTH = TILE_WIDTH * SQUARE_SIZE
 HEIGHT = TILE_HEIGHT * SQUARE_SIZE
@@ -38,50 +38,69 @@ tetro_color = None
 
 down_held = False
 
+"""
+DEBUG FUNCTIONS
+"""
+
+def print_2d_list(list_2d):
+    for y in range(len(list_2d)):
+        print(f"row {y} = ", end=' ')
+        for x in range(len(list_2d[y])):
+            if list_2d[y][x] is None:
+                print("*", end=' ')
+            else:
+                print("X", end=' ')
+        print()
+
+"""
+TETRIS FUNCTIONS
+"""
+
 def make_tetro():
     #              0    1    2    3    4    5    6
     tetrominos = ['t', 'o', 's', 'z', 'l', 'j', 'i']
     choice = random.randint(0, len(tetrominos) - 1)
     print(choice)
     global tetro, tetro_pos, tetro_rot, tetro_color
-    tetro[0] = Rect((15 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+    center_x = TILE_WIDTH // 2
+    tetro[0] = Rect((center_x * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
     tetro_pos = pygame.math.Vector2(15,0)
     if tetrominos[choice] == 't':
-        tetro[1] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((14 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((16 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect(((center_x - 1) * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect(((center_x + 1) * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = PURPLE
     elif tetrominos[choice] == 'o':
-        tetro[1] = Rect((16 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((16 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect(((center_x + 1) * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect(((center_x + 1) * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = BLACK
     elif tetrominos[choice] == 's':
-        tetro[1] = Rect((16 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((14 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect(((center_x + 1) * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect(((center_x - 1) * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = YELLOW
     elif tetrominos[choice] == 'z':
-        tetro[1] = Rect((14 * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((16 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect(((center_x - 1) * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect(((center_x + 1) * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = LIGHT_BLUE
     elif tetrominos[choice] == 'l':
-        tetro[1] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((15 * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((16 * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((center_x * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect(((center_x + 1) * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_pos = pygame.math.Vector2(15,1)
         tetro_color = BLUE
     elif tetrominos[choice] == 'j':
-        tetro[1] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((15 * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((14 * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((center_x * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect(((center_x - 1) * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_pos = pygame.math.Vector2(15,1)
         tetro_color = DARK_YELLOW
     elif tetrominos[choice] == 'i':
-        tetro[1] = Rect((15 * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[2] = Rect((15 * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro[3] = Rect((15 * SQUARE_SIZE, 3 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[2] = Rect((center_x * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
+        tetro[3] = Rect((center_x * SQUARE_SIZE, 3 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_pos = pygame.math.Vector2(15,1)
         tetro_color = LIGHT_BROWN
     tetro_rot = 0
@@ -105,6 +124,7 @@ def place_on_board():
                 tiles_filled += 1
         if tiles_filled == len(grid[row]): # if the current row is completely filled, add the row index to the list of lines to clear
             lines_to_clear.append(row)
+    
     while len(lines_to_clear) > 0:
         current_row = lines_to_clear[0]
         lines_to_clear.pop(0)
@@ -112,6 +132,11 @@ def place_on_board():
         for x in range(len(grid[current_row])):
             grid[current_row][x] = None
         # step 2: bring all the above lines down by one row
+        for y in range(current_row - 1, -1, -1):
+            grid[y+1] = grid[y]
+            # TODO: come back and move the rectangles down so that it draws properly (code)
+
+    print_2d_list(grid)
 
 def block_fall(schedule = True):
     canfall = True
