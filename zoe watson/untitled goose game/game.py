@@ -44,24 +44,28 @@ class Goose:
     # constructor function (creates a goose object)
     def __init__(self, _x, _y):
         self.pos = pygame.math.Vector2(_x, _y)
-        self.speed = 500
+        self.walk_speed = 500
+        self.fast_goose = 1000
 
     # update the goose
     def update(self, _keys, _dt):
         # TODO make it a fast goose when shift key is pressed
         pos_delta = pygame.math.Vector2(0,0)
+        current_speed = self.walk_speed
+        if _keys[pygame.K_RSHIFT]:
+            current_speed = self.fast_goose
         if _keys[pygame.K_RIGHT]:
-            pos_delta.x += self.speed
+            pos_delta.x += current_speed
         if _keys[pygame.K_LEFT]:
-            pos_delta.x -= self.speed
+            pos_delta.x -= current_speed
         if _keys[pygame.K_UP]:
-            pos_delta.y -= self.speed
+            pos_delta.y -= current_speed
         if _keys[pygame.K_DOWN]:
-            pos_delta.y += self.speed
+            pos_delta.y += current_speed
 
         if pos_delta.magnitude() > 0:
             pos_delta.normalize_ip()
-            pos_delta *= self.speed
+            pos_delta *= current_speed
         
         pos_delta *= _dt
         self.pos += pos_delta
@@ -173,12 +177,33 @@ class Box(Object):
             pygame.draw.rect(_surface, NAVY, box_inside)
             height_offset = 25
             flap_width = 0.40 * box_width
-            left_flappy_points = [pygame.math.Vector2(box_inside.topleft), #yhis is the topright corner of the paralellogram/maybe rectangle
-                                  pygame.math.Vector2(box_front.topleft)] #yhis is the bottom right corner of the parallelogram/maybe rectangle
-            left_flappy_points.append(pygame.math.Vector2(left_flappy_points[1].x - flap_width, left_flappy_points[1].y - height_offset))#yhis is the bottom left corner of the parallelogram/maybe rectangle
-            left_flappy_points.append(pygame.math.Vector2(left_flappy_points[2].x, left_flappy_points[2].y - inside_height))#yhis is the topleft corner
+            left_flappy_points = [pygame.math.Vector2(box_inside.topleft), #yhis is the topright corner of the left flappy
+                                  pygame.math.Vector2(box_front.topleft)] #yhis is the bottom right corner of the left flappy
+            #yhis is the bottom left corner of the left flappy
+            left_flappy_points.append(
+                pygame.math.Vector2(
+                    left_flappy_points[1].x - flap_width,
+                    left_flappy_points[1].y - height_offset))
+            #yhis is the topleft corner of the left flappy
+            left_flappy_points.append(
+                pygame.math.Vector2(
+                    left_flappy_points[2].x,
+                    left_flappy_points[2].y - inside_height))
             pygame.draw.polygon(_surface, LIGHT_PURPLE, left_flappy_points)
-            # TODO: come back next time and finish drawing the rest of the (open) box
+            
+            right_flappy_points = [pygame.math.Vector2(box_inside.topright), # yhis is the topleft corner of the right flappy
+                                   pygame.math.Vector2(box_inside.bottomright)] #yhis is the bottomleft corner of ye right flappy
+            #yhis is ye bottom right corner of ye right flappy
+            right_flappy_points.append(
+                pygame.math.Vector2(
+                    right_flappy_points[1].x + flap_width,
+                    right_flappy_points[1].y - height_offset))
+            #yhis is the topright corner of ye right flappy
+            right_flappy_points.append(
+                pygame.math.Vector2(
+                    right_flappy_points[2].x,
+                    right_flappy_points[2].y - inside_height))
+            pygame.draw.polygon(_surface, LIGHT_PURPLE, right_flappy_points)
 
 quacK = Goose(150, 150)
 box = Box(100, 150)
