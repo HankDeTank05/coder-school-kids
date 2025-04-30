@@ -1,6 +1,8 @@
 import pygame
 import random
 import common as c
+import snake as s
+
 
 class Food:
     def __init__(self, start_x, start_y):
@@ -25,6 +27,6 @@ class FoodManager:
         start_x = random.randrange(c.GRID_WIDTH)
         start_y = random.randrange(c.GRID_HEIGHT)
         self.food.append(Food(start_x, start_y))
-
+   
     def update(self, other_rect):
         pass

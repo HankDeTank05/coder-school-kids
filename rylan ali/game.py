@@ -1,9 +1,11 @@
 # Example file showing a basic pygame "game loop"
 import pygame
 import common as c 
-import snake
+import snake 
 import random
 import food as f 
+
+
 
 # pygame setup
 pygame.init()

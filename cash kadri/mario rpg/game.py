@@ -43,10 +43,11 @@ def draw_player():
     pygame.draw.rect(SCREEN, BLACK,  left_eyebrow)
 
     point_list = []
-    point_list.append(pygame.math.Vector2(p1_pstn.x,p1_pstn.y-5))
-    point_list.append(point_list[0].x+7,point_list[0].y-7)
+    point_list.append(pygame.math.Vector2(p1_pstn.x, p1_pstn.y - 5)) # point #0
+    point_list.append(pygame.math.Vector2(point_list[0].x+7, point_list[0].y-7)) # point #1
+    point_list.append(pygame.math.Vector2(point_list[1].x+15,point_list[1].y+4)) # point #2
     #TODO come back add 3rd point
-    pygame.draw.polygon(SCREEN,BLACK,)
+    pygame.draw.polygon(SCREEN,BLACK,point_list)
 
 #mr. enemy variables 
 enemy_pstn = pygame.math.Vector2(200, 100)
