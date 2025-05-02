@@ -4,8 +4,8 @@ import random
 
 SQUARE_SIZE = 20
 
-TILE_WIDTH = 8
-TILE_HEIGHT = 15
+TILE_WIDTH = 20
+TILE_HEIGHT = 40
 
 WIDTH = TILE_WIDTH * SQUARE_SIZE
 HEIGHT = TILE_HEIGHT * SQUARE_SIZE
@@ -192,8 +192,10 @@ def block_rotate_left():
     global tetro_rot
     for i in range(4):
         #step 1: convert to local coordinates
-        coords = pygame.math.Vector2(tetro[i].left // SQUARE_SIZE, tetro[i].top // SQUARE_SIZE)
+        coords = pygame.math.Vector2(tetro[i].x // SQUARE_SIZE, tetro[i].y // SQUARE_SIZE)
+        print(coords)
         coords -= tetro_pos
+        print(coords)
         if coords != pygame.math.Vector2(0,0):
             #step 2: rotate
             coords.x *= -1 #negate
@@ -206,6 +208,7 @@ def block_rotate_left():
             #step 3: convert back to screen pixels
             coords += tetro_pos
             coords *= SQUARE_SIZE
+            print(coords)
             tetro[i].update(coords, (SQUARE_SIZE, SQUARE_SIZE))
     tetro_rot -= 90
     if tetro_rot < 0:
@@ -215,7 +218,7 @@ def block_rotate_right():
     global tetro_rot
     for i in range(4):
         #step 1: convert to local coordinates
-        coords = pygame.math.Vector2(tetro[i].left // SQUARE_SIZE, tetro[i].top // SQUARE_SIZE)
+        coords = pygame.math.Vector2(tetro[i].x // SQUARE_SIZE, tetro[i].y // SQUARE_SIZE)
         coords -= tetro_pos
         if coords != pygame.math.Vector2(0,0):
             # step 2: rotate
@@ -229,6 +232,7 @@ def block_rotate_right():
             #step 3: convert back to screen pixels
             coords += tetro_pos
             coords *= SQUARE_SIZE
+            print(coords)
             tetro[i].update(coords, (SQUARE_SIZE, SQUARE_SIZE))
     tetro_rot += 90
     if tetro_rot > 270:
@@ -284,11 +288,12 @@ def draw():
         for x in range(0, WIDTH, SQUARE_SIZE):
             x_index = x//SQUARE_SIZE
             y_index = y//SQUARE_SIZE
+            square = Rect((x, y), (SQUARE_SIZE, SQUARE_SIZE))
             if grid[y_index][x_index] is None:
-                square = Rect((x, y), (SQUARE_SIZE, SQUARE_SIZE))
                 screen.draw.rect(square, (255, 255, 255))
             else:
-                screen.draw.filled_rect(grid[y_index][x_index], GRAY) # TODO: come back and make the grid remember the color of the tetrominos
+                #screen.draw.filled_rect(grid[y_index][x_index], GRAY) # TODO: come back and make the grid remember the color of the
+                screen.draw.filled_rect(square, GRAY)
 
     #draws the tetromino
     for i in range(4):
