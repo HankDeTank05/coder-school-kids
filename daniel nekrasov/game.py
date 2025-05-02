@@ -13,7 +13,7 @@ clock = pygame.time.Clock()
 running = True
 dt=0
 
-player = char.PlayableCharacter(c.GREEN, 500)
+player = char.Player(c.GREEN, 500)
 
 #main game loop
 while running == True:
