@@ -38,7 +38,7 @@ def run():
 		SCREEN.fill(c.BLACK)
 
 		# PART 1: UPDATE
-		p1.update(delta_time)
+		p1.update(delta_time, platform.rect)
 		platform.update(delta_time)
 
 		# PART 2: DRAW
