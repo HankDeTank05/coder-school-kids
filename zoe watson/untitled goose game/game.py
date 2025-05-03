@@ -146,28 +146,88 @@ class Box(Object):
     def __init__(self, _x, _y):
         super().__init__(_x, _y)
         self.has_goose = False
+        self.points = {
+            "front bottom-left": pygame.math.Vector2(0,0),
+            "front bottom-right": pygame.math.Vector2(0,0),
+            "front top-left": pygame.math.Vector2(0,0),
+            "front top-right": pygame.math.Vector2(0,0),
+            "inside top-left": pygame.math.Vector2(0,0),
+            "inside top-right": pygame.math.Vector2(0,0),
+            "left flappy top-est": pygame.math.Vector2(0,0),
+            "left flappy bottom left": pygame.math.Vector2(0,0),
+            "right flappy top-est":pygame.math.Vector2(0,0),
+            "right flappy bottom right": pygame.math.Vector2(0,0) 
+        } 
 
-    def draw(self, _surface):
-        """
-        this is how the box should look
-        |\          /|
-        | \________/ |
-        \ | inside | /
-         \|________|/
-          |        |
-          |________|
-        """
+    def update(self):
+        #calculate points for box front face
         box_width = 80
         box_height = 50
-        box_front = pygame.Rect(self.pos.x - box_width/2, #box front X positiom
-                                self.pos.y - box_height, #box front Y positiom
-                                box_width, 
-                                box_height)
-        pygame.draw.rect(_surface, LIGHT_PURPLE, box_front)
+        self.points["front bottom-left"] = pygame.math.Vector2(self.pos.x - box_width / 2,
+                                                               self.pos.y)
+        self.points["front bottom-right"] = pygame.math.Vector2(self.pos.x + box_width / 2,
+                                                                self.pos.y)
+        self.points["front top-left"] = pygame.math.Vector2(self.pos.x - box_width / 2,
+                                                            self.pos.y - box_height)
+        self.points["front top-right"] = pygame.math.Vector2(self.pos.x + box_width / 2,
+                                                             self.pos.y - box_height)
+        
+        # TODO: question from Henry #1: why isn't the box front face drawing?
+        # TODO: question from Henry #3: (come back here after you've solved question #2)
+        '''
+        can the box inside be calculated before the if/elif block below? (hint: is the box inside going to look different based on if the box has a goose in it? or not?)
+        '''
+
+        if self.has_goose == True:
+            """
+            this is how the box should look
+
+            left flappy/right flappy
+              |        /
+              v       v
+                
+              /|____|\ 
+             |/| in |\|
+             |/______\|
+             |        |
+             |________|
+            """
+            pass  #calculate points for closed box
+        elif self.has_goose == False:
+            """
+            this is how the box should look
+
+            left flappy     right flappy
+            |              /
+            v             v
+
+            |\          /|
+            |\\________//|
+            \\| inside |//
+             \|________|/
+              |  front |
+              |________|
+            """
+            pass #calculate points for open box 
+
+    def draw(self, _surface):
+        # TODO: question from Henry #2 (once you're finished with question #1, expand the block comment below to see the question)
+        '''
+        why does the front face look like an hourglass? (hint: what order are we drawing the points in?)
+        '''
+        pygame.draw.polygon(_surface, LIGHT_PURPLE, [
+            self.points["front bottom-left"],
+            self.points["front bottom-right"],
+            self.points["front top-left"],
+            self.points["front top-right"]
+        ])
 
         if self.has_goose == True:
             pass
         elif self.has_goose == False:
+            # TODO: GET RID OF THESE vv THESE ARE DUPLICATE VARIABLES
+            box_width = 80
+            box_height = 50
             # Drawing the inside of the box
             inside_height = 30
             box_inside = pygame.Rect(self.pos.x - box_width/2,
@@ -178,7 +238,7 @@ class Box(Object):
             height_offset = 25
             flap_width = 0.40 * box_width
             left_flappy_points = [pygame.math.Vector2(box_inside.topleft), #yhis is the topright corner of the left flappy
-                                  pygame.math.Vector2(box_front.topleft)] #yhis is the bottom right corner of the left flappy
+                                  pygame.math.Vector2(self.points["front top-left"])] #yhis is the bottom right corner of the left flappy
             #yhis is the bottom left corner of the left flappy
             left_flappy_points.append(
                 pygame.math.Vector2(
