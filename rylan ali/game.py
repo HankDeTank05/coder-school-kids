@@ -3,7 +3,7 @@ import pygame
 import common as c 
 import snake 
 import random
-import food as f 
+import foodstuff
 
 
 
@@ -141,8 +141,10 @@ while True:
 
 # create snake
 player_snake = snake.Snake(start_x, start_y, start_dir)
+all_pos_in_list = player_snake.pos
 
-food = f.FoodManager()
+foodmanager = foodstuff.FoodManager()
+foodmanager.create_food()
 
 #Maiin game loop
 while running:
@@ -161,7 +163,7 @@ while running:
 	#part 2: draw
     draw_gridlines()
     player_snake.draw(screen)
-    food.draw(screen)
+    foodmanager.draw(screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()

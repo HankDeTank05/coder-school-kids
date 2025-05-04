@@ -9,7 +9,7 @@ DIR_RIGHT = pygame.math.Vector2(1, 0)
 #colors
 COLOR_BLACK = (0,0,0)
 COLOR_RED = (155,0,0)
-COLOR_GREEN =(0,155,0)
+COLOR_GREEN = (0,155,0)
 
 # display
 GRID_WIDTH = 160
