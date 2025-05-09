@@ -4,15 +4,18 @@ import common as c
 class Frank:
 
     #constructor
-    def __init__(self, speed, pos, width, height):
+    def __init__(self, speed, pos):
         self.color = c.DARK_GREEN
         self.speed = speed
-        self.dir = 
-        self.health = 
-        self.rect = pygame.Rect(pos, pygame.math.Vector2(width, height))
+        self.dir = pygame.math.Vector2(-1,0)
+        self.health = c.FRANK_BASE_HEALTH
+        self.pos = pos
+
+        self.SIZE = 100
 
     def update(self, dt):
         pass
 
     def draw(self):
-        pygame.draw.rect(c.screen, self.color, self.rect)
+        pygame.draw.circle(c.screen, c.DARK_GREEN, self.pos, self.SIZE) #drawing frank
+        

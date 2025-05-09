@@ -14,13 +14,14 @@ class Player:
         self.current_m2_state = False
         self.prev_m1_state = False
         self.prev_m2_state = False
+        self.health = c.PLAYER_BASE_HEALTH
 
         #constants
         self.SIZE = 50
-        self.BOUNDS_MIN_X = 0 + SIZE
-        self.BOUNDS_MAX_X = c.SCREEN_WIDTH - SIZE
-        self.BOUNDS_MIN_Y = 0 + SIZE
-        self.BOUNDS_MAX_Y = c.SCREEN_HEIGHT - SIZE
+        self.BOUNDS_MIN_X = 0 + self.SIZE
+        self.BOUNDS_MAX_X = c.SCREEN_WIDTH - self.SIZE
+        self.BOUNDS_MIN_Y = 0 + self.SIZE
+        self.BOUNDS_MAX_Y = c.SCREEN_HEIGHT - self.SIZE
         
     def update(self, dt):
 
