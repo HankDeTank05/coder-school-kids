@@ -155,7 +155,7 @@ class Box(Object):
             "inside top-right": pygame.math.Vector2(0,0),
             "left flappy top-est": pygame.math.Vector2(0,0),
             "left flappy bottom left": pygame.math.Vector2(0,0),
-            "right flappy top-est":pygame.math.Vector2(0,0),
+            "right flappy top-est": pygame.math.Vector2(0,0),
             "right flappy bottom right": pygame.math.Vector2(0,0) 
         } 
 
@@ -172,11 +172,13 @@ class Box(Object):
         self.points["front top-right"] = pygame.math.Vector2(self.pos.x + box_width / 2,
                                                              self.pos.y - box_height)
         
-        # TODO: question from Henry #1: why isn't the box front face drawing?
-        # TODO: question from Henry #3: (come back here after you've solved question #2)
-        '''
-        can the box inside be calculated before the if/elif block below? (hint: is the box inside going to look different based on if the box has a goose in it? or not?)
-        '''
+        # Below is inside points all the time
+        inside_height = 30
+        
+        self.points["inside top-left"] = pygame.math.Vector2(self.pos.x - box_width / 2,
+                                                             self.pos.y - box_height - inside_height)
+        self.points["inside top-right"] = pygame.math.Vector2(self.pos.x + box_width / 2,
+                                                              self.pos.y - box_height - inside_height)
 
         if self.has_goose == True:
             """
@@ -189,7 +191,7 @@ class Box(Object):
               /|____|\ 
              |/| in |\|
              |/______\|
-             |        |
+             | front  |
              |________|
             """
             pass  #calculate points for closed box
@@ -211,16 +213,20 @@ class Box(Object):
             pass #calculate points for open box 
 
     def draw(self, _surface):
-        # TODO: question from Henry #2 (once you're finished with question #1, expand the block comment below to see the question)
-        '''
-        why does the front face look like an hourglass? (hint: what order are we drawing the points in?)
-        '''
+        # yhis code is drawing the box front
         pygame.draw.polygon(_surface, LIGHT_PURPLE, [
             self.points["front bottom-left"],
             self.points["front bottom-right"],
-            self.points["front top-left"],
-            self.points["front top-right"]
+            self.points["front top-right"],
+            self.points["front top-left"]
         ])
+
+        # Yhis is the dawing of the inside
+        pygame.draw.polygon(_surface, NAVY, [
+            self.points["inside top-left"],
+            # TODO: finish drawing the inside of the box
+        ])
+
 
         if self.has_goose == True:
             pass
@@ -230,11 +236,7 @@ class Box(Object):
             box_height = 50
             # Drawing the inside of the box
             inside_height = 30
-            box_inside = pygame.Rect(self.pos.x - box_width/2,
-                                     self.pos.y - box_height - inside_height, 
-                                     box_width, 
-                                     inside_height)
-            pygame.draw.rect(_surface, NAVY, box_inside)
+            ##########################################################################################################################################
             height_offset = 25
             flap_width = 0.40 * box_width
             left_flappy_points = [pygame.math.Vector2(box_inside.topleft), #yhis is the topright corner of the left flappy
@@ -280,7 +282,7 @@ while True:
     # update stuff
     keys = pygame.key.get_pressed()
     quacK.update(keys, dt)
-
+    box.update() 
     # draw stuff
     quacK.draw(screen)
     box.draw(screen)
