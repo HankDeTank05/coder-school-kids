@@ -13,6 +13,7 @@ running = True
 PEACH_PUFF = (255, 218, 185)
 DARK_SEA_GREEN = (143, 188, 143)
 BLACK = (0,0,0)
+WHITE = (255,255,255)
 
 #playar variables 
 p1_pstn = pygame.math.Vector2(100,100)
@@ -34,7 +35,7 @@ def draw_player():
     # we're drawing heads 
     pygame.draw.circle(SCREEN, PEACH_PUFF, p1_pstn, p1_size)
 
-    #we draw eyebrows
+    #draw left eyebrow
     eyebrow_left_x = -30
     eyebow_top_y = -10
     eyebrow_width = 29
@@ -42,56 +43,92 @@ def draw_player():
     left_eyebrow = pygame.Rect(p1_pstn.x + eyebrow_left_x, p1_pstn.y + eyebow_top_y, eyebrow_width, eyebrow_height)
     pygame.draw.rect(SCREEN, BLACK,  left_eyebrow)
 
-    point_list = []
+    #draw right eyebrow
+    right_eyebrow = []
 
     # 0 - blue
-    point_list.append(pygame.math.Vector2(
+    right_eyebrow.append(pygame.math.Vector2(
         p1_pstn.x,
         p1_pstn.y - 2)) 
     
     # 1 - purple
-    point_list.append(pygame.math.Vector2(
-        point_list[0].x + eyebrow_width/4,
+    right_eyebrow.append(pygame.math.Vector2(
+        right_eyebrow[0].x + eyebrow_width/4,
         p1_pstn.y-17))
 
     # 2 - red
-    point_list.append(pygame.math.Vector2(
-        point_list[0].x + eyebrow_width/2,
+    right_eyebrow.append(pygame.math.Vector2(
+        right_eyebrow[0].x + eyebrow_width/2,
         p1_pstn.y - 19)) 
     
     # 3 - ORANGE
-    point_list.append(pygame.math.Vector2(
-        point_list[0].x + eyebrow_width/4*3,
+    right_eyebrow.append(pygame.math.Vector2(
+        right_eyebrow[0].x + eyebrow_width/4*3,
         p1_pstn.y-17))
 
     # 4 - green
-    point_list.append(pygame.math.Vector2(
-        point_list[0].x + eyebrow_width,
+    right_eyebrow.append(pygame.math.Vector2(
+        right_eyebrow[0].x + eyebrow_width,
         p1_pstn.y - 2)) 
     
     # 5 - CYAN
-    point_list.append(pygame.math.Vector2(
-        point_list[3].x,
-        point_list[4].y))
+    right_eyebrow.append(pygame.math.Vector2(
+        right_eyebrow[3].x,
+        right_eyebrow[4].y))
 
     # 6 - yellow
-    point_list.append(pygame.math.Vector2(
-        point_list[0].x + eyebrow_width/2,
+    right_eyebrow.append(pygame.math.Vector2(
+        right_eyebrow[0].x + eyebrow_width/2,
         p1_pstn.y - 10))
     
-    #-7 GRAY
-    point_list.append(pygame.math.Vector2(
-        point_list[1].x,
-        point_list[0].y))
+    # 7 GRAY
+    right_eyebrow.append(pygame.math.Vector2(
+        right_eyebrow[1].x,
+        right_eyebrow[0].y))
 
-    pygame.draw.polygon(SCREEN,BLACK,point_list)
+    pygame.draw.polygon(SCREEN, BLACK, right_eyebrow)
 
     #draw da eyes 
+    eyeball_size = 7 
+    pupil_size = 3
     eye_left=pygame.math.Vector2(
         p1_pstn.x-p1_size/3,
         p1_pstn.y+4
     )
-    pygame.draw.circle(SCREEN,BLACK,eye_left,7)
+    pygame.draw.circle(SCREEN, BLACK, eye_left, eyeball_size) #draw left eyeball
+    pygame.draw.circle(SCREEN, WHITE, eye_left, pupil_size) # draw left pupil 
+    eye_right=pygame.math.Vector2(
+        p1_pstn.x+p1_size/3 ,
+        p1_pstn.y+4
+    )
+    pygame.draw.circle(SCREEN, BLACK, eye_right, eyeball_size) # draw right eyeball
+    pygame.draw.circle(SCREEN, WHITE, eye_right, pupil_size)  # draw right pupil
+
+    # draw the SMILE
+    mouth_points = []
+
+    mouth_width = 23
+    mouth_down = 12
+
+    # 0 - blue 
+    mouth_points.append(pygame.math.Vector2(
+        p1_pstn.x-mouth_width,
+        p1_pstn.y+mouth_down
+    ))
+
+    # 4 - orange
+    mouth_points.append(pygame.math.Vector2(
+        p1_pstn.x+mouth_width,
+        p1_pstn.y+mouth_down
+    ))
+
+    # 6 - pink
+    mouth_points.append(pygame.math.Vector2(
+        p1_pstn.x,
+        p1_pstn.y+0.75*p1_size
+    ))
+
+    pygame.draw.polygon(SCREEN, WHITE, mouth_points)
 
 #mr. enemy variables 
 enemy_pstn = pygame.math.Vector2(200, 100)
