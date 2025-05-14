@@ -44,27 +44,35 @@ for i in range(len(my_list)):
 for i in range(12):
     print(i)
 '''
-
+'''
 print(len(my_list)) #Len gets the length of a list
 my_list.append("fourth")
 print(len(my_list))
+'''
 
 #Range function takes a single numer and returns...
 #  a sequence of numbers starting with zero
 # and ending in the number you give - 1
+'''
 for i in range(3): 
     print(my_list[i])
+'''
 
 #The code is making a sequence of numbers that starts at 10 and then counts adds by -1, going to 1.
 # It then prints the sequence of numbers in the range, prints them one number per line
+'''
 for num in range(10, 0, -1):
     print(num)
+'''
 
 #It generates a sequence of numbers containing multiples of 3 going up to 30
 #It prints a single multiple per line 
+'''
 for num in range(3, 31, 3):
     print(num)
+'''
 
+'''
 print("Fibonacci Sequence - while-loop implementation")
 
 stop_at = 10
@@ -85,4 +93,8 @@ for n in range(2, 11, 1):
     k = ff[n-1] + ff[n-2]
     ff.append(k)
     print(ff)
+'''
+
+for i in range(1, 6):
+    print(i)
 
