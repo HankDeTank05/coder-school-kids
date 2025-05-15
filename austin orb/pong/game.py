@@ -1,3 +1,6 @@
+# python import #
+import math
+
 # other people's code
 import pygame
 
@@ -25,6 +28,8 @@ paddle_bounds_bottom = SCREEN_HEIGHT - P_HEIGHT
 
 ball_center = pygame.math.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 ball_radius = 20
+ball_speed = 50
+ball_dir = pygame.math.Vector2(ball_speed, ball_speed)
 
 
 def move_paddle(keys, paddle, up_key, down_key):
@@ -39,6 +44,24 @@ def move_paddle(keys, paddle, up_key, down_key):
         paddle.y = paddle_bounds_top
     elif paddle.y > paddle_bounds_bottom:
         paddle.y = paddle_bounds_bottom
+
+def ball_collision(circle_center, circle_radius, rect):
+    clamped_center = circle_center
+    # clamp circle center inside of rect #
+    if clamped_center.x < rect.x:
+        clamped_center.x = rect.x
+    elif clamped_center.x > rect.x + rect.width:
+        clamped_center.x = rect.x + rect.width
+    if clamped_center.y < rect.y:
+        clamped_center.y = rect.y
+    elif clamped_center.y > rect.y + rect.height:
+        clamped_center.y = rect.y + rect.height
+
+    x_dist = circle_center.x - clamped_center.x
+    y_dist = circle_center.y - clamped_center.y
+
+    distance = math.sqrt((x_dist ** 2) + (y_dist ** 2))
+    return distance <= circle_radius
 
 
 # main game loop
@@ -57,6 +80,7 @@ while running:
     keys = pygame.key.get_pressed()
     move_paddle(keys, p1_paddle, pygame.K_w, pygame.K_s)
     move_paddle(keys, p2_paddle, pygame.K_UP, pygame.K_DOWN)
+    ball_center += ball_dir * delta_time
 
     ################
     # step 2: draw #
