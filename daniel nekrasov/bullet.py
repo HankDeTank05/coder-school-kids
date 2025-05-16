@@ -8,7 +8,7 @@ import common as c
 
 bullet_speed = 700
 bullet_radius = 20
-# these are parrallel 
+# these are parallel 
 #data at the same index in dffernt lists belongs to the same object
 bullet_pos = []
 bullet_dir = []

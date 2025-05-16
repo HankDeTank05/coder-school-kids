@@ -56,7 +56,7 @@ class Player:
         # fix diagonal movement so it isn't faster than straightline speed
         if pos_delta.x != 0 and pos_delta.y != 0:
             pos_delta.normalize_ip()
-            pos_delta *= player_speed
+            pos_delta *= self.speed
 
         pos_delta *= dt
         self.pos += pos_delta #move player
