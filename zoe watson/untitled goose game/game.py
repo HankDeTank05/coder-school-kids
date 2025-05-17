@@ -22,7 +22,8 @@ BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
 BROWN = (153, 76, 0)
 GREEN = (141, 182, 0)
-LIGHT_PURPLE = (177, 156, 217)
+LIGHT_PURPLE = pygame.math.Vector3(177, 156, 217)
+LIGHT_PURPLE_D = LIGHT_PURPLE * 0.9
 NAVY = (0, 33, 71)
 GRASS_COLOR = (116,195,101)
 # set the game to run at 60fps
@@ -154,7 +155,7 @@ class Box(Object):
             "inside top-left": pygame.math.Vector2(0,0),
             "inside top-right": pygame.math.Vector2(0,0),
             "left flappy top-est": pygame.math.Vector2(0,0),
-            "left flappy bottom left": pygame.math.Vector2(0,0),
+            "left flappy bottom left-ish": pygame.math.Vector2(0,0),
             "right flappy top-est": pygame.math.Vector2(0,0),
             "right flappy bottom right": pygame.math.Vector2(0,0) 
         } 
@@ -204,14 +205,19 @@ class Box(Object):
             v             v
 
             |\          /|
-            |\\________//|
-            \\| inside |//
+            | \________/ |
+            \ | inside | /
              \|________|/
               |  front |
               |________|
             """
-            pass #calculate points for open box 
-
+            height_offset = 25
+            flap_width = 0.40 * box_width
+            
+            self.points["left flappy bottom left-ish"] = pygame.math.Vector2(self.pos.x - box_width / 2 - flap_width,
+                                                                             self.pos.y - box_height - height_offset)
+            self.points["left flappy top-est"] = pygame.math.Vector2(self.pos.x - box_width / 2 - flap_width,
+                                                                     self.pos.y - box_height - height_offset - inside_height)
     def draw(self, _surface):
         # yhis code is drawing the box front
         pygame.draw.polygon(_surface, LIGHT_PURPLE, [
@@ -224,7 +230,9 @@ class Box(Object):
         # Yhis is the dawing of the inside
         pygame.draw.polygon(_surface, NAVY, [
             self.points["inside top-left"],
-            # TODO: finish drawing the inside of the box
+            self.points["front top-left"],
+            self.points["front top-right"],
+            self.points["inside top-right"]
         ])
 
 
@@ -237,24 +245,25 @@ class Box(Object):
             # Drawing the inside of the box
             inside_height = 30
             ##########################################################################################################################################
+            # TODO: draw the left flappy with the new system yayyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
             height_offset = 25
             flap_width = 0.40 * box_width
-            left_flappy_points = [pygame.math.Vector2(box_inside.topleft), #yhis is the topright corner of the left flappy
-                                  pygame.math.Vector2(self.points["front top-left"])] #yhis is the bottom right corner of the left flappy
+            # left_flappy_points = [pygame.math.Vector2(self.points["inside top-left"]), #yhis is the topright corner of the left flappy
+            #                       pygame.math.Vector2(self.points["front top-left"])] #yhis is the bottom right corner of the left flappy
             #yhis is the bottom left corner of the left flappy
-            left_flappy_points.append(
-                pygame.math.Vector2(
-                    left_flappy_points[1].x - flap_width,
-                    left_flappy_points[1].y - height_offset))
+            # left_flappy_points.append(
+            #     pygame.math.Vector2(
+            #         left_flappy_points[1].x - flap_width,
+            #         left_flappy_points[1].y - height_offset))
             #yhis is the topleft corner of the left flappy
-            left_flappy_points.append(
-                pygame.math.Vector2(
-                    left_flappy_points[2].x,
-                    left_flappy_points[2].y - inside_height))
-            pygame.draw.polygon(_surface, LIGHT_PURPLE, left_flappy_points)
+            # left_flappy_points.append(
+            #     pygame.math.Vector2(
+            #         left_flappy_points[2].x,
+            #         left_flappy_points[2].y - inside_height))
+            # pygame.draw.polygon(_surface, LIGHT_PURPLE_D, left_flappy_points)
             
-            right_flappy_points = [pygame.math.Vector2(box_inside.topright), # yhis is the topleft corner of the right flappy
-                                   pygame.math.Vector2(box_inside.bottomright)] #yhis is the bottomleft corner of ye right flappy
+            right_flappy_points = [pygame.math.Vector2(self.points["inside top-right"]), # yhis is the topleft corner of the right flappy
+                                   pygame.math.Vector2(self.points["front top-right"] )] #yhis is the bottomleft corner of ye right flappy
             #yhis is ye bottom right corner of ye right flappy
             right_flappy_points.append(
                 pygame.math.Vector2(
@@ -265,7 +274,7 @@ class Box(Object):
                 pygame.math.Vector2(
                     right_flappy_points[2].x,
                     right_flappy_points[2].y - inside_height))
-            pygame.draw.polygon(_surface, LIGHT_PURPLE, right_flappy_points)
+            pygame.draw.polygon(_surface, LIGHT_PURPLE_D, right_flappy_points)
 
 quacK = Goose(150, 150)
 box = Box(100, 150)
