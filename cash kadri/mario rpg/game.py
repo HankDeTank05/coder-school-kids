@@ -13,11 +13,13 @@ running = True
 PEACH_PUFF = (255, 218, 185)
 DARK_SEA_GREEN = (143, 188, 143)
 BLACK = (0,0,0)
-WHITE = (255,255,255)
+WHITE = (255, 255, 255)
+BLUE = (0, 55, 255)
+RED = (255, 0, 0)
 
 #playar variables 
 p1_pstn = pygame.math.Vector2(100,100)
-p1_size = 40
+p1_radius = 40
 
 p1_stat_hp = 12
 p1_stat_attack = 12
@@ -32,8 +34,18 @@ p1_bop_damage = 8
 def draw_player():
     # draw player 
 
+    #we draw legs 
+    leg_width = p1_radius / 2
+    pygame.draw.rect(SCREEN, RED, pygame.Rect()) # TODO: come back and make this rectangle
+    # TODO: come back and draw the other leg
+
+    # TODO: come back and draw two arms
+
+    # we are drooing the playa's bodi
+    pygame.draw.circle(SCREEN, BLUE, p1_pstn + pygame.math.Vector2(0, 1.75 * p1_radius), p1_radius)
+
     # we're drawing heads 
-    pygame.draw.circle(SCREEN, PEACH_PUFF, p1_pstn, p1_size)
+    pygame.draw.circle(SCREEN, PEACH_PUFF, p1_pstn, p1_radius)
 
     #draw left eyebrow
     eyebrow_left_x = -30
@@ -92,13 +104,13 @@ def draw_player():
     eyeball_size = 7 
     pupil_size = 3
     eye_left=pygame.math.Vector2(
-        p1_pstn.x-p1_size/3,
+        p1_pstn.x-p1_radius/3,
         p1_pstn.y+4
     )
     pygame.draw.circle(SCREEN, BLACK, eye_left, eyeball_size) #draw left eyeball
     pygame.draw.circle(SCREEN, WHITE, eye_left, pupil_size) # draw left pupil 
     eye_right=pygame.math.Vector2(
-        p1_pstn.x+p1_size/3 ,
+        p1_pstn.x+p1_radius/3 ,
         p1_pstn.y+4
     )
     pygame.draw.circle(SCREEN, BLACK, eye_right, eyeball_size) # draw right eyeball
@@ -112,21 +124,51 @@ def draw_player():
 
     # 0 - blue 
     mouth_points.append(pygame.math.Vector2(
-        p1_pstn.x-mouth_width,
-        p1_pstn.y+mouth_down
+        p1_pstn.x - mouth_width,
+        p1_pstn.y + mouth_down
+    ))
+
+    # point 1 and yellow
+    mouth_points.append(pygame.math.Vector2(
+        p1_pstn.x - 0.5 * mouth_width, 
+        p1_pstn.y + 0.35 * p1_radius
+    ))
+
+    #2 reddy
+    mouth_points.append(pygame.math.Vector2(
+        p1_pstn.x,
+        p1_pstn.y + 0.5 * p1_radius
+    ))# 0.5 = 1 half 
+
+    #point 3 and green 
+    mouth_points.append(pygame.math.Vector2(
+        p1_pstn.x + 0.5 * mouth_width,
+        p1_pstn.y + 0.35 * p1_radius
     ))
 
     # 4 - orange
     mouth_points.append(pygame.math.Vector2(
-        p1_pstn.x+mouth_width,
-        p1_pstn.y+mouth_down
+        p1_pstn.x + mouth_width,
+        p1_pstn.y + mouth_down
+    ))
+
+    # the 5 and purple
+    mouth_points.append(pygame.math.Vector2(
+        p1_pstn.x + 0.5 * mouth_width,
+        p1_pstn.y + 0.65 * p1_radius 
     ))
 
     # 6 - pink
     mouth_points.append(pygame.math.Vector2(
         p1_pstn.x,
-        p1_pstn.y+0.75*p1_size
-    ))
+        p1_pstn.y + 0.75 * p1_radius
+    ))#0.75 = 3 quarters
+
+    #point 7 and teel
+    mouth_points.append(pygame.math.Vector2(
+        p1_pstn.x - 0.5 * mouth_width,
+        p1_pstn.y + 0.65 * p1_radius
+    )) #0.7 = 7/10 or 70% (remember THIS)
 
     pygame.draw.polygon(SCREEN, WHITE, mouth_points)
 

@@ -17,17 +17,33 @@ class Food:
                          color = c.COLOR_GREEN,
                          rect=self.rect)
         
+    def get_pos(self):
+        return self.pos
+        
 class FoodManager:
     
     def __init__(self):
         self.food = []
-        self.max_food = 7
+        self.max_food = 100
 
     def create_food(self):
         if len(self.food) < self.max_food:
             start_x = random.randrange(c.GRID_WIDTH)
             start_y = random.randrange(c.GRID_HEIGHT)
             temp_food = Food(start_x, start_y)
+            found = False 
+            can_insert = False
+            current_index = 0
+            while found == False:
+                # do stuff here
+                temp_pos = temp_food.get_pos()
+                current_pos = self.food[current_index].get_pos()
+                if temp_pos.x == current_pos.x:
+                    if temp_pos.y == current_pos.y:
+                        pass # reramdomize temp_pos
+                    else:
+                        pass
+                current_index = current_index + 1 # increase varible value by 1
             self.food.append(temp_food)
         else:
             print("List is full")
@@ -54,7 +70,10 @@ class FoodManager:
 
         # this for loop iterates over food_2_remove in end-to-start order (aka, reverse order)
         # it iterates in reverse order so it doesen't affect the other indices so we won't remove the wrong items
-        for remove_index in range(start=len(food_2_remove) - 1, stop=-1, step=-1):
+        #                                                 this is the end of the range - 1 (it will always stops at 0)
+        #                         the start of the range  ||   this means to count down by 1
+        #                         vvvvvvvvvvvvvvvvvvvvvv  vv  vv
+        for remove_index in range(len(food_2_remove) - 1, -1, -1):
             # remove_index = the index of food_2_remove
             # food_index = the index at which to remove a Food object (from self.food)
             food_index = food_2_remove[remove_index]
