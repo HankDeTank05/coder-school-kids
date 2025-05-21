@@ -42,4 +42,13 @@ for key in grades.keys():
 for value in grades.values():
     print(value)
 
-# TODO: come back once you've learned strings and functions, and write a function that prints a nicely formatted dictionary
+# come back once you've learned strings and functions, and write a function that prints a nicely formatted dictionary
+
+def print_dict(dict_2_print: dict[any, any]) -> None:
+    print("print_dict function output:")
+    for key in dict_2_print.keys():
+        print(key, end=": ")
+        print(dict_2_print[key])
+
+print()
+print_dict(grades)

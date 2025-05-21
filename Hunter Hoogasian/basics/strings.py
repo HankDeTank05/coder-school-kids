@@ -41,6 +41,7 @@ print(lowers)
 # The third optional number that you are allowed to include in the slice is the step, which is how much to count by
 # for example, on line 36, alpha is slcied using hte following index numbers: 0 2 4 6 8 10 12 
 
+#Format String
 full_name_format = f"{first_name} {last_name}"
 print(full_name_format)
 
@@ -49,16 +50,23 @@ y_pos = 771
 coords = f"({x_pos}, {y_pos})"
 print(coords)
 
+# Format string
 print(f"My name is {first_name}")
 
-response_name = input("What is your name? ")
-response_quest = input("What is your quest? ")
-response_color = input("What is your favorite color? ")
-print(f"Your name is {response_name}. Your quest is supposedly {response_quest}. And your favorite color is {response_color}")
-if response_color.lower() != "blue":
-    print("You shall not pass")
-else:
-    print("Please proceed")
+# response_name = input("What is your name? ")
+# response_quest = input("What is your quest? ")
+# response_color = input("What is your favorite color? ")
+# print(f"Your name is {response_name}. Your quest is supposedly {response_quest}. And your favorite color is {response_color}")
+# if response_color.lower() != "blue":
+#     print("You shall not pass")
+# else:
+#     print("Please proceed")
 
 # The lower function replaces letter in the string with their lower case versions
 # the upper function does the reverse
+
+quote = "\"Do or do not, there is no try\" - Yoda" # Escaoe charcter for qoutews within a string
+new_line = f"{first_name}\n{last_name}"
+print(new_line)
+full_name_tab = f"{first_name}\t{last_name}"
+print(full_name_tab)
