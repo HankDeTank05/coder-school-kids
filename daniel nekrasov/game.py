@@ -14,10 +14,11 @@ import enemy as e
 
 clock = pygame.time.Clock()
 running = True
-dt=0
+dt = 0
 
 player = p.Player(c.GREEN, 500)
-franks = [e.Frank(50, pygame.math.Vector2(c.SCREEN_WIDTH, random.randrange(c.SCREEN_HEIGHT)))]
+franks = [ e.Frank(50, pygame.math.Vector2(c.SCREEN_WIDTH, random.randrange(c.SCREEN_HEIGHT))) ] #list of franks
+bullets = [] # list of bullets
 
 #main game loop
 while running == True:
@@ -27,36 +28,37 @@ while running == True:
 
     c.screen.fill(c.BLACK)
 
-    side = random.choice(["u", "d", "l", "r"])
-    if side == "u":
-        franks.append(e.Frank(50, pygame.math.Vector2(random.randrange(c.SCREEN_WIDTH), 0)))
-    elif side == "d":
-        franks.append(e.Frank(50, pygame.math.Vector2(random.randrange(c.SCREEN_WIDTH), c.SCREEN_HEIGHT)))
-    elif side == "l":
-        franks.append(e.Frank(50, pygame.math.Vector2(0, random.randrange(c.SCREEN_HEIGHT))))
-    elif side == "r":
-        franks.append(e.Frank(50, pygame.math.Vector2(c.SCREEN_WIDTH, random.randrange(c.SCREEN_HEIGHT))))
+    # side = random.choice(["u", "d", "l", "r"])
+    # if side == "u":
+    #     franks.append(e.Frank(50, pygame.math.Vector2(random.randrange(c.SCREEN_WIDTH), 0)))
+    # elif side == "d":
+    #     franks.append(e.Frank(50, pygame.math.Vector2(random.randrange(c.SCREEN_WIDTH), c.SCREEN_HEIGHT)))
+    # elif side == "l":
+    #     franks.append(e.Frank(50, pygame.math.Vector2(0, random.randrange(c.SCREEN_HEIGHT))))
+    # elif side == "r":
+    #     franks.append(e.Frank(50, pygame.math.Vector2(c.SCREEN_WIDTH, random.randrange(c.SCREEN_HEIGHT))))
 
     # step 1: update stuff
-    #character.player_update(dt)
     player.update(dt)
-    b.bullet_update(dt)
+    for bullet in bullets:
+        bullet.update(dt)
     for frank in franks:
         frank.update(dt, player.pos)
+        # collision between frank and u
         if bm.circle_collide(player.pos, player.SIZE, frank.pos, frank.SIZE) == True:
             pass
 
 
     # step 2: draw stuff
-    #character.player_draw()
-    b.bullet_draw()
     for frank in franks:
         frank.draw()
+    for bullet in bullets:
+        bullet.draw()
     player.draw()
 
     pygame.display.flip()
 
-    dt=clock.tick()/1000
+    dt = clock.tick()/1000
     print(dt)
 
 pygame.quit()
