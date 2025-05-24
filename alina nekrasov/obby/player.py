@@ -48,7 +48,7 @@ class Player:
 		#print(f"pos_delta {self.pos_delta}")
 		# print(f"current_velocity {self.current_velocity}")
 
-		# making the rectangle move
+		# making the player position move
 		self.pos += self.pos_delta * delta_time
 
 		# update the position of the rectangle
@@ -61,6 +61,45 @@ class Player:
 		platform_collision: bool = self.collide_check(collide_thing)
 		if platform_collision == True:
 			print("I collided with the platform")
+
+			# Check if we are colliding with the platform from above
+			# We determain this by checking 2 things, 
+			# 1. Are we falling
+			# 2. Was the player (rectangle) above the platform before we moved.
+			#	- We determine this by undoing the movement that occured this frame and comparing rectangle positions
+			self.pos -= self.pos_delta * delta_time
+			self.rect.update(self.pos, self.size)
+			if self.pos_delta.y > 0 and self.rect.bottom < collide_thing.top:
+				print("Collision from the top")
+				# Preventing vertical acceleration
+				self.pos_delta.y = 0
+				# Puts back movement that occured this frame 
+				self.pos += self.pos_delta * delta_time
+				self.rect.update(self.pos, self.size)
+				# box comment below. if you can't see it, hit the arrow on the left next to the line number!
+				'''
+				this is the situation that the following lines of code are meant to correct:
+				             player
+				             |    |
+				+------------|----|-+
+				| platform   +----+ |
+
+						|||
+						VVV
+				
+				             player
+							 |	  |
+							 |	  |
+				             +----+
+				+-------------------+
+				| platform          |
+
+				the following code will cause this to be the end result
+				'''
+				while self.collide_check(collide_thing):
+					self.pos.y -= 0.1
+					self.rect.update(self.pos, self.size)
+
 		else:
 			print("I did not collide with the platform")
 
