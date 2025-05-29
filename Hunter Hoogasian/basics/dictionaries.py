@@ -47,8 +47,36 @@ for value in grades.values():
 def print_dict(dict_2_print: dict[any, any]) -> None:
     print("print_dict function output:")
     for key in dict_2_print.keys():
-        print(key, end=": ")
-        print(dict_2_print[key])
+        print(key, end=" : ") # prints the key, with a trailing ": " (colon and space, no newline character)
+        print(dict_2_print[key]) # access the value associated with "key", and print it out
 
 print()
 print_dict(grades)
+
+def print_dict_2(dict_2_print: dict[any, any], indents: int = 0) -> None:
+    print("print_dict_2 function output:")
+    for key in dict_2_print.keys():
+        for indent in range(indents):
+            print("\t", end="")
+        print(key, end=" : ")
+        value = dict_2_print[key]
+        if isinstance(value, dict) == True:
+            #print("stuff will eventually go here") # do something if the type of "value" is a dictionary
+            print_dict_2()
+        else:
+            print(dict_2_print[key])
+
+print()
+print_dict_2(grades, 1)
+
+new_dict = {
+    "key1": "value1",
+    "key2": "value2",
+    "key3": {
+        "key3.1": "value3.1",
+        "key3.2": "value3.2"
+    },
+    "key4": "value4"
+}
+print()
+print_dict_2(new_dict, 1)
