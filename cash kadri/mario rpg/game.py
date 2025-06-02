@@ -36,16 +36,34 @@ def draw_player():
 
     #we draw legs 
     leg_width = p1_radius / 2
-    pygame.draw.rect(SCREEN, RED, pygame.Rect()) # TODO: come back and make this rectangle
-    # TODO: come back and draw the other leg
+    leg_height = 70
+    # right leg 
+    right_leg = pygame.Rect(p1_pstn.x + 5, p1_pstn.y + 101, leg_width, leg_height)
+    pygame.draw.rect(SCREEN, RED, right_leg)
+    left_leg = pygame.Rect(p1_pstn.x - 5 - leg_width, p1_pstn.y + 101, leg_width, leg_height)
+    pygame.draw.rect(SCREEN, RED, left_leg)
 
     # TODO: come back and draw two arms
+    punchyarm_right_points = []
+
+    #blu 0
+    punchyarm_right_points.append(pygame.math.Vector2(
+        p1_pstn.x + 24, 
+        p1_pstn.y + 63))
+    
+    #green 1
+    punchyarm_right_points.append(pygame.math.Vector2(
+        p1_pstn.x + 39,
+        p1_pstn.y + 45))
 
     # we are drooing the playa's bodi
     pygame.draw.circle(SCREEN, BLUE, p1_pstn + pygame.math.Vector2(0, 1.75 * p1_radius), p1_radius)
 
+
     # we're drawing heads 
     pygame.draw.circle(SCREEN, PEACH_PUFF, p1_pstn, p1_radius)
+    pygame.draw.circle(SCREEN, RED, punchyarm_right_points[0], 3)
+    pygame.draw.circle(SCREEN, RED, punchyarm_right_points[1], 3)
 
     #draw left eyebrow
     eyebrow_left_x = -30
