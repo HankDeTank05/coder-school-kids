@@ -61,20 +61,6 @@ class Player:
         self.rect.y +=dy 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         screen.blit(self.box,self.rect)
 
 
