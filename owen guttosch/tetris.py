@@ -2,9 +2,9 @@ import pgzrun
 import pygame
 import random
 
-SQUARE_SIZE = 20
+SQUARE_SIZE = 9
 
-TILE_WIDTH = 20
+TILE_WIDTH = 30
 TILE_HEIGHT = 40
 
 WIDTH = TILE_WIDTH * SQUARE_SIZE
@@ -135,6 +135,7 @@ def place_on_board():
         for y in range(current_row - 1, -1, -1):
             grid[y+1] = grid[y]
             # TODO: come back and move the rectangles down so that it draws properly (code)
+            
 
     print_2d_list(grid)
 
