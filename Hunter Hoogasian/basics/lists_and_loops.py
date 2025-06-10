@@ -37,18 +37,18 @@ for item in my_list:
     print(item)
 
 print("Index based for loop")
-for i in range(len(my_list)):
-    print(my_list[i])
+for index in range(len(my_list)):
+    print(my_list[index])
 
 '''
 for i in range(12):
     print(i)
 '''
-'''
+
 print(len(my_list)) #Len gets the length of a list
 my_list.append("fourth")
 print(len(my_list))
-'''
+
 
 #Range function takes a single numer and returns...
 #  a sequence of numbers starting with zero
