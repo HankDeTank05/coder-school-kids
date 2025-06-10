@@ -37,7 +37,7 @@ def draw_player():
     #we draw legs 
     leg_width = p1_radius / 2
     leg_height = 70
-    # right leg 
+    #right leg 
     right_leg = pygame.Rect(p1_pstn.x + 5, p1_pstn.y + 101, leg_width, leg_height)
     pygame.draw.rect(SCREEN, RED, right_leg)
     left_leg = pygame.Rect(p1_pstn.x - 5 - leg_width, p1_pstn.y + 101, leg_width, leg_height)
@@ -45,6 +45,12 @@ def draw_player():
 
     # TODO: come back and draw two arms
     punchyarm_right_points = []
+    punchyarm_right = pygame.Rect(p1_pstn.x + 39, p1_pstn.y + 45, leg_width, leg_height)
+    pygame.draw.rect(SCREEN, RED, punchyarm_right)
+    punchyarm_left = pygame.Rect(p1_pstn.x - 58, p1_pstn.y + 45, leg_width, leg_height)
+    pygame.draw.rect(SCREEN, RED, punchyarm_left)
+    
+ 
 
     #blu 0
     punchyarm_right_points.append(pygame.math.Vector2(
