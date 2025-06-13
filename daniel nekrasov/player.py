@@ -1,11 +1,11 @@
 import pygame
 import common as c
-import bullet
+import bullet as b
 
 class Player:
 
     #constructor
-    def __init__(self, color, speed):
+    def __init__(self, color, speed, bullet_man):
         self.pos = pygame.math.Vector2(5, 720/2) #starting pos
         self.color = color
         self.speed = speed
@@ -15,6 +15,7 @@ class Player:
         self.prev_m1_state = False
         self.prev_m2_state = False
         self.health = c.PLAYER_BASE_HEALTH
+        self.bullet_man = bullet_man
 
         #constants
         self.SIZE = 50
@@ -50,7 +51,8 @@ class Player:
         # TODO: come back and move the following lines of code if there are problems with aiming direction
         if self.prev_m1_state == False and self.current_m1_state == True:
             #shoot
-            bullet.bullet_create(self.pos, self.dir)
+            self.bullet_man.add_bullet(self.pos, self.dir)
+            #bullet.bullet_create(self.pos, self.dir)
 
         
         # fix diagonal movement so it isn't faster than straightline speed

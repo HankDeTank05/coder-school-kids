@@ -16,7 +16,8 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-player = p.Player(c.GREEN, 500)
+bullet_man = b.BulletManager()
+player = p.Player(c.GREEN, 500, bullet_man)
 franks = [ e.Frank(50, pygame.math.Vector2(c.SCREEN_WIDTH, random.randrange(c.SCREEN_HEIGHT))) ] #list of franks
 bullets = [] # list of bullets
 
@@ -40,8 +41,7 @@ while running == True:
 
     # step 1: update stuff
     player.update(dt)
-    for bullet in bullets:
-        bullet.update(dt)
+    bullet_man.update(dt)
     for frank in franks:
         frank.update(dt, player.pos)
         # collision between frank and u
@@ -52,10 +52,9 @@ while running == True:
     # step 2: draw stuff
     for frank in franks:
         frank.draw()
-    for bullet in bullets:
-        bullet.draw()
+    
     player.draw()
-
+    bullet_man.draw()
     pygame.display.flip()
 
     dt = clock.tick()/1000

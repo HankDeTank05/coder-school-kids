@@ -31,8 +31,16 @@ class BulletManager:
 
     # create a bullet and add it to the manager
     def add_bullet(self, pos, dir):
-        bullet = Bullet(pos, dir)
+        bullet = Bullet(copy.deepcopy(pos), copy.deepcopy(dir))
         self.bullets.append(bullet)
+
+    def update(self, dt):
+        for bullet in self.bullets:
+            bullet.update(dt)
+
+    def draw(self):
+        for bullet in self.bullets:
+            bullet.draw()
 
 '''
 bullet_speed = 700

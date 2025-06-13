@@ -65,45 +65,71 @@ def make_tetro():
     center_x = TILE_WIDTH // 2
     tetro[0] = Rect((center_x * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
     tetro_pos = pygame.math.Vector2(15,0)
+
+    # create t
     if tetrominos[choice] == 't':
         tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect(((center_x - 1) * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect(((center_x + 1) * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = PURPLE
+
+    # create o
     elif tetrominos[choice] == 'o':
         tetro[1] = Rect(((center_x + 1) * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect(((center_x + 1) * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = BLACK
+
+    # create s
     elif tetrominos[choice] == 's':
         tetro[1] = Rect(((center_x + 1) * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect(((center_x - 1) * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = YELLOW
+
+    # create z
     elif tetrominos[choice] == 'z':
         tetro[1] = Rect(((center_x - 1) * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect(((center_x + 1) * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_color = LIGHT_BLUE
+
+    # create l
     elif tetrominos[choice] == 'l':
         tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect((center_x * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect(((center_x + 1) * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_pos = pygame.math.Vector2(15,1)
         tetro_color = BLUE
+
+    # create j
     elif tetrominos[choice] == 'j':
         tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect((center_x * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect(((center_x - 1) * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_pos = pygame.math.Vector2(15,1)
         tetro_color = DARK_YELLOW
+
+    # create i
     elif tetrominos[choice] == 'i':
         tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect((center_x * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect((center_x * SQUARE_SIZE, 3 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro_pos = pygame.math.Vector2(15,1)
         tetro_color = LIGHT_BROWN
+
+    # set rotation to 0 degrees
     tetro_rot = 0
+
+    # check if the newly created tetromino is intersecting any that have already been placed on the board
+    for i in range(len(tetro)):
+        block = tetro[i]
+        screen_x = block.x
+        screen_y = block.y
+        grid_x = screen_x // SQUARE_SIZE
+        grid_y = screen_y // SQUARE_SIZE
+        if grid[grid_y][grid_x] is not None:
+            pass
 
 
 """
