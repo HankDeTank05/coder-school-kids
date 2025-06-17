@@ -227,12 +227,21 @@ class Box(Object):
             self.points["front top-left"]
         ])
 
-        # Yhis is the dawing of the inside
+        # Yhis is the drawing of the inside
         pygame.draw.polygon(_surface, NAVY, [
             self.points["inside top-left"],
             self.points["front top-left"],
             self.points["front top-right"],
             self.points["inside top-right"]
+        ])
+
+        #yhis is the drawing of the left flappy
+        pygame.draw.polygon(_surface, LIGHT_PURPLE_D, [
+            self.points["left flappy top-est"],
+            self.points["left flappy bottom left-ish"],
+            #seft.pie = dog +- cat = rabbit
+            self.points["front top-left"],
+            self.points["inside top-left"]
         ])
 
 
