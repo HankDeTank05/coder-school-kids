@@ -22,8 +22,12 @@ print_coords(x_pos, y_pos)
 print_coords(.1, .2)
 print_coords(1, 2.2)
 
+# what does return do?
+# 
 def combine(first_name: str, last_name: str) -> str:
-    return f"{first_name} {last_name}"
+    combination: str = f"{first_name} {last_name}"
+    print(combination)
+    return combination
 
 full_name = combine("Bob", "Spoke")
 print(full_name)
