@@ -43,6 +43,8 @@ DEBUG FUNCTIONS
 """
 
 def print_2d_list(list_2d):
+    pass
+'''
     for y in range(len(list_2d)):
         print(f"row {y} = ", end=' ')
         for x in range(len(list_2d[y])):
@@ -51,10 +53,12 @@ def print_2d_list(list_2d):
             else:
                 print("X", end=' ')
         print()
+        '''
 
 """
 TETRIS FUNCTIONS
 """
+
 
 def make_tetro():
     #              0    1    2    3    4    5    6
@@ -129,7 +133,10 @@ def make_tetro():
         grid_x = screen_x // SQUARE_SIZE
         grid_y = screen_y // SQUARE_SIZE
         if grid[grid_y][grid_x] is not None:
-            pass
+            print("GAME OVER!   R.I.P. GaME. :D   YOU FAINTED! :D :D :D   PBBBBBBT!!!!!! :D:D:D:D:D:D:D;0;0;0;0;0;0;0")
+            exit()
+
+
 
 
 """
@@ -137,6 +144,7 @@ BLOCK MOVEMENT FUNCTIONS
 """
 
 def place_on_board():
+    print('>8)')
     # place the tetromino on the board
     for i in range(4):
         pos = pygame.math.Vector2(tetro[i].x / SQUARE_SIZE, tetro[i].y / SQUARE_SIZE)
@@ -160,7 +168,6 @@ def place_on_board():
         # step 2: bring all the above lines down by one row
         for y in range(current_row - 1, -1, -1):
             grid[y+1] = grid[y]
-            # TODO: come back and move the rectangles down so that it draws properly (code)
             
 
     print_2d_list(grid)
