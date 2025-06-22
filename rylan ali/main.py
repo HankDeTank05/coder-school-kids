@@ -3,6 +3,8 @@ import sys
 import pygame
 from pygame.locals import *
 
+
+
 # Initialize Pygame
 pygame.init()
 
@@ -16,9 +18,11 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("maze_game")
 
 # Main game loop
-class Player:
+
+class Player(pygame.sprite.Sprite):
     def __init__(self,x,y,width,height):
-        self.box = pygame.Surface((width , height))
+        pygame.sprite.Sprite.__init__(self)
+        self.box = pygame.Surface((width,height))
         self.rect = self.box.get_rect()
         self.rect.x = x
         self.rect.y =y 
@@ -53,14 +57,22 @@ class Player:
             self.rect.left = 0
             dx = 0
 
-
-
-
-
         self.rect.x +=dx 
         self.rect.y +=dy 
 
+        screen.blit(self.box,self.rect)
 
+
+class Wall:
+    def __init__(self,x,y,width,height):
+        pygame.sprite.Sprite.__init__(self)
+        self.box = pygame.Surface((width,height))
+        self.rect = self.box.get_rect()
+        self.rect.topleft = (x,y)
+        self.box.fill((100, 186, 23))
+        
+
+    def update(self):
         screen.blit(self.box,self.rect)
 
 
@@ -69,18 +81,17 @@ class Player:
 
 
 
-
-
-
-
-
 player = Player(150,400, 20,20)
-
+wall = Wall(150,400, 20,20)
 
 
 while True:
+
     screen.fill((245, 100, 169)) # Fill the screen with black
+    wall.update()
+    
     player.update_player()
+    
 
     for event in pygame.event.get():
         if event.type == QUIT:

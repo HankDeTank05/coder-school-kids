@@ -144,7 +144,7 @@ player_snake = snake.Snake(start_x, start_y, start_dir)
 all_pos_in_list = player_snake.pos
 
 foodmanager = foodstuff.FoodManager()
-for i in range(100):
+for i in range(1):
     foodmanager.create_food()
 
 #Maiin game loop
@@ -160,7 +160,7 @@ while running:
 
     #part 1: update
     player_snake.update()
-    foodmanager.update(player_snake.get_head_rect())
+    foodmanager.update(player_snake)
     
 	#part 2: draw
     draw_gridlines()

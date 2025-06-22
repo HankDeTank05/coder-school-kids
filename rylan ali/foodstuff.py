@@ -27,7 +27,7 @@ class FoodManager:
     # constuctor
     def __init__(self):
         self.food = []
-        self.max_food = 100
+        self.max_food = 1
 
     def create_food(self):
         # checks length because we need to know if we can add more food
@@ -38,32 +38,34 @@ class FoodManager:
             found = False 
             can_insert = False
             current_index = 0
-            while found == False:
-                # gets the current pos of the indexed food object in self.food
-                current_pos = self.food[current_index].get_pos()
-                if temp_x == current_pos.x:
-                    if temp_y == current_pos.y:
-                        # reramdomize temp_pos
-                        temp_x = random.randrange(c.GRID_WIDTH)
-                        temp_y = random.randrange(c.GRID_HEIGHT)
-                        current_index = 0
-                        continue # continue  restarts the loop without running any code inside the loop below it 
-                    elif temp_y < current_pos.y: 
-                        temp_food = Food(temp_x, temp_y)
-                        self.food.insert(current_index, temp_food)
-                    elif temp_y > current_pos.y:
-                        next_pos = self.food[current_index + 1].get_pos()
-                        if temp_x < next_pos.x or (temp_x == next_pos.x and temp_y < next_pos.y):
+            if len(self.food) > 0:
+                while found == False:
+                    # gets the current pos of the indexed food object in self.food
+                    print(current_index)
+                    current_pos = self.food[current_index].get_pos()
+                    if temp_x == current_pos.x:
+                        if temp_y == current_pos.y:
+                            # reramdomize temp_pos
+                            temp_x = random.randrange(c.GRID_WIDTH)
+                            temp_y = random.randrange(c.GRID_HEIGHT)
+                            current_index = 0
+                            continue # continue  restarts the loop without running any code inside the loop below it 
+                        elif temp_y < current_pos.y: 
                             temp_food = Food(temp_x, temp_y)
-                            self.food.insert(current_index + 1,temp_food)
-                else:
-                    current_index = current_index + 1 # increase index by 1 
+                            self.food.insert(current_index, temp_food)
+                        elif temp_y > current_pos.y:
+                            next_pos = self.food[current_index + 1].get_pos()
+                            if temp_x < next_pos.x or (temp_x == next_pos.x and temp_y < next_pos.y):
+                                temp_food = Food(temp_x, temp_y)
+                                self.food.insert(current_index + 1,temp_food)
+                    else:
+                        current_index = current_index + 1 # increase index by 1 
             temp_food = Food(temp_x, temp_y)
             self.food.append(temp_food)
         else:
             print("List is full")
    
-    def update(self, snake_rect: pygame.Rect):
+    def update(self, snake):
 
         # generating a list of indices at which to remove Food objects
 
@@ -76,8 +78,12 @@ class FoodManager:
         for i in range(len(self.food)):
             food_item = self.food[i]
             food_rect = food_item.rect
-            if food_rect.colliderect(snake_rect) == True:
+            # if the food item collides with the snake then....
+            if food_rect.colliderect(snake.get_head_rect()) == True:
+                # ... queues the food to be destroyed...
                 food_2_remove.append(i)
+                # ...and add a segment to the snake 
+                snake.add_tile()
 
         # removes Food items that the player has collided with
 

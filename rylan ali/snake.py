@@ -7,11 +7,11 @@ class Snake:
     def __init__(self, start_x, start_y, start_dir_move):
         self.pos = []
         self.dir = start_dir_move
-        # dir segments build in after the head.
-        build_segments = start_dir_move * -1
+        # dir segments build in after the head(multipling a  Vector2 by a negative number  makes it invert dir).
+        build_segments_dir = start_dir_move * -1
         snake_start = pygame.math.Vector2(start_x, start_y)
         for i in range(5):
-            self.pos.append(snake_start + build_segments * i)
+            self.pos.append(snake_start + build_segments_dir * i)
             print(self.pos[i])
         self.move_queue = []
 
@@ -20,7 +20,7 @@ class Snake:
             if len(self.move_queue) == 0: #if there is nothing left in the move_queue
                 # read for input
                 keys=pygame.key.get_pressed()
-                # TODO: come back next time and prevent 180 deg turns (or find a way to allow it without snake overlapping itself)
+                # come back next time and prevent 180 deg turns (or find a way to allow it without snake overlapping itself)
                 if keys[pygame.K_w] == True:
                     if self.dir != c.DIR_DOWN:
                         # no 180
@@ -76,3 +76,12 @@ class Snake:
                            self.pos[0].y * c.TILE_SIZE,
                            c.TILE_SIZE,
                            c.TILE_SIZE)
+    
+    def add_tile(self):
+        #old_tail_pos = self.pos[len(self.pos)-1]
+        old_tail_pos = self.pos[-1] # this is the same as the commented code above
+        last_bod_seg = self.pos[-2]
+        dir_2_add = old_tail_pos - last_bod_seg
+        new_tail_pos = old_tail_pos + dir_2_add
+        self.pos.append(new_tail_pos)
+
