@@ -5,8 +5,6 @@ import snake
 import random
 import foodstuff
 
-
-
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((c.SCREEN_WIDTH,c.SCREEN_HEIGHT))
@@ -143,8 +141,8 @@ while True:
 player_snake = snake.Snake(start_x, start_y, start_dir)
 all_pos_in_list = player_snake.pos
 
-foodmanager = foodstuff.FoodManager()
-for i in range(1):
+foodmanager = foodstuff.FoodManager(sp_max_food=5)
+for i in range(foodmanager.max_food):
     foodmanager.create_food()
 
 #Maiin game loop

@@ -3,7 +3,6 @@ import random
 import common as c
 import snake as s
 
-
 class Food:
 
     # constuctor 
@@ -25,9 +24,11 @@ class Food:
 class FoodManager:
     
     # constuctor
-    def __init__(self):
+    def __init__(self, sp_max_food):
         self.food = []
-        self.max_food = 1
+        self.max_food = sp_max_food
+        for i in range(self.max_food):
+            self.create_food()
 
     def create_food(self):
         # checks length because we need to know if we can add more food
@@ -35,33 +36,13 @@ class FoodManager:
             # radomizes the places the food can spawn
             temp_x = random.randrange(c.GRID_WIDTH)
             temp_y = random.randrange(c.GRID_HEIGHT)
-            found = False 
-            can_insert = False
-            current_index = 0
-            if len(self.food) > 0:
-                while found == False:
-                    # gets the current pos of the indexed food object in self.food
-                    print(current_index)
-                    current_pos = self.food[current_index].get_pos()
-                    if temp_x == current_pos.x:
-                        if temp_y == current_pos.y:
-                            # reramdomize temp_pos
-                            temp_x = random.randrange(c.GRID_WIDTH)
-                            temp_y = random.randrange(c.GRID_HEIGHT)
-                            current_index = 0
-                            continue # continue  restarts the loop without running any code inside the loop below it 
-                        elif temp_y < current_pos.y: 
-                            temp_food = Food(temp_x, temp_y)
-                            self.food.insert(current_index, temp_food)
-                        elif temp_y > current_pos.y:
-                            next_pos = self.food[current_index + 1].get_pos()
-                            if temp_x < next_pos.x or (temp_x == next_pos.x and temp_y < next_pos.y):
-                                temp_food = Food(temp_x, temp_y)
-                                self.food.insert(current_index + 1,temp_food)
-                    else:
-                        current_index = current_index + 1 # increase index by 1 
             temp_food = Food(temp_x, temp_y)
             self.food.append(temp_food)
+            if len(self.food) > 0:
+                # 1. check if if any other food object hass the same pos as the newly created food (which is located at index len(self.food)-1)
+                # 1.1. if (1) is true rerandomize pos of new food object
+                # 2. sort list by calling .sort()
+                pass
         else:
             print("List is full")
    
