@@ -30,27 +30,25 @@ p1_punch_damage = 6
 p1_bonk_damage = 4 
 p1_bop_damage = 8
 
-#player functions 
-def draw_player():
-    # draw player 
-
-    #we draw legs 
-    leg_width = p1_radius / 2
-    leg_height = 70
+def draw_legs(leg_width, leg_height):
     #right leg 
     right_leg = pygame.Rect(p1_pstn.x + 5, p1_pstn.y + 101, leg_width, leg_height)
     pygame.draw.rect(SCREEN, RED, right_leg)
     left_leg = pygame.Rect(p1_pstn.x - 5 - leg_width, p1_pstn.y + 101, leg_width, leg_height)
     pygame.draw.rect(SCREEN, RED, left_leg)
 
+#player functions 
+def draw_player():
+    # draw player  
+    
+    leg_width = p1_radius / 2
+    leg_height = 70
+
+    draw_legs(leg_width, leg_height)
+
     # TODO: come back and draw two arms
     punchyarm_right_points = []
-    punchyarm_right = pygame.Rect(p1_pstn.x + 39, p1_pstn.y + 45, leg_width, leg_height)
-    pygame.draw.rect(SCREEN, RED, punchyarm_right)
-    punchyarm_left = pygame.Rect(p1_pstn.x - 58, p1_pstn.y + 45, leg_width, leg_height)
-    pygame.draw.rect(SCREEN, RED, punchyarm_left)
     
- 
 
     #blu 0
     punchyarm_right_points.append(pygame.math.Vector2(
@@ -61,6 +59,35 @@ def draw_player():
     punchyarm_right_points.append(pygame.math.Vector2(
         p1_pstn.x + 39,
         p1_pstn.y + 45))
+    
+    #yelloh 2
+    punchyarm_right_points.append(pygame.math.Vector2(
+        p1_pstn.x + 77,
+        p1_pstn.y + 67))
+    
+    #REHD 3
+    punchyarm_right_points.append(pygame.math.Vector2(
+        p1_pstn.x + 83,
+        p1_pstn.y + 41))
+    
+    #Oranj 4
+    punchyarm_right_points.append(pygame.math.Vector2(
+        p1_pstn.x + 91,
+        p1_pstn.y + 63))
+    
+    # pirpull 5
+
+    punchyarm_right_points.append(pygame.math.Vector2(
+        p1_pstn.x + 77,
+        p1_pstn.y + 77
+    ))
+
+    # draws the red polygon as in the Right arm
+    pygame.draw.polygon(SCREEN, RED, punchyarm_right_points)
+    
+
+    punchyarm_left = pygame.Rect(p1_pstn.x - 58, p1_pstn.y + 45, leg_width, leg_height)
+    pygame.draw.rect(SCREEN, RED, punchyarm_left)
 
     # we are drooing the playa's bodi
     pygame.draw.circle(SCREEN, BLUE, p1_pstn + pygame.math.Vector2(0, 1.75 * p1_radius), p1_radius)
@@ -68,8 +95,6 @@ def draw_player():
 
     # we're drawing heads 
     pygame.draw.circle(SCREEN, PEACH_PUFF, p1_pstn, p1_radius)
-    pygame.draw.circle(SCREEN, RED, punchyarm_right_points[0], 3)
-    pygame.draw.circle(SCREEN, RED, punchyarm_right_points[1], 3)
 
     #draw left eyebrow
     eyebrow_left_x = -30
