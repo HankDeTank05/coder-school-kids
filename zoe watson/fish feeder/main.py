@@ -1,23 +1,30 @@
+import pygame
 import datetime
 
-feed_times = [
-    datetime.time(hour = 7, minute = 45),
-    datetime.time(hour = 12, minute = 30),
-    datetime.time(hour = 18, minute = 30)
-]
+pygame.init()
+
+
+brunch_time = datetime.time(8, 0, 0)
+   
+linner_time = datetime.time(18,0,0)
+
 
 def feed_fishy(amount):
     print(f"The fish has been fed {amount} food")
 
-while True:
-    now = datetime.now()
+running = True
+while running:
+    for event in pygame.event.get():
+       if event.type == pygame.QUIT:
+           running = False
+    
+    now = datetime.datetime.now().time()
 
-    if now == feed_times[0]:
-        print("Happy breakfast")
+    if now == brunch_time:
+        print("Brunch")
+        feed_fishy(1)
+ 
+    elif now == linner_time:
+        print("Linner")
         feed_fishy(2)
-    elif now == feed_times[1]:
-        print("Lunchtime! :)")
-        feed_fishy(2)
-    elif now == feed_times[2]:
-        print("Dinnnerrtiiiiiiimmmmmmmeeee")
-        feed_fishy(2)
+

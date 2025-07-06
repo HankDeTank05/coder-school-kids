@@ -3,10 +3,18 @@ version 42
 __lua__
 --ollie's task game
 
+dot_x=64
+dot_y=20
+
 function _init()
 end
 
+-- update: change something old
 function _update()
+	dot_y = dot_y + 1
+	if dot_y > 99 then
+		dot_y=20
+	end
 end
 
 function _draw()
@@ -14,29 +22,54 @@ function _draw()
 	
 	--draw grass
 	floor=100
-	       --left,top
-	rectfill(0,floor,
-	       --right,bottom
-	         127,127,
-	         3)--color
+	draw_grass(floor)
 	
 	--draw waterfall
 	middle=64
 	size=17
 	wfall_top=20
-	       --left,top
-	rectfill(64+17,wfall_top,
-	       --right,bottom
-	         64-17,floor-1,
-	         12)--color
+	draw_wfall(wfall_top,floor)
 	         
 	--draw cliff
+	draw_cliff()
 	
-	--todo: next time draw the
-	--mountaains left of waterfall
+	pset(dot_x, dot_y, 1)
+end
+-->8
+-- all of the drawing code
+
+function draw_grass(_floor)
+	       --left,top
+	rectfill(0,   _floor,
 	
-	--todo: next time draw the
-	--mountains right of waterfall
+	       --right,bottom
+	         127,  127,
+	         
+	         3)--color
+end
+
+function draw_wfall(_top,_floor)
+	       --left,     top
+	rectfill(64-17,_top,
+	
+	       --right, bottom
+	         64+17, _floor-1,
+	         
+	         12)--color
+end
+
+function draw_cliff()
+	
+	
+	--left side
+	rectfill(0,wfall_top,
+	         47,99,
+	         5)
+	
+	--right side
+	rectfill(82,wfall_top,
+	         127,99,
+	         5)
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
