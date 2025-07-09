@@ -13,6 +13,8 @@ BLACK = (0, 0, 0)
 GRAY = (128, 128, 128)
 WHITE = (255, 255, 255)
 
+# TODO: make it so that points can be added and removed from the polygon while the program is running
+
 point_dist = 15
 
 polygon_pts = [
@@ -23,7 +25,8 @@ polygon_pts = [
 
 font = pygame.font.Font('freesansbold.ttf', 32) # credit: https://www.geeksforgeeks.org/python/python-display-text-to-pygame-window/
 
-mouse_near_point = None
+editing_point_index = None
+
 m1_prev = False
 m1_curr = False
 
@@ -43,33 +46,45 @@ while running:
     # get mouse position
     mouse_pos = pygame.mouse.get_pos()
 
+    # read the state of the left mouse button
+    m1_curr = pygame.mouse.get_pressed()[0]
+
     # for each point...
     for i in range(len(polygon_pts)):
         point = polygon_pts[i]
-        point_to_cursor = mouse_pos - point
+        point_to_cursor = pygame.math.Vector2(mouse_pos) - pygame.math.Vector2(point)
 
         # get the distance from the point to the cursor
         point_to_cursor_dist = point_to_cursor.length_squared()
         text = None
 
-        # read the state of the left mouse button
-        m1_curr = pygame.mouse.get_pressed()[0]
-
         # if the cursor is close to the point...
         if point_to_cursor_dist <= point_dist**2:
             # ...draw the point number in white text
             text = font.render(f"{i}", True, WHITE, BLACK)
-            mouse_near_point = i # and keep track of the index of the nearby point
+
+            # if LMB is pressed but no point has been chosen to be edited, then set the point to be edited
+            if m1_curr == True and editing_point_index is None:
+                editing_point_index = i
         
         # otherwise (if the cursor is not close to the point)...
         else:
             # ...draw the point number in gray
             text = font.render(f"{i}", True, GRAY, BLACK)
+
+        # if a point is still chosen to be edited, but LMB has been released, then stop editing that point
+        if editing_point_index is not None and m1_curr == False:
+            editing_point_index = None
         
         text_rect = text.get_rect()
 
         # position the point number over its corresponding point
-        text_rect.center = point
+        if editing_point_index is not None and editing_point_index == i:
+            text_rect.center = mouse_pos
+            polygon_pts[i] = mouse_pos
+        else:
+            text_rect.center = point
+            polygon_pts[i] = point
 
         # draw the point number
         SCREEN.blit(text, text_rect)
