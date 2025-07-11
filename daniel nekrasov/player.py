@@ -80,8 +80,9 @@ class Player:
             self.pos.y = self.BOUNDS_MAX_Y
 
         # caluculate facing direction
-        self.dir = pygame.mouse.get_pos() - self.pos
-        self.dir.normalize_ip()
+        if not pygame.mouse.get_pos() == self.pos:
+            self.dir = pygame.mouse.get_pos() - self.pos
+            self.dir.normalize_ip()
 
         # set prev states for next frame
         self.prev_m1_state = self.current_m1_state

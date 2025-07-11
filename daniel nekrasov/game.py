@@ -58,6 +58,6 @@ while running == True:
     pygame.display.flip()
 
     dt = clock.tick()/1000
-    print(dt)
+    #print(dt)
 
 pygame.quit()

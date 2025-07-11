@@ -12,16 +12,15 @@ class Bullet:
     #constructer
     def __init__(self, pos, dir):
         self.pos = pos
-        self.dir = dir
-        self.speed = SPEED
-        self.size = RADIUS
+        self.dir = dir * SPEED
+        self.radius = RADIUS
 
     def update(self, dt):
         # move
         self.pos += self.dir * dt
 
     def draw(self):
-        pygame.draw.circle(c.screen, c.BLUE, self.pos, self.size)
+        pygame.draw.circle(c.screen, c.BLUE, self.pos, self.radius)
 
 class BulletManager:
 
@@ -37,6 +36,10 @@ class BulletManager:
     def update(self, dt):
         for bullet in self.bullets:
             bullet.update(dt)
+            #  bullet out of screen on the left    <- same but right side                           top      bottom
+            #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvv    vvvvv
+            if bullet.pos.x < 0 - bullet.radius or bullet.pos.x > c.SCREEN_WIDTH + bullet.radius or False or False:
+                pass
 
     def draw(self):
         for bullet in self.bullets:
