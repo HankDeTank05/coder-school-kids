@@ -83,7 +83,75 @@ def draw_body() :
 
 def draw_head() :
     # we're drawing heads 
-    pygame.draw.circle(SCREEN, PEACH_PUFF, p1_pstn, p1_radius)
+    pygame.draw.circle(SCREEN, PEACH_PUFF, p1_pstn, p1_radius) 
+
+def draw_nose(face_pstn):
+    nose_width = 16 
+    nose_height = 21
+    nose_points = []
+
+    # 0 
+    nose_points.append(pygame.math.Vector2(
+        face_pstn.x, 
+        face_pstn.y
+    )) 
+
+    # 1 
+    nose_points.append(pygame.math.Vector2(
+        face_pstn.x +7,
+        face_pstn.y + 9
+    ))
+
+    # 2 
+    nose_points.append(pygame.math.Vector2(
+        face_pstn.x + 8,
+        face_pstn.y + 18
+    )) 
+
+    # 3 
+    nose_points.append(pygame.math.Vector2(
+        face_pstn.x,
+        face_pstn.y + nose_height 
+    ))
+
+    # 4 
+    nose_points.append(pygame.math.Vector2(
+        face_pstn.x - 8, 
+        face_pstn.y + 18 
+    ))
+
+    # 5
+    nose_points.append(pygame.math.Vector2(
+        face_pstn.x - 7,
+        face_pstn.y + 9 
+    ))
+
+    pygame.draw.polygon(SCREEN,RED, nose_points )
+
+    left_nostril_points = []
+    nostril_width = 8
+    nostril_height = 5
+
+    left_nostril_points.append(pygame.math.Vector2(
+        nose_points[4].x,
+        nose_points[4].y - 5
+    ))
+
+    # 1 
+    left_nostril_points.append(pygame.math.Vector2(
+        left_nostril_points[0].x + 8,
+        left_nostril_points[0].y + 2.5
+    ))
+
+    left_nostril_points.append(pygame.math.Vector2(
+        nose_points[4].x,
+        nose_points[4].y
+    ))
+
+    pygame.draw.polygon(SCREEN, BLACK,  left_nostril_points)
+    
+
+
 
 def draw_face(face_pstn):
     #draw left eyebrow
@@ -91,6 +159,7 @@ def draw_face(face_pstn):
     eyebow_top_y = -10
     eyebrow_width = 29
     eyebrow_height = 10
+    pygame.draw.circle(SCREEN, RED, face_pstn, 1)
     left_eyebrow = pygame.Rect(face_pstn.x + eyebrow_left_x, face_pstn.y + eyebow_top_y, eyebrow_width, eyebrow_height)
     pygame.draw.rect(SCREEN, BLACK,  left_eyebrow)
 
@@ -156,10 +225,7 @@ def draw_face(face_pstn):
     pygame.draw.circle(SCREEN, WHITE, eye_right, pupil_size)  # draw right pupil
 
     #draw da knowse
-    nose_points = []
-
-    nose_width = 16
-    nose_height = 21
+    draw_nose(face_pstn)
 
 
     # draw the SMILE
