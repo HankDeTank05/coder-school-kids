@@ -5,17 +5,20 @@ import bullet as b
 class Player:
 
     #constructor
-    def __init__(self, color, speed, bullet_man):
-        self.pos = pygame.math.Vector2(5, 720/2) #starting pos
-        self.color = color
+    def __init__(self, color, speed, bullet_man, time_man):
+        self._pos = pygame.math.Vector2(5, 720/2) #starting pos
+        self._color = color
         self.speed = speed
         self.dir = pygame.math.Vector2(1,0) #starting dir
         self.current_m1_state = False
         self.current_m2_state = False
         self.prev_m1_state = False
         self.prev_m2_state = False
-        self.health = c.PLAYER_BASE_HEALTH
-        self.bullet_man = bullet_man
+        self._health = c.PLAYER_BASE_HEALTH
+        self.bullet_man = bullet_man # player HAS ACCESS to bullet manager. it DOES NOT OWN it
+        self.time_man = time_man
+        self.max_slomo_time = 10.6
+        self.slomo_time = self.max_slomo_time
 
         #constants
         self.SIZE = 50
@@ -51,7 +54,7 @@ class Player:
         # TODO: come back and move the following lines of code if there are problems with aiming direction
         if self.prev_m1_state == False and self.current_m1_state == True:
             #shoot
-            self.bullet_man.add_bullet(self.pos, self.dir)
+            self.bullet_man.add_bullet(self._pos, self.dir)
             #bullet.bullet_create(self.pos, self.dir)
 
         
@@ -61,27 +64,27 @@ class Player:
             pos_delta *= self.speed
 
         pos_delta *= dt
-        self.pos += pos_delta #move player
+        self._pos += pos_delta #move player
         # player_pos = player_pos + pos_delta
 
         # prevents the player from walking off screen
-        if self.pos.x < self.BOUNDS_MIN_X: #if player is left of min x
+        if self._pos.x < self.BOUNDS_MIN_X: #if player is left of min x
             #move player right until the player is not out of bounds 
-            self.pos.x = self.BOUNDS_MIN_X
-        elif self.pos.x > self.BOUNDS_MAX_X:#if player is right of max.x
+            self._pos.x = self.BOUNDS_MIN_X
+        elif self._pos.x > self.BOUNDS_MAX_X:#if player is right of max.x
             #move player left
-            self.pos.x = self.BOUNDS_MAX_X
+            self._pos.x = self.BOUNDS_MAX_X
 
-        if self.pos.y < self.BOUNDS_MIN_Y: #if player is above of min y
+        if self._pos.y < self.BOUNDS_MIN_Y: #if player is above of min y
             #move player down
-            self.pos.y = self.BOUNDS_MIN_Y
-        elif self.pos.y > self.BOUNDS_MAX_Y: # if player is under of max y
+            self._pos.y = self.BOUNDS_MIN_Y
+        elif self._pos.y > self.BOUNDS_MAX_Y: # if player is under of max y
             #move player up
-            self.pos.y = self.BOUNDS_MAX_Y
+            self._pos.y = self.BOUNDS_MAX_Y
 
         # caluculate facing direction
-        if not pygame.mouse.get_pos() == self.pos:
-            self.dir = pygame.mouse.get_pos() - self.pos
+        if not pygame.mouse.get_pos() == self._pos:
+            self.dir = pygame.mouse.get_pos() - self._pos
             self.dir.normalize_ip()
 
         # set prev states for next frame
@@ -89,9 +92,9 @@ class Player:
         self.prev_m2_state = self.current_m2_state
 
     def draw(self):
-        pygame.draw.circle(c.screen, self.color, self.pos, self.SIZE) # draw player
+        pygame.draw.circle(c.screen, self._color, self._pos, self.SIZE) # draw player
         #get rid of the line under me (eventually)
-        pygame.draw.line(c.screen, c.RED, self.pos, self.pos + self.dir * self.SIZE) # draw aim line
+        pygame.draw.line(c.screen, c.RED, self._pos, self._pos + self.dir * self.SIZE) # draw aim line
 
 '''
 player_speed=500
