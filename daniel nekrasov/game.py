@@ -11,13 +11,15 @@ import better_math as bm
 import player as p
 import bullet as b
 import enemy as e
+import time_manager as tm
 
 clock = pygame.time.Clock()
 running = True
 dt = 0
 
+time_man = tm.TimeManager()
 bullet_man = b.BulletManager()
-player = p.Player(c.GREEN, 500, bullet_man)
+player = p.Player(color=c.GREEN, speed=500, bullet_man=bullet_man, time_man=time_man)
 franks = [ e.Frank(50, pygame.math.Vector2(c.SCREEN_WIDTH, random.randrange(c.SCREEN_HEIGHT))) ] #list of franks
 
 #main game loop
@@ -39,10 +41,10 @@ while running == True:
     #     franks.append(e.Frank(50, pygame.math.Vector2(c.SCREEN_WIDTH, random.randrange(c.SCREEN_HEIGHT))))
 
     # step 1: update stuff
-    player.update(dt * 2)
-    bullet_man.update(dt * 2)
+    player.update(dt * time_man.get_timescale())
+    bullet_man.update(dt * time_man.get_timescale())
     for frank in franks:
-        frank.update(dt * 2, player._pos)
+        frank.update(dt * time_man.get_timescale(), player._pos)
         # collision between frank and u
         if bm.circle_collide(player._pos, player.SIZE, frank.pos, frank.SIZE) == True:
             pass

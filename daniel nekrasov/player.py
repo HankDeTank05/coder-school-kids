@@ -1,6 +1,7 @@
 import pygame
 import common as c
 import bullet as b
+import time_manager as tm
 
 class Player:
 
@@ -14,6 +15,8 @@ class Player:
         self.current_m2_state = False
         self.prev_m1_state = False
         self.prev_m2_state = False
+        self.current_space_state = False
+        self.prev_space_state = False
         self._health = c.PLAYER_BASE_HEALTH
         self.bullet_man = bullet_man # player HAS ACCESS to bullet manager. it DOES NOT OWN it
         self.time_man = time_man
@@ -32,8 +35,11 @@ class Player:
         pos_delta=pygame.math.Vector2(0,0)
         #player_facing = pygame.math.Vector2(0,0)
         
+        ##############
+        # READ INPUT #
+        ##############
+
         keys=pygame.key.get_pressed()
-        mouse_buttons = pygame.mouse.get_pressed()
         # TODO: come back and figure out a way to prevent diagonal-movement key releases from reading as straightine directions sometimes
         if keys[pygame.K_w]:
             #move up
@@ -47,16 +53,33 @@ class Player:
         if keys[pygame.K_d]:
             #move right
             pos_delta.x += self.speed
+        if keys[pygame.K_SPACE]:
+            # determine state for space bar
+            self.current_space_state = True
+        else :
+            self.current_space_state = False
 
+        mouse_buttons = pygame.mouse.get_pressed()
         # detemine state for both mouse buttons
         self.current_m1_state = mouse_buttons[0]
         self.current_m2_state = mouse_buttons[1]
         # TODO: come back and move the following lines of code if there are problems with aiming direction
+
+        #################
+        # PROCESS INPUT #
+        #################
+
+        #shoot
         if self.prev_m1_state == False and self.current_m1_state == True:
-            #shoot
             self.bullet_man.add_bullet(self._pos, self.dir)
             #bullet.bullet_create(self.pos, self.dir)
 
+        #toggle slowmo
+        if self.prev_space_state == False and self.current_space_state == True:
+            if self.time_man.get_timescale() == 1:
+                self.time_man.set_timescale(0.01)
+            elif self.time_man.get_timescale() < 1:
+                self.time_man.set_timescale(1)
         
         # fix diagonal movement so it isn't faster than straightline speed
         if pos_delta.x != 0 and pos_delta.y != 0:
@@ -67,7 +90,10 @@ class Player:
         self._pos += pos_delta #move player
         # player_pos = player_pos + pos_delta
 
-        # prevents the player from walking off screen
+        ###############################################
+        # prevents the player from walking off screen #
+        ###############################################
+
         if self._pos.x < self.BOUNDS_MIN_X: #if player is left of min x
             #move player right until the player is not out of bounds 
             self._pos.x = self.BOUNDS_MIN_X
@@ -87,9 +113,13 @@ class Player:
             self.dir = pygame.mouse.get_pos() - self._pos
             self.dir.normalize_ip()
 
-        # set prev states for next frame
+        ##################################
+        # set prev states for next frame #
+        ##################################
+        
         self.prev_m1_state = self.current_m1_state
         self.prev_m2_state = self.current_m2_state
+        self.prev_space_state = self.current_space_state
 
     def draw(self):
         pygame.draw.circle(c.screen, self._color, self._pos, self.SIZE) # draw player
