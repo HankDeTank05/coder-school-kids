@@ -4,6 +4,7 @@
 
 class Dog:
 
+    # constructor
     def __init__(self, hair_color, eye_color, breed, name, age):
         self.hair_color = hair_color
         self.eye_color = eye_color
@@ -30,6 +31,18 @@ class Dog:
 
 our_dog = Dog('white', 'black', 'White Lab', 'Daisy', 11)
 our_dog.what_age()
+
+class GameObject:
+
+    # constructor
+    def __init__(self):
+        pass
+
+    def update(self, dt):
+        pass
+
+    def draw(self):
+        pass
 
 #print(f"The dogs age is {our_dog.age}")
 #print(f"The dogs breed is {our_dog.breed}")

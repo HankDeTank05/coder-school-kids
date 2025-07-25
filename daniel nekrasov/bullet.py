@@ -36,10 +36,11 @@ class BulletManager:
     def update(self, dt):
         for bullet in self.bullets:
             bullet.update(dt)
-            #  bullet out of screen on the left    <- same but right side                           top      bottom
-            #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvv    vvvvv
-            if bullet.pos.x < 0 - bullet.radius or bullet.pos.x > c.SCREEN_WIDTH + bullet.radius or False or False:
-                pass
+            #  bullet out of screen on the left    <- same but right side                           top                                 bottom
+            #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+            if bullet.pos.x < 0 - bullet.radius or bullet.pos.x > c.SCREEN_WIDTH + bullet.radius or bullet.pos.y < 0 - bullet.radius or bullet.pos.y > c.SCREEN_HEIGHT + bullet.radius:
+                # remove bullet from list of bullets
+                self.bullets.remove(bullet)
 
     def draw(self):
         for bullet in self.bullets:
