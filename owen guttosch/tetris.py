@@ -2,10 +2,10 @@ import pgzrun
 import pygame
 import random
 
-SQUARE_SIZE = 9
+SQUARE_SIZE = 20
 
-TILE_WIDTH = 30
-TILE_HEIGHT = 40
+TILE_WIDTH = 15
+TILE_HEIGHT = 20
 
 WIDTH = TILE_WIDTH * SQUARE_SIZE
 HEIGHT = TILE_HEIGHT * SQUARE_SIZE
@@ -68,7 +68,7 @@ def make_tetro():
     global tetro, tetro_pos, tetro_rot, tetro_color
     center_x = TILE_WIDTH // 2
     tetro[0] = Rect((center_x * SQUARE_SIZE, 0), (SQUARE_SIZE, SQUARE_SIZE))
-    tetro_pos = pygame.math.Vector2(15,0)
+    tetro_pos = pygame.math.Vector2(center_x, 0)
 
     # create t
     if tetrominos[choice] == 't':
@@ -103,7 +103,7 @@ def make_tetro():
         tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect((center_x * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect(((center_x + 1) * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro_pos = pygame.math.Vector2(15,1)
+        tetro_pos = pygame.math.Vector2(center_x,1)
         tetro_color = BLUE
 
     # create j
@@ -111,7 +111,7 @@ def make_tetro():
         tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect((center_x * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect(((center_x - 1) * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro_pos = pygame.math.Vector2(15,1)
+        tetro_pos = pygame.math.Vector2(center_x,1)
         tetro_color = DARK_YELLOW
 
     # create i
@@ -119,7 +119,7 @@ def make_tetro():
         tetro[1] = Rect((center_x * SQUARE_SIZE, 1 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[2] = Rect((center_x * SQUARE_SIZE, 2 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
         tetro[3] = Rect((center_x * SQUARE_SIZE, 3 * SQUARE_SIZE), (SQUARE_SIZE, SQUARE_SIZE))
-        tetro_pos = pygame.math.Vector2(15,1)
+        tetro_pos = pygame.math.Vector2(center_x,1)
         tetro_color = LIGHT_BROWN
 
     # set rotation to 0 degrees
@@ -326,7 +326,6 @@ def draw():
             if grid[y_index][x_index] is None:
                 screen.draw.rect(square, (255, 255, 255))
             else:
-                #screen.draw.filled_rect(grid[y_index][x_index], GRAY) # TODO: come back and make the grid remember the color of the
                 screen.draw.filled_rect(square, GRAY)
 
     #draws the tetromino
