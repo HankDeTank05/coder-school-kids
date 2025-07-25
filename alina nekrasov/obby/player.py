@@ -21,11 +21,18 @@ class Player:
 		###################
 
 		# read for input
+		# read for input
 		keys = pygame.key.get_pressed()
-		if keys[pygame.K_d] == True:
+
+		move_right = keys[pygame.K_d] or keys[pygame.K_RIGHT]
+		move_left = keys[pygame.K_a] or keys[pygame.K_LEFT]
+
+		if move_right and not move_left:
 			self.pos_delta.x = self.walk_speed
-		if keys[pygame.K_a] == True:
+		elif move_left and not move_right:
 			self.pos_delta.x = -self.walk_speed
+		else:
+			self.pos_delta.x = 0
 
 		# if keys[pygame.K_s] == True:
 		# 	self.pos_delta.y += self.speed
