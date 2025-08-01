@@ -1,14 +1,15 @@
 import pygame
 import common as c
+import gamemath as gm
 
 class Player:
 
 	# constructor
-	def __init__(self):
+	def __init__(self, x, y, width, height):
 		print("creating the player")
 		self.health = 100
-		self.pos = pygame.math.Vector2(0, 0)
-		self.size = pygame.math.Vector2(50, 100)
+		self.pos = pygame.math.Vector2(x, y)
+		self.size = pygame.math.Vector2(width, height)
 		self.rect = pygame.Rect(self.pos, self.size)
 		self.walk_speed = 250
 		self.jump_force = -250 #note to self: come back and program double jump
@@ -67,7 +68,7 @@ class Player:
 
 		platform_collision: bool = self.collide_check(collide_thing)
 		if platform_collision == True:
-			print("I collided with the platform")
+			#print("I collided with the platform")
 
 			# Check if we are colliding with the platform from above
 			# We determain this by checking 2 things, 
@@ -76,7 +77,7 @@ class Player:
 			#	- We determine this by undoing the movement that occured this frame and comparing rectangle positions
 			self.pos -= self.pos_delta * delta_time
 			self.rect.update(self.pos, self.size)
-			if self.pos_delta.y > 0 and self.rect.bottom < collide_thing.top:
+			if self.pos_delta.y > 0 and self.rect.bottom <= collide_thing.top: # check for collision from the top
 				print("Collision from the top")
 				# Preventing vertical acceleration
 				self.pos_delta.y = 0
@@ -106,6 +107,15 @@ class Player:
 				while self.collide_check(collide_thing):
 					self.pos.y -= 0.1
 					self.rect.update(self.pos, self.size)
+			elif self.rect.bottom > collide_thing.top and self.rect.top < collide_thing.bottom: # check for collision from either side
+				self.pos += self.pos_delta * delta_time
+				self.rect.update(self.pos, self.size)
+				side = None
+				if gm.number_in_range(self.rect.right, collide_thing.left, collide_thing.right):
+					side = "left"
+				elif gm.number_in_range(self.rect.left, collide_thing.left, collide_thing.right):
+					side = "right"
+				print(f"colliding with the {side} side of platform")
 
 		else:
 			print("I did not collide with the platform")

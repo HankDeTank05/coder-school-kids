@@ -5,14 +5,14 @@ import player
 import platform as plat
 
 
-(30, 250, 60, 30),
-(150, 450, 60, 30),
-(250, 250, 60, 30),
-(60, 430, 60, 30),
-(250, 410, 60, 30),
-(10, 430, 30, 30),
-(360, 370, 60, 30),
-(400, 280, 60, 30),
+# (30, 250, 60, 30),
+# (150, 450, 60, 30),
+# (250, 250, 60, 30),
+# (60, 430, 60, 30),
+# (250, 410, 60, 30),
+# (10, 430, 30, 30),
+# (360, 370, 60, 30),
+# (400, 280, 60, 30),
 
 
 def run():
@@ -24,8 +24,8 @@ def run():
 	delta_time = 0
 
 	#create game variables
-	p1 = player.Player()
-	platform = plat.Platform(0, 105, 100, 50, c.LIGHT_PURPLE)
+	p1 = player.Player(115, 0, 50, 100)
+	platform = plat.Platform(100, 210, 100, 50, c.LIGHT_PURPLE)
 
 	while running:
 		# poll for events
