@@ -76,10 +76,10 @@ class Player:
 
         #toggle slowmo
         if self.prev_space_state == False and self.current_space_state == True:
-            if self.time_man.get_timescale() == 1:
-                self.time_man.set_timescale(0.01)
-            elif self.time_man.get_timescale() < 1:
-                self.time_man.set_timescale(1)
+            if self.time_man.get_timescale() == c.NORMAL_TIMESCALE:
+                self.time_man.set_timescale(c.SLOMO_TIMESCALE)
+            elif self.time_man.get_timescale() < c.NORMAL_TIMESCALE:
+                self.time_man.set_timescale(c.NORMAL_TIMESCALE)
         
         # fix diagonal movement so it isn't faster than straightline speed
         if pos_delta.x != 0 and pos_delta.y != 0:

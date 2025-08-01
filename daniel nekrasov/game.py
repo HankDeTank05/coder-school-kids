@@ -12,6 +12,7 @@ import player as p
 import bullet as b
 import enemy as e
 import time_manager as tm
+import circle as cir # TODO: come back and get rid of this import
 
 clock = pygame.time.Clock()
 running = True
@@ -46,7 +47,7 @@ while running == True:
     for frank in franks:
         frank.update(dt * time_man.get_timescale(), player._pos)
         # collision between frank and u
-        if bm.circle_collide(player._pos, player.SIZE, frank.pos, frank.SIZE) == True:
+        if bm.circle_collide(cir.Circle(player._pos, player.SIZE), cir.Circle(frank.pos, frank.SIZE)) == True:
             pass
 
 
