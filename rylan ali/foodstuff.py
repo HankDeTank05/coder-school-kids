@@ -6,9 +6,15 @@ import snake as s
 class Food:
 
     # constuctor 
-    def __init__(self, start_x, start_y):
-        self.pos = pygame.math.Vector2(start_x, start_y)
-        self.rect = pygame.Rect(start_x, start_y,c.TILE_SIZE,c.TILE_SIZE)
+    def __init__(self, start_grid_x, start_grid_y):
+        assert(0<= start_grid_x)
+        assert(start_grid_x  < c.GRID_WIDTH)
+        assert(0<= start_grid_y)
+        assert(start_grid_y < c.GRID_HEIGHT)
+        start_screen_x = start_grid_x * c.TILE_SIZE
+        start_screen_y = start_grid_y * c.TILE_SIZE
+        self.grid_pos = pygame.math.Vector2(start_grid_x, start_grid_y)
+        self.rect = pygame.Rect(start_screen_x, start_screen_y, c.TILE_SIZE, c.TILE_SIZE)
     
     def update(self): 
         pass 
@@ -18,14 +24,18 @@ class Food:
                          color = c.COLOR_GREEN,
                          rect=self.rect)
         
-    def get_pos(self):
-        return self.pos
+    def get_screen_pos(self):
+        return self.rect.topleft
+    
+    def get_grid_pos(self):
+        return self.grid_pos
+        
         
 class FoodManager:
     
     # constuctor
     def __init__(self, sp_max_food):
-        self.food = []
+        self.food: list[Food] = []
         self.max_food = sp_max_food
         for i in range(self.max_food):
             self.create_food()
@@ -34,15 +44,19 @@ class FoodManager:
         # checks length because we need to know if we can add more food
         if len(self.food) < self.max_food:
             # radomizes the places the food can spawn
-            temp_x = random.randrange(c.GRID_WIDTH)
-            temp_y = random.randrange(c.GRID_HEIGHT)
-            temp_food = Food(temp_x, temp_y)
-            self.food.append(temp_food)
+            temp_grid_x = random.randrange(c.GRID_WIDTH)
+            temp_grid_y = random.randrange(c.GRID_HEIGHT)
             if len(self.food) > 0:
                 # 1. check if if any other food object hass the same pos as the newly created food (which is located at index len(self.food)-1)
+                unique_pos: bool = True
+                for food in self.food:
+                    if temp_grid_x == food.get_grid_pos().x and temp_grid_y == food.get_grid_pos().y:
+                        unique_pos = False
                 # 1.1. if (1) is true rerandomize pos of new food object
                 # 2. sort list by calling .sort()
                 pass
+            temp_food = Food(temp_grid_x, temp_grid_y)
+            self.food.append(temp_food)
         else:
             print("List is full")
    
@@ -80,6 +94,9 @@ class FoodManager:
             # food_index = the index at which to remove a Food object (from self.food)
             food_index = food_2_remove[remove_index]
             self.food.pop(food_index)
+
+        for food in range(len(food_2_remove)):
+            self.create_food()
 
     def draw(self, screen):
         for i in range(len(self.food)):

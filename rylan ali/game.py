@@ -145,7 +145,7 @@ foodmanager = foodstuff.FoodManager(sp_max_food=5)
 for i in range(foodmanager.max_food):
     foodmanager.create_food()
 
-#Maiin game loop
+#Main game loop
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
