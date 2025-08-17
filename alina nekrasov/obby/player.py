@@ -17,6 +17,8 @@ class Player:
 		self.current_velocity = pygame.math.Vector2(0, 0)	
 		self.max_jumps = 2
 		self.jumps_remaining = self.max_jumps
+		self.curr_jump_state = False
+		self.prev_jump_state = False
 
 	def update(self, delta_time, collide_thing: pygame.Rect):
 		###################
@@ -29,7 +31,7 @@ class Player:
 		# read for input
 		move_right: bool = keys[pygame.K_d] or keys[pygame.K_RIGHT]
 		move_left: bool = keys[pygame.K_a] or keys[pygame.K_LEFT]
-		jump: bool = keys[pygame.K_w] or keys[pygame.K_UP] or keys[pygame.K_SPACE]
+		self.curr_jump_state: bool = keys[pygame.K_w] or keys[pygame.K_UP] or keys[pygame.K_SPACE]
 
 		if move_right and not move_left:
 			self.pos_delta.x = self.walk_speed
@@ -40,24 +42,11 @@ class Player:
 
 		# if keys[pygame.K_s] == True:
 		# 	self.pos_delta.y += self.speed
-		if keys[pygame.K_w] == True:
+		if self.curr_jump_state == True and self.prev_jump_state == False and self.jumps_remaining > 0:
+			self.jumps_remaining -= 1
 			self.pos_delta.y = self.jump_force
 		else:
 			self.pos_delta.y += c.GRAVITY
-		
-		# (keys[pygame.K_a] == False and keys[pygame.K_d] == False) or (keys[pygame.K_a] == True and keys[pygame.K_d] == True)
-		# below is the same, but simpler and more efficient than the commented code above
-		# if keys[pygame.K_a] == keys[pygame.K_d]: # checks if both keys are in the same state (both pressed or neither pressed)
-		# 	self.pos_delta.x = 0
-
-		# if self.pos_delta.x != 0 and self.pos_delta.y != 0:
-		# 	self.pos_delta.normalize_ip()
-		# 	self.pos_delta *= self.speed
-
-		# self.pos_delta += self.current_velocity
-		
-		#print(f"pos_delta {self.pos_delta}")
-		# print(f"current_velocity {self.current_velocity}")
 
 		# making the player position move
 		self.pos += self.pos_delta * delta_time
@@ -110,6 +99,7 @@ class Player:
 					
 				self.rect.bottom = collide_thing.top - 0.1
 				self.pos = self.rect.topleft
+				self.jumps_remaining = self.max_jumps
 			elif self.rect.bottom > collide_thing.top and self.rect.top < collide_thing.bottom: # check for collision from either side
 				self.pos += self.pos_delta * delta_time
 				self.rect.update(self.pos, self.size)
@@ -124,10 +114,17 @@ class Player:
 					self.rect.left = collide_thing.right + 0.1
 					self.pos = self.rect.topleft
 					side = "right"
-				print(f"colliding with the {side} side of platform")
+				# print(f"colliding with the {side} side of platform")
 
 		else:
-			print("I did not collide with the platform")
+			# print("I did not collide with the platform")
+			pass
+
+		##########################
+		# prepare for next frame #
+		##########################
+		
+		self.prev_jump_state = self.curr_jump_state
 
 	def collide_check(self, other: pygame.Rect) -> bool:
 		player_collision = self.rect.colliderect(other)

@@ -18,14 +18,16 @@ import platform as plat
 def run():
 	# pygame setup
 	pygame.init()
-	SCREEN = pygame.display.set_mode((1280, 720))
+	SCREEN = pygame.display.set_mode((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
 	clock = pygame.time.Clock()
 	running = True
 	delta_time = 0
 
 	#create game variables
-	p1 = player.Player(115, 0, 50, 100)
-	platform = plat.Platform(100, 210, 100, 50, c.LIGHT_PURPLE)
+	plat_man = plat.PlatManager()
+	plat_man.platforms.append(plat.Platform(0, c.SCREEN_HEIGHT - 50, 100, 50, c.LIGHT_PURPLE))
+	plat_man.platforms.append(plat.Platform(plat_man.platforms[0].rect.right + 50, plat_man.platforms[0].rect.y - 100, 60, 30, c.LIGHT_PURPLE))
+	p1 = player.Player(0, c.SCREEN_HEIGHT - plat_man.platforms[0].rect.h - 100, 50, 100)
 
 	while running:
 		# poll for events
@@ -41,15 +43,15 @@ def run():
 		# PART 1: UPDATE #
 		##################
 		
-		p1.update(delta_time, platform.rect)
-		platform.update(delta_time)
+		p1.update(delta_time, plat_man.platforms[0].rect)
+		plat_man.update(delta_time)
 
 		################
 		# PART 2: DRAW #
 		################
 
 		p1.draw(SCREEN)
-		platform.draw(SCREEN)
+		plat_man.draw(SCREEN)
 
 		# flip() the display to put your work on screen
 		pygame.display.flip()
