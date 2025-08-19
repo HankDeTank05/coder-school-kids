@@ -44,11 +44,18 @@ while running == True:
     # step 1: update stuff
     player.update(dt * time_man.get_timescale())
     bullet_man.update(dt * time_man.get_timescale())
+
+    player_circle = cir.Circle(player.get_pos(), player.SIZE)
     for frank in franks:
-        frank.update(dt * time_man.get_timescale(), player._pos)
+        frank.update(dt * time_man.get_timescale(), player.get_pos())
+        frank_circle = cir.Circle(frank.pos, frank.SIZE)
         # collision between frank and u
-        if bm.circle_collide(cir.Circle(player._pos, player.SIZE), cir.Circle(frank.pos, frank.SIZE)) == True:
-            pass
+        if bm.circle_collide(player_circle, frank_circle ) == True:
+            # kb dir is knockback dir
+            kb_dir = pygame.math.Vector2(player.get_pos() - frank.pos)
+            kb_dir.normalize_ip()
+            kb_dir *= dt
+            player.knockback(kb_dir)
 
 
     # step 2: draw stuff

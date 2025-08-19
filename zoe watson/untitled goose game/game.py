@@ -50,7 +50,7 @@ class Goose:
 
     # update the goose
     def update(self, _keys, _dt):
-        # TODO make it a fast goose when shift key is pressed
+        # TODO make it a fast goose when shift key is pressed BUT IT DOSEN'T WORKKKKKKKKKKKK
         pos_delta = pygame.math.Vector2(0,0)
         current_speed = self.walk_speed
         if _keys[pygame.K_RSHIFT]:
