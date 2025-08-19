@@ -2,13 +2,19 @@ import pygame
 import common as c
 import bullet as b
 import time_manager as tm
+import copy
 
 class Player:
 
     #constructor
-    def __init__(self, color, speed, bullet_man, time_man):
+    def __init__(self, color: pygame.Color, speed, bullet_man, time_man):
+        # private data
         self._pos = pygame.math.Vector2(5, 720/2) #starting pos
-        self._color = color
+        self._color: pygame.Color = color
+        self._health: int | float = c.PLAYER_BASE_HEALTH
+        self._kb_dist = c.KNOCKBACK_DIST
+
+        # public data
         self.speed = speed
         self.dir = pygame.math.Vector2(1,0) #starting dir
         self.current_m1_state = False
@@ -17,7 +23,6 @@ class Player:
         self.prev_m2_state = False
         self.current_space_state = False
         self.prev_space_state = False
-        self._health = c.PLAYER_BASE_HEALTH
         self.bullet_man = bullet_man # player HAS ACCESS to bullet manager. it DOES NOT OWN it
         self.time_man = time_man
         self.max_slomo_time = 10.6
@@ -30,6 +35,10 @@ class Player:
         self.BOUNDS_MIN_Y = 0 + self.SIZE
         self.BOUNDS_MAX_Y = c.SCREEN_HEIGHT - self.SIZE
         
+    ##################
+    # game functions #
+    ##################
+
     def update(self, dt):
 
         pos_delta=pygame.math.Vector2(0,0)
@@ -125,6 +134,26 @@ class Player:
         pygame.draw.circle(c.screen, self._color, self._pos, self.SIZE) # draw player
         #get rid of the line under me (eventually)
         pygame.draw.line(c.screen, c.RED, self._pos, self._pos + self.dir * self.SIZE) # draw aim line
+
+    ######################
+    # behavior functions #
+    ######################
+
+    def knockback(self, kb_dir: pygame.math.Vector2):
+        self._pos += kb_dir * self._kb_dist
+
+    ############################
+    # accessors (aka, getters) #
+    ############################
+
+    def get_pos(self) -> pygame.math.Vector2:
+        return copy.deepcopy(self._pos)
+    
+    def get_color(self) -> pygame.Color:
+        return copy.deepcopy(self._color)
+    
+    def get_health(self) -> int | float:
+        return copy.deepcopy(self._health)
 
 '''
 player_speed=500
