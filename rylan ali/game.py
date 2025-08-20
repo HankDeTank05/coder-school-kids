@@ -10,6 +10,7 @@ pygame.init()
 screen = pygame.display.set_mode((c.SCREEN_WIDTH,c.SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
+frame_time = 0
 
 grid = []
 
@@ -105,7 +106,7 @@ def draw_gridlines():
     for pixel_x in range(0, c.SCREEN_WIDTH, c.TILE_SIZE):
         pygame.draw.line(surface = screen,color = c.COLOR_BLACK,start_pos=(pixel_x,0),end_pos=(pixel_x, c.SCREEN_HEIGHT))
         
-    for pixel_y in range(0,c.SCREEN_HEIGHT, c.TILE_SIZE):
+    for pixel_y in range(0, c.SCREEN_HEIGHT, c.TILE_SIZE):
         pygame.draw.line(surface = screen, color = c.COLOR_BLACK, start_pos = (0, pixel_y), end_pos=(c.SCREEN_WIDTH, pixel_y))
 
 # TODO randomize start position
@@ -141,7 +142,7 @@ while True:
 player_snake = snake.Snake(start_x, start_y, start_dir)
 all_pos_in_list = player_snake.pos
 
-foodmanager = foodstuff.FoodManager(sp_max_food=5)
+foodmanager = foodstuff.FoodManager(sp_max_food=30)
 for i in range(foodmanager.max_food):
     foodmanager.create_food()
 
@@ -157,7 +158,7 @@ while running:
     screen.fill("purple")
 
     #part 1: update
-    player_snake.update()
+    player_snake.update(frame_time)
     foodmanager.update(player_snake)
     
 	#part 2: draw
@@ -168,6 +169,6 @@ while running:
     # flip() the display to put your work on screen
     pygame.display.flip()
 
-    clock.tick(15)  # limits FPS to 60
+    frame_time = clock.tick()/1000  # limits FPS to 60
 
 pygame.quit()

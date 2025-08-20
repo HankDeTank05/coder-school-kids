@@ -14,9 +14,13 @@ class Snake:
             self.pos.append(snake_start + build_segments_dir * i)
             print(self.pos[i])
         self.move_queue = []
+        self.base_wait = c.SNAKE_WAIT
+        self.wait_time = self.base_wait 
 
-    def update(self):
-
+    def update(self, frame_time):
+        self.wait_time -= frame_time
+        if self.wait_time <= 0:
+            self.wait_time = self.base_wait
             if len(self.move_queue) == 0: #if there is nothing left in the move_queue
                 # read for input
                 keys=pygame.key.get_pressed()
@@ -59,8 +63,23 @@ class Snake:
 
             # snake_head = snake_head + snake_dir
             snake_head = self.pos[0] + self.dir # calculate new head pos
+            if snake_head.x < 0:
+                snake_head.x = c.GRID_WIDTH - 1
+            elif snake_head.x > c.GRID_WIDTH - 1:
+                snake_head.x = 0
+            if snake_head.y < 0:
+                snake_head.y = c.GRID_HEIGHT - 1 
+            elif snake_head.y > c.GRID_HEIGHT - 1:
+                snake_head.y = 0 
+                
+            
             self.pos.insert(0, snake_head)
             self.pos.pop()
+
+            # check if the snake ran into itself
+            for i in range(1, len(self.pos)):
+                if snake_head == self.pos[i]:
+                    pass # restart the game
 
     def draw(self, screen):
         for i in range(len(self.pos)):
@@ -84,4 +103,5 @@ class Snake:
         dir_2_add = old_tail_pos - last_bod_seg
         new_tail_pos = old_tail_pos + dir_2_add
         self.pos.append(new_tail_pos)
+        self.base_wait -= 0.001
 
