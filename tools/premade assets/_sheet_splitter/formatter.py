@@ -43,7 +43,7 @@ def replace_print(output):
 
 
 
-current = os.getcwd() # get the current folder
+current = os.path.dirname(os.path.abspath(__file__)) # get the current folder
 if not os.path.isabs(current): # if the path of the current folder is not an absolute path...
     current = os.path.abspath(current) # ...make it absolute
 print(current) # TODO: remove temp code
@@ -56,9 +56,9 @@ print(current) # TODO: remove temp code
 # current = os.path.join(current, "platformer", "playable characters", "samus", "super_sheet_cleaned.png")
 # current = os.path.join(current, "platformer", "playable characters", "mario series", "mario", "world_sheet_cleaned.png")
 # current = os.path.join(current, "platformer", "playable characters", "mega man", "mm1_megaman_sheet.png")
-# current = os.path.join(current, "rpg", "kris_3_4.png")
+current = os.path.join(current, "rpg", "deltarune", "kris_3_4.png")
 # current = os.path.join(current, "rpg", "kris_1_2.png")
-current = os.path.join(current, "platformer", "playable characters", "mario series", "mario maker", "costumes.png")
+# current = os.path.join(current, "platformer", "playable characters", "mario series", "mario maker", "costumes.png")
 
 print(current)
 assert(os.path.exists(current) == True)
