@@ -9,11 +9,11 @@ class Player:
 
     # constructor
     def __init__(self):
-        self._size: pygame.math.Vector2 = pygame.math.Vector2(50, 50)
-        self._pos: pygame.math.Vector2 = pygame.math.Vector2(c.WIDTH // 2 - self._size.x // 2,
-                                       c.HEIGHT - self._size.y - 10)
+        size = pygame.math.Vector2(50, 50)
+        pos = pygame.math.Vector2(c.WIDTH // 2 - size.x // 2,
+                                       c.HEIGHT - size.y - 10)
         self._speed: int | float = 350
-        self._rect: pygame.Rect = pygame.Rect(self._pos, self._size)
+        self._rect: pygame.Rect = pygame.Rect(pos, size)
 
     # Game functions
 
@@ -35,9 +35,6 @@ class Player:
         # correct diagonal movement
         if player_move.length() > 0:
             player_move = player_move.normalize() * self._speed * frame_time
-
-        # Moving player
-        #self.pos += player_move
 
         # move the rectangle
         self._rect.move_ip(player_move)
@@ -62,19 +59,18 @@ class Player:
     # getters
 
     def get_pos(self) -> pygame.math.Vector2:
-        return self._pos
+        return pygame.math.Vector2(self._rect.topleft)
     
     # setters
 
     def set_pos(self, new_pos: pygame.math.Vector2):
-        self._pos = new_pos
-        self._rect.update(self._pos, self._size)
+        self._rect.update(new_pos, self._rect.size)
 
     def set_x(self, new_x: int | float):
-        self.set_pos(pygame.math.Vector2(new_x, self._pos.y))
+        self.set_pos(pygame.math.Vector2(new_x, self._rect.y))
 
     def set_y(self, new_y: int | float):
-        self.set_pos(pygame.math.Vector2(self._pos.x, new_y))
+        self.set_pos(pygame.math.Vector2(self._rect.x, new_y))
 
     def set_speed(self, new_speed: int | float):
         self._speed = new_speed

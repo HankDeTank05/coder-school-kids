@@ -8,6 +8,7 @@ import pygame
 # project imports (this is our stuff we created)
 import common as c
 import player as p
+import obstacle as o
 
 pygame.init()
 pygame.font.init()
@@ -183,7 +184,6 @@ while running:
         #obstacle_type="small"
 
         #small_obstacle = random.choice([True,False,False,False,False,False,False,False,False,False,False,False,False,False,False])
-
         if obstacle_type == "small":
             obstacle_width = 15.98769876987
             obstacle_height = 21.98769876987
@@ -198,6 +198,7 @@ while running:
             obstacle_width = 30.12341234123
             obstacle_height = 40.12341234123
             obstacle_speed = 450
+        # new_obstacle_object = o.Obstacle(obstacle_width, obstacle_height, obstacle_speed, explodey)
 
         new_obstacle = {
             # making sure the obstacle could hit the player by spawning within the horizontal boudaries
@@ -236,11 +237,15 @@ while running:
                 print("Get the not red/orange obstacle")
 
         obstacles.append(new_obstacle)
+        # obstacles.append(new_obstacle_object)
+
     for obstacle in obstacles:
         if slow_down_timer > 0:
+            # move the obstacles slowly if they got a powerup
             obstacle['y'] += obstacle['speed'] * frame_time / 4
             obstacle_spawn_delay = 2
         else:
+            # move the obstacles normal speed if no powerup
             obstacle['y'] += obstacle['speed'] * frame_time
         if obstacle['y'] > c.HEIGHT:
             if obstacle["type"] == 3 or obstacle["type"] == 4:
