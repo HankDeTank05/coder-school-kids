@@ -12,7 +12,12 @@ class Player:
         self._pos = pygame.math.Vector2(5, 720/2) #starting pos
         self._color: pygame.Color = color
         self._health: int | float = c.PLAYER_BASE_HEALTH
+        self._kb_dir = pygame.math.Vector2(0, 0)
         self._kb_dist = c.KNOCKBACK_DIST
+        self._kb_time_total = c.KNOCKBACK_TIME # a number in seconds
+        self._kb_time_remaining = self._kb_time_total
+        self._current_state: str = c.STATE_CONTROL
+
 
         # public data
         self.speed = speed
@@ -40,7 +45,36 @@ class Player:
     ##################
 
     def update(self, dt):
+        # STEP 1: call the correct update function, based on the current state
+        if self._current_state == c.STATE_CONTROL:
+            self.update_state_control(dt)
+        elif self._current_state == c.STATE_KNOCKBACK:
+            self.update_state_knockback(dt) # STEP 1: update
+            # STEP 2: get next state
+            if self._kb_time_remaining <= 0:
+                print("setting back to control state")
+                self.set_state_control()
+        else:
+            assert(False) # crash the game if we don't recognize what state we're in
+        # STEP 2: determine the next state
+        pass
 
+    def draw(self):
+        # STEP 1: call the correct draw function, based on the current state
+        if self._current_state == c.STATE_CONTROL:
+            self.draw_state_control()
+        elif self._current_state == c.STATE_KNOCKBACK:
+            self.draw_state_knockback()
+        else:
+            assert(False) # crash the game if we don't recognize what state we're in
+        # STEP 2: do any debug drawing that you always want to be shown
+        pygame.draw.line(c.screen, c.RED, self._pos, self._pos + self.dir * self.SIZE) # draw aim line
+
+    ############################
+    # state functions: control #
+    ############################
+
+    def update_state_control(self, dt):
         pos_delta=pygame.math.Vector2(0,0)
         #player_facing = pygame.math.Vector2(0,0)
         
@@ -103,21 +137,12 @@ class Player:
         # prevents the player from walking off screen #
         ###############################################
 
-        if self._pos.x < self.BOUNDS_MIN_X: #if player is left of min x
-            #move player right until the player is not out of bounds 
-            self._pos.x = self.BOUNDS_MIN_X
-        elif self._pos.x > self.BOUNDS_MAX_X:#if player is right of max.x
-            #move player left
-            self._pos.x = self.BOUNDS_MAX_X
+        self._stay_on_screen()
 
-        if self._pos.y < self.BOUNDS_MIN_Y: #if player is above of min y
-            #move player down
-            self._pos.y = self.BOUNDS_MIN_Y
-        elif self._pos.y > self.BOUNDS_MAX_Y: # if player is under of max y
-            #move player up
-            self._pos.y = self.BOUNDS_MAX_Y
+        ###############################
+        # caluculate facing direction #
+        ###############################
 
-        # caluculate facing direction
         if not pygame.mouse.get_pos() == self._pos:
             self.dir = pygame.mouse.get_pos() - self._pos
             self.dir.normalize_ip()
@@ -130,17 +155,34 @@ class Player:
         self.prev_m2_state = self.current_m2_state
         self.prev_space_state = self.current_space_state
 
-    def draw(self):
+    def draw_state_control(self):
         pygame.draw.circle(c.screen, self._color, self._pos, self.SIZE) # draw player
-        #get rid of the line under me (eventually)
-        pygame.draw.line(c.screen, c.RED, self._pos, self._pos + self.dir * self.SIZE) # draw aim line
 
-    ######################
-    # behavior functions #
-    ######################
+    ##############################
+    # state functions: knockback #
+    ##############################
 
-    def knockback(self, kb_dir: pygame.math.Vector2):
-        self._pos += kb_dir * self._kb_dist
+    def update_state_knockback(self, dt):
+        self._kb_time_remaining -= dt
+        # print(self._kb_time_remaining)
+        time_portion = dt / self._kb_time_total
+        self._pos += self._kb_dir * self._kb_dist * time_portion # move player
+        self._stay_on_screen()
+
+    def draw_state_knockback(self):
+        pygame.draw.circle(c.screen, c.RED, self._pos, self.SIZE) # draw player
+
+    ##########################
+    # state change functions #
+    ##########################
+
+    def set_state_control(self) -> None:
+        self._current_state = c.STATE_CONTROL
+
+    def set_state_knockback(self, kb_dir: pygame.math.Vector2) -> None:
+        self._current_state = c.STATE_KNOCKBACK
+        self._kb_dir = kb_dir
+        self._kb_time_remaining = self._kb_time_total
 
     ############################
     # accessors (aka, getters) #
@@ -154,6 +196,25 @@ class Player:
     
     def get_health(self) -> int | float:
         return copy.deepcopy(self._health)
+    
+    #####################################################################
+    # private functions (no one should use these other than the player) #
+    #####################################################################
+
+    def _stay_on_screen(self):
+        if self._pos.x < self.BOUNDS_MIN_X: #if player is left of min x
+            #move player right until the player is not out of bounds 
+            self._pos.x = self.BOUNDS_MIN_X
+        elif self._pos.x > self.BOUNDS_MAX_X:#if player is right of max.x
+            #move player left
+            self._pos.x = self.BOUNDS_MAX_X
+
+        if self._pos.y < self.BOUNDS_MIN_Y: #if player is above of min y
+            #move player down
+            self._pos.y = self.BOUNDS_MIN_Y
+        elif self._pos.y > self.BOUNDS_MAX_Y: # if player is under of max y
+            #move player up
+            self._pos.y = self.BOUNDS_MAX_Y
 
 '''
 player_speed=500

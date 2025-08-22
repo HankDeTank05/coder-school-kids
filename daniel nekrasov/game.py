@@ -54,8 +54,8 @@ while running == True:
             # kb dir is knockback dir
             kb_dir = pygame.math.Vector2(player.get_pos() - frank.pos)
             kb_dir.normalize_ip()
-            kb_dir *= dt
-            player.knockback(kb_dir)
+            # kb_dir *= dt
+            player.set_state_knockback(kb_dir)
 
 
     # step 2: draw stuff
