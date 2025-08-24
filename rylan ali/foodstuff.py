@@ -21,7 +21,7 @@ class Food:
 
     def draw(self, screen):
         pygame.draw.rect(surface=screen,
-                         color = c.COLOR_GREEN,
+                         color = c.COLOR_FOOD,
                          rect=self.rect)
         
     def get_screen_pos(self):

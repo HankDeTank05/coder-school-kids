@@ -14,7 +14,7 @@ class Snake:
             self.pos.append(snake_start + build_segments_dir * i)
             print(self.pos[i])
         self.move_queue = []
-        self.base_wait = c.SNAKE_WAIT
+        self.base_wait = c.SNAKE_WAIT_START
         self.wait_time = self.base_wait 
 
     def update(self, frame_time):
@@ -84,7 +84,7 @@ class Snake:
     def draw(self, screen):
         for i in range(len(self.pos)):
             pygame.draw.rect(surface=screen, 
-                                color=c.COLOR_RED,
+                                color=c.COLOR_SNAKE,
                                 rect=pygame.Rect(self.pos[i].x * c.TILE_SIZE,
                                                  self.pos[i].y * c.TILE_SIZE,
                                                  c.TILE_SIZE,
@@ -103,5 +103,14 @@ class Snake:
         dir_2_add = old_tail_pos - last_bod_seg
         new_tail_pos = old_tail_pos + dir_2_add
         self.pos.append(new_tail_pos)
-        self.base_wait -= 0.001
+        if self.base_wait > c.SNAKE_WAIT_MIN:
+            self.base_wait -= 0.001 # decrease wait time / increase speed
+        else:
+            print("min wait time / max speed reached")
+
+    def check_collision(self):
+        for i in range(1, len(self.pos)-1):
+            if self.pos[0] == self.pos[i]:
+                return True
+        return False
 
