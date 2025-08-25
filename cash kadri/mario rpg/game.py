@@ -149,9 +149,6 @@ def draw_nose(face_pstn):
     ))
 
     pygame.draw.polygon(SCREEN, BLACK,  left_nostril_points)
-    
-
-
 
 def draw_face(face_pstn):
     #draw left eyebrow
