@@ -7,13 +7,14 @@ class Food:
 
     # constuctor 
     def __init__(self, start_grid_x, start_grid_y):
+        # these assert functions will crash the game if you give it a position not on the grid
         assert(0<= start_grid_x)
         assert(start_grid_x  < c.GRID_WIDTH)
         assert(0<= start_grid_y)
         assert(start_grid_y < c.GRID_HEIGHT)
+        self.grid_pos = pygame.math.Vector2(start_grid_x, start_grid_y)
         start_screen_x = start_grid_x * c.TILE_SIZE
         start_screen_y = start_grid_y * c.TILE_SIZE
-        self.grid_pos = pygame.math.Vector2(start_grid_x, start_grid_y)
         self.rect = pygame.Rect(start_screen_x, start_screen_y, c.TILE_SIZE, c.TILE_SIZE)
     
     def update(self): 

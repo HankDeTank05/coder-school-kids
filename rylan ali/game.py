@@ -4,6 +4,7 @@ import common as c
 import snake 
 import random
 import foodstuff
+import trap as t
   
 def draw_gridlines(screen):
     
@@ -71,6 +72,8 @@ def run():
     create_snake()
     create_food_manager()
 
+    trap =t.Trap(10,10)
+
     ##################
     # Main game loop #
     ##################
@@ -92,11 +95,13 @@ def run():
             create_food_manager()
             continue
         foodmanager.update(player_snake)
+        trap.update(player_snake)
         
         #part 2: draw
         draw_gridlines(screen)
         player_snake.draw(screen)
         foodmanager.draw(screen)
+        trap.draw(screen)
 
         # flip() the display to put your work on screen
         pygame.display.flip()
