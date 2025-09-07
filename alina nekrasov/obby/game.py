@@ -25,9 +25,15 @@ def run():
 
 	#create game variables
 	plat_man = plat.PlatManager()
-	plat_man.platforms.append(plat.Platform(0, c.SCREEN_HEIGHT - 50, 100, 50, c.LIGHT_PURPLE))
-	plat_man.platforms.append(plat.Platform(plat_man.platforms[0].rect.right + 50, plat_man.platforms[0].rect.y - 100, 60, 30, c.LIGHT_PURPLE))
-	p1 = player.Player(0, c.SCREEN_HEIGHT - plat_man.platforms[0].rect.h - 100, 50, 100)
+	plat_man.add_plat(0, c.SCREEN_HEIGHT - 50, 100, 50, c.LIGHT_PURPLE)
+	plat_man.add_plat_relative(150, -100, 60, 30, c.LIGHT_PURPLE)
+	plat_man.add_plat_relative(200, -110, 70, 30, c.LIGHT_PURPLE)
+	plat_man.add_plat_relative(5, -c.PLAYER_HEIGHT-30, 70, 30, c.LIGHT_PURPLE)
+	plat_man.add_plat_relative(100, 350, 60, 30, c.LIGHT_PURPLE)
+	plat_man.add_plat_relative(125, -100, 20, 20, c.LIGHT_PURPLE)
+	#plat_man.platforms.append(plat.Platform(plat_man.platforms[0].rect.right + 50, plat_man.platforms[0].rect.y - 100, 60, 30, c.LIGHT_PURPLE))
+	#plat_man.platforms.append(7)
+	p1 = player.Player(0, c.SCREEN_HEIGHT - plat_man._platforms[0].rect.h - c.PLAYER_HEIGHT, c.PLAYER_WIDTH, c.PLAYER_HEIGHT)
 
 	while running:
 		# poll for events
@@ -43,7 +49,7 @@ def run():
 		# PART 1: UPDATE #
 		##################
 		
-		p1.update(delta_time, plat_man.platforms[0].rect)
+		p1.update(delta_time, plat_man.get_rects())
 		plat_man.update(delta_time)
 
 		################

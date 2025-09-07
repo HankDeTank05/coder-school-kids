@@ -11,16 +11,16 @@ class Player:
 		self.pos = pygame.math.Vector2(x, y)
 		self.size = pygame.math.Vector2(width, height)
 		self.rect = pygame.Rect(self.pos, self.size)
-		self.walk_speed = 250
-		self.jump_force = -250 #note to self: come back and program double jump
+		self.walk_speed = c.PLAYER_WALK_SPEED
+		self.jump_force = c.PLAYER_JUMP_FORCE
 		self.pos_delta = pygame.math.Vector2(0, 0)
 		self.current_velocity = pygame.math.Vector2(0, 0)	
-		self.max_jumps = 2
+		self.max_jumps = c.PLAYER_MAX_JUMPS
 		self.jumps_remaining = self.max_jumps
 		self.curr_jump_state = False
 		self.prev_jump_state = False
 
-	def update(self, delta_time, collide_thing: pygame.Rect):
+	def update(self, delta_time, collide_list: list[pygame.Rect]):
 		###################
 		# move the player #
 		###################
@@ -58,63 +58,64 @@ class Player:
 		# do the collision behavior #
 		#############################
 
-		platform_collision: bool = self.collide_check(collide_thing)
-		if platform_collision == True:
-			#print("I collided with the platform")
+		for collide_thing in collide_list:
+			platform_collision: bool = self.collide_check(collide_thing)
+			if platform_collision == True:
+				#print("I collided with the platform")
 
-			# Check if we are colliding with the platform from above
-			# We determain this by checking 2 things, 
-			# 1. Are we falling
-			# 2. Was the player (rectangle) above the platform before we moved.
-			#	- We determine this by undoing the movement that occured this frame and comparing rectangle positions
-			self.pos -= self.pos_delta * delta_time
-			self.rect.update(self.pos, self.size)
-			if self.pos_delta.y > 0 and self.rect.bottom <= collide_thing.top: # check for collision from the top
-				print("Collision from the top")
-				# Preventing vertical acceleration
-				self.pos_delta.y = 0
-				# Puts back movement that occured this frame 
-				self.pos += self.pos_delta * delta_time
+				# Check if we are colliding with the platform from above
+				# We determain this by checking 2 things, 
+				# 1. Are we falling
+				# 2. Was the player (rectangle) above the platform before we moved.
+				#	- We determine this by undoing the movement that occured this frame and comparing rectangle positions
+				self.pos -= self.pos_delta * delta_time
 				self.rect.update(self.pos, self.size)
-				# box comment below. if you can't see it, hit the arrow on the left next to the line number!
-				'''
-				this is the situation that the following lines of code are meant to correct:
-				             player
-				             |    |
-				+------------|----|-+
-				| platform   +----+ |
+				if self.pos_delta.y > 0 and self.rect.bottom <= collide_thing.top: # check for collision from the top
+					print("Collision from the top")
+					# Preventing vertical acceleration
+					self.pos_delta.y = 0
+					# Puts back movement that occured this frame 
+					self.pos += self.pos_delta * delta_time
+					self.rect.update(self.pos, self.size)
+					# box comment below. if you can't see it, hit the arrow on the left next to the line number!
+					'''
+					this is the situation that the following lines of code are meant to correct:
+								player
+								|    |
+					+------------|----|-+
+					| platform   +----+ |
 
-						|||
-						VVV
-				
-				             player
-							 |	  |
-							 |	  |
-				             +----+
-				+-------------------+
-				| platform          |
-
-				the following code will cause this to be the end result
-				'''
+							|||
+							VVV
 					
-				self.rect.bottom = collide_thing.top - 0.1
-				self.pos = self.rect.topleft
-				self.jumps_remaining = self.max_jumps
-			elif self.rect.bottom > collide_thing.top and self.rect.top < collide_thing.bottom: # check for collision from either side
-				self.pos += self.pos_delta * delta_time
-				self.rect.update(self.pos, self.size)
-				side = None
-				if gm.number_in_range(self.rect.right, collide_thing.left, collide_thing.right):
-					# colliding with the left side of the platform, move the player left to get them out
-					self.rect.right = collide_thing.left - 0.1
+								player
+								|	  |
+								|	  |
+								+----+
+					+-------------------+
+					| platform          |
+
+					the following code will cause this to be the end result
+					'''
+						
+					self.rect.bottom = collide_thing.top - 0.1
 					self.pos = self.rect.topleft
-					side = "left"
-				elif gm.number_in_range(self.rect.left, collide_thing.left, collide_thing.right):
-					#colliding with the right side of the platform, move the player right to get them out
-					self.rect.left = collide_thing.right + 0.1
-					self.pos = self.rect.topleft
-					side = "right"
-				# print(f"colliding with the {side} side of platform")
+					self.jumps_remaining = self.max_jumps
+				elif self.rect.bottom > collide_thing.top and self.rect.top < collide_thing.bottom: # check for collision from either side
+					self.pos += self.pos_delta * delta_time
+					self.rect.update(self.pos, self.size)
+					side = None
+					if gm.number_in_range(self.rect.right, collide_thing.left, collide_thing.right):
+						# colliding with the left side of the platform, move the player left to get them out
+						self.rect.right = collide_thing.left - 0.1
+						self.pos = self.rect.topleft
+						side = "left"
+					elif gm.number_in_range(self.rect.left, collide_thing.left, collide_thing.right):
+						#colliding with the right side of the platform, move the player right to get them out
+						self.rect.left = collide_thing.right + 0.1
+						self.pos = self.rect.topleft
+						side = "right"
+					# print(f"colliding with the {side} side of platform")
 
 		else:
 			# print("I did not collide with the platform")
