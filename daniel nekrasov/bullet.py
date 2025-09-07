@@ -4,6 +4,12 @@ import pygame
 
 import common as c
 
+import enemy as e
+
+import circle as cir
+
+import better_math as bm
+
 SPEED = 700
 RADIUS = 20
 
@@ -41,6 +47,14 @@ class BulletManager:
             if bullet.pos.x < 0 - bullet.radius or bullet.pos.x > c.SCREEN_WIDTH + bullet.radius or bullet.pos.y < 0 - bullet.radius or bullet.pos.y > c.SCREEN_HEIGHT + bullet.radius:
                 # remove bullet from list of bullets
                 self.bullets.remove(bullet)
+    
+    def enemy_hit(self, frank_circle : cir.Circle):
+        for bullet in self.bullets:
+            bullet_circle = cir.Circle(bullet.pos, bullet.radius)
+            if bm.circle_collide(bullet_circle, frank_circle):
+                self.bullets.remove(bullet)
+                return True
+
 
     def draw(self):
         for bullet in self.bullets:

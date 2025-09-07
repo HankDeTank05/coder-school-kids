@@ -12,17 +12,19 @@ import player as p
 import bullet as b
 import enemy as e
 import time_manager as tm
+import HUD as h
 import circle as cir # TODO: come back and get rid of this import
 
 clock = pygame.time.Clock()
 running = True
 dt = 0
 
+
 time_man = tm.TimeManager()
 bullet_man = b.BulletManager()
 player = p.Player(color=c.GREEN, speed=500, bullet_man=bullet_man, time_man=time_man)
 franks = [ e.Frank(50, pygame.math.Vector2(c.SCREEN_WIDTH, random.randrange(c.SCREEN_HEIGHT))) ] #list of franks
-
+hud = h.Hud(time_man)
 #main game loop
 while running == True:
     for event in pygame.event.get():
@@ -56,6 +58,12 @@ while running == True:
             kb_dir.normalize_ip()
             # kb_dir *= dt
             player.set_state_knockback(kb_dir)
+        # is frank being hit by a bullet
+        if bullet_man.enemy_hit(frank_circle):
+            frank.hit(100)
+            # is frank dead
+            if frank.health <= 0:
+                franks.remove(frank)
 
 
     # step 2: draw stuff

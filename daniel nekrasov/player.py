@@ -30,8 +30,8 @@ class Player:
         self.prev_space_state = False
         self.bullet_man = bullet_man # player HAS ACCESS to bullet manager. it DOES NOT OWN it
         self.time_man = time_man
-        self.max_slomo_time = 10.6
-        self.slomo_time = self.max_slomo_time
+        self.slomo_max = 0.1
+        self.slomo_current = 0
 
         #constants
         self.SIZE = 50
@@ -57,7 +57,10 @@ class Player:
         else:
             assert(False) # crash the game if we don't recognize what state we're in
         # STEP 2: determine the next state
-        pass
+        if self.slomo_current > 0:
+            self.slomo_current -= dt
+        if self.slomo_current <= 0:
+            self.time_man.set_timescale(c.NORMAL_TIMESCALE)
 
     def draw(self):
         # STEP 1: call the correct draw function, based on the current state
@@ -121,6 +124,7 @@ class Player:
         if self.prev_space_state == False and self.current_space_state == True:
             if self.time_man.get_timescale() == c.NORMAL_TIMESCALE:
                 self.time_man.set_timescale(c.SLOMO_TIMESCALE)
+                self.slomo_current = self.slomo_max
             elif self.time_man.get_timescale() < c.NORMAL_TIMESCALE:
                 self.time_man.set_timescale(c.NORMAL_TIMESCALE)
         
