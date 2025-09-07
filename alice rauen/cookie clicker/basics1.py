@@ -9,14 +9,15 @@ HEIGHT = 450
 ##########
 
 # colors by name
-black=(255, 255, 255)
-white=(0, 0, 0)
+black=(0, 0, 0)
+white=(255, 255, 255)
 light_sky_blue = (135, 206, 250)
 red=(255,0,56)
 lemon_yellow=(255,244,79)
 pumpkin=(255,117,24)
 green=(0,255,0)
 blue=(71,159,214)
+purple=(191,148,228)
 # colors by usage
 background=light_sky_blue
 
@@ -52,6 +53,10 @@ yellow_cost=250
 buy_green=Rect(0,210,100,70)
 green_cost=150
 
+#purple button
+buy_purple=Rect(0,280,100,70)
+purple_cost=250
+
 #clicker upgrde
 buy_clicker=Rect(700,0,100,70)
 clicker_cost=300
@@ -59,26 +64,38 @@ clicker_cost=300
 def on_mouse_down(pos, button):
     global clicks, clicks_per_click, background
     
-    # check if mouse is in red box and that they have enough clicks to buy the red
+    # check if they want to buy red
     if buy_red.collidepoint(pos) and clicks >= red_cost:
-        # decrease clicks by the cost of red
-        clicks-=red_cost
+        clicks-=red_cost # decrease clicks by the cost of red
         background=red
+
+    # check if they want to buy orange   
     elif buy_orange.collidepoint(pos)and clicks >= orange_cost:
         background=pumpkin
-        clicks-=orange_cost 
+        clicks-=orange_cost
+
+    # check if they want to buy yellow
     elif buy_yellow.collidepoint(pos)and clicks >= yellow_cost:
         background=lemon_yellow
         clicks-=yellow_cost
-    elif buy_clicker.collidepoint(pos)and clicks >= clicker_cost:
-        clicks_per_click+=2
-        clicks-=clicker_cost
-    elif cookie.collidepoint(pos):
-        clicks+=clicks_per_click
+
+    # check if they want to buy green
     elif buy_green.collidepoint(pos)and clicks >= green_cost:
         background=green
         clicks-=green_cost
-    print(clicks) # TODO: get rid of this once the clicks are being drawn on the screen!
+
+    # check if they want to buy purple
+    elif buy_purple.collidepoint(pos)and clicks >= purple_cost:
+        background=purple
+        clicks-=purple_cost
+
+    # check if they want to buy clicker
+    elif buy_clicker.collidepoint(pos)and clicks >= clicker_cost:
+        clicks_per_click+=2
+        clicks-=clicker_cost
+        
+    elif cookie.collidepoint(pos):
+        clicks+=clicks_per_click
 
 def draw():
     screen.clear()
@@ -89,21 +106,26 @@ def draw():
     # draw the cookie
     cookie.draw()
 
-    # draw the red button
+    # draw the color buttons
     screen.draw.filled_rect(buy_red, red)
     screen.draw.filled_rect(buy_orange,pumpkin)
     screen.draw.filled_rect(buy_yellow, lemon_yellow)
-    screen.draw.filled_rect(buy_clicker, black)
     screen.draw.filled_rect(buy_green,green)
-    # TODO: draw the number of clicks on screen
+    screen.draw.filled_rect(buy_purple,purple)
+    # draw the clicker button
+    screen.draw.filled_rect(buy_clicker, white)
+    
+    # draw the number of clicks on screen
     screen.draw.text(str(clicks), midright=(WIDTH,HEIGHT/2))
 
-    # write_scree
-    screen.draw.text(str(red_cost),buy_red.topleft) 
-    screen.draw.text(str(orange_cost), buy_orange.topleft)
-    screen.draw.text(str(yellow_cost),buy_yellow.topleft) 
-    screen.draw.text(str(clicker_cost), buy_clicker.topleft)
-    screen.draw.text(str(green_cost),buy_green.topleft)
+    # draw the color numbers
+    screen.draw.text(str(red_cost),buy_red.topleft,color=black) 
+    screen.draw.text(str(orange_cost), buy_orange.topleft,color=black)
+    screen.draw.text(str(yellow_cost),buy_yellow.topleft,color=black) 
+    screen.draw.text(str(green_cost),buy_green.topleft,color=black)
+    screen.draw.text(str(purple_cost),buy_purple.topleft,color=black)
+    # draw the clicker number
+    screen.draw.text(str(clicker_cost), buy_clicker.topleft,color=black)
     
 pgzrun.go()
 
