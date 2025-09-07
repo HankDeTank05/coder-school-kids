@@ -96,12 +96,42 @@ def food_draw_all():
     for food in foods:
         food_draw(food=food)
 
+##################
+# GAME FUNCTIONS #
+##################
+
+def start():
+    global circle_x, circle_y, circle_radius, speed, foods, game_state, menu_start_time, boxes
+    ################
+    # Player Setup #
+    ################
+    circle_x, circle_y = 78, 295
+    circle_radius = 50
+    speed = 500
+    # box list
+    box_width = 100
+    box_height = 100
+    boxes = [
+        pygame.Rect(WIDTH /2 - box_width /2, HEIGHT/2 - box_height/2, box_width, box_height),#red rect
+    ]
+    # Food List
+    foods = [
+        [78, 45, 12, (45, 27, 232)],
+        [250, 250, 20, (255, 225, 0)],
+        [380, 129, 42, (0, 255, 0)],
+        [703, 159, 89, (225, 171, 22)],
+        [684, 547, 109, (0, 247, 255)],
+    ]
+    # Game State
+    game_state = "menu"
+    menu_start_time = pygame.time.get_ticks()  # Get start time of menu
+
 # Initialize Pygame and Mixer
 pygame.init()
 pygame.mixer.init()
 
 # Screen Setup
-WIDTH, HEIGHT = 1240, 600
+WIDTH, HEIGHT = 1580, 900
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Agario Clone')
 clock = pygame.time.Clock()
@@ -116,23 +146,9 @@ pygame.mixer.music.play(-1)
 font = pygame.font.SysFont(None, 72)
 small_font = pygame.font.SysFont(None, 48)
 
-# Game State
-game_state = "menu"
-menu_start_time = pygame.time.get_ticks()  # Get start time of menu
+start()
 
-# Player Setup
-circle_x, circle_y = 78, 295
-circle_radius = 32
-speed = 100
 
-# Food List
-foods = [
-    [78, 45, 12, (45, 27, 232)],
-    [250, 250, 20, (255, 225, 0)],
-    [380, 129, 42, (0, 255, 0)],
-    [703, 159, 89, (225, 171, 22)],
-    [684, 547, 109, (0, 247, 255)],
-]
 
 #############
 # Game Loop #
@@ -149,14 +165,25 @@ while running:
     # Auto switch from menu to playing after 3 seconds (3000 ms)
     if game_state == "menu":
         elapsed_time = pygame.time.get_ticks() - menu_start_time
-        if elapsed_time >= 3000:
-            game_state = "playing"
+        #if elapsed_time >= 3000:
+            #game_state = "playing"
 
     #if game_state == "menu":
         title_text = font.render("Glitchy Ripoff Agario", True, (0, 0, 0))
-        prompt_text = small_font.render("Get Ready...3...2...1!", True, (0, 0, 0))
+        #prompt_text = small_font.render("Get Ready...3...2...1!", True, (0, 0, 0))
         screen.blit(title_text, ((WIDTH - title_text.get_width()) // 2, HEIGHT // 3))
-        screen.blit(prompt_text, ((WIDTH - prompt_text.get_width()) // 2, HEIGHT // 2))
+        #screen.blit(prompt_text, ((WIDTH - prompt_text.get_width()) // 2, HEIGHT // 2))
+
+        mouse_pos = pygame.mouse.get_pos()
+        for box in boxes:
+            pygame.draw.rect(screen, (255,0,0), box)
+            # what are the two conditions that tell us if the player has clicked the color box or not?
+            # 1. does the player's mouse hover over the box?
+            # 2. did the player click the box when the mouse was in the box?
+
+            if box.collidepoint(mouse_pos):
+                pass
+                
 
     elif game_state == "playing":
 
@@ -170,13 +197,16 @@ while running:
         # Draw food and check collisions
         for food in foods:
             fx, fy, fr, color = food
-            #  Checks if cirlces overlap                                                If player circle is larger than food circle
-            #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv     vvvvvvvvvvvvvvvvvvvv
-            if circle_overlap(circle_x, circle_y, circle_radius,fx, fy,fr) and circle_radius >= fr:
-                eat_sound.play()
-                circle_radius += int(fr * 0.5)
-                foods.remove(food)
-                create_new_food()
+            #  Checks if cirlces overlap                                     If player circle is larger than food circle
+            #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv     vvvvvvvvvvvvvvvvvvvv
+            if circle_overlap(circle_x, circle_y, circle_radius, fx, fy, fr):
+                if circle_radius >= fr:
+                    eat_sound.play()
+                    circle_radius += int(fr * 0.25)
+                    foods.remove(food)
+                    create_new_food()
+                elif circle_radius < fr:
+                    start()
 
         ######################
         # step 2: draw stuff #
