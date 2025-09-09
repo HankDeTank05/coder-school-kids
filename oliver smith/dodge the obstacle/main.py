@@ -35,7 +35,7 @@ PLAYER_MAX_HEALTH = 700
 OBSTACLE_DMG = 100
 
 # HUD stuff
-HEALTH_BAR_WIDTH = 400
+HEALTH_BAR_WIDTH = WIDTH
 HEALTH_BAR_HEIGHT = 50
 
 ################
@@ -84,18 +84,20 @@ class Player:
         ##############################
         # Keeps player in the screen #
         ##############################
+        right_bound = WIDTH - 1
+        bottom_bound = HEIGHT - HEALTH_BAR_HEIGHT
 
         # If player is partialy or totaly off screen on the left
         if self._rect.left < 0:
             self._rect.left = 0
 
         # If player is partialy or totaly off screen on the right
-        elif self._rect.right >= WIDTH:
-            self._rect.right = WIDTH - 1
+        elif self._rect.right > right_bound:
+            self._rect.right = right_bound
 
         # If player is partialy or totaly off screen on the bottom
-        if self._rect.bottom >= HEIGHT:
-            self._rect.bottom = HEIGHT - 1
+        if self._rect.bottom > bottom_bound:
+            self._rect.bottom = bottom_bound
 
     def draw(self):
         pygame.draw.rect(SCREEN, BLUE, self._rect)
