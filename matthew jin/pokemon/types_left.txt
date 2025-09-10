@@ -1,0 +1,20 @@
+the following pokemon types need to still be programmed:
+(do at least two for homework)
+
+when you finish programming a type, copy/paste the type name below here:
+dragon
+electric
+fire
+flying
+ghost
+normal
+bug
+dark
+fairy
+fighting
+grass
+ice
+psychic
+rock
+steel
+water
