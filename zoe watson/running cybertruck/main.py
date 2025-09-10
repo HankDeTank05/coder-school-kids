@@ -1,19 +1,65 @@
 import pgzrun
+import random
+
 # TODO make more buildings and windows
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 COLOR_SKY_DAY = (173,216,230)
-COLOR_SKY_NIGHT = (0,33,71)
+COLOR_SKY_NIGHT = (16,12,8)
 
 cybertruck = Actor('cybertruck_25_left')
 cybertruck.pos = SCREEN_WIDTH/2, SCREEN_HEIGHT/2
 
 background_move = 0
-key_building = Rect((SCREEN_WIDTH/2, 125), (50, 175))
 
-window_spacing = 5
+BLACK = (0, 0, 0)
+YELLOW = (255,216,0)
+OFF_BLACK = (51,51,51)
+
+class Building:
+
+    # constructor
+    def __init__(self):
+        self.width = 50
+        self.height = 125
+        self.color = OFF_BLACK
+        self.border = 3
+        self.rect = Rect((SCREEN_WIDTH / 2, 250 - self.height), (self.width, self.height))
+        self.win_space = 4
+        self.win_width = 4
+        self.win_height = 4
+        self.win_color = YELLOW
+
+    def update(self, _background_move):
+        self.rect.move_ip(_background_move, 0)
+        if self.rect.right < 0:
+            self.rect.left = SCREEN_WIDTH - 1
+        elif self.rect.left > SCREEN_WIDTH - 1:
+            self.rect.right = 0
+
+    def draw(self):
+        # draw the building
+        screen.draw.filled_rect(self.rect, self.color)
+
+        for y in range(self.border, self.height - self.border, self.win_space + self.win_height):
+            # draw one row of windows
+            for x in range(self.border, self.width - self.border, self.win_space + self.win_width):
+                # this draws a single window
+                window_rect = Rect((self.rect.x + x, self.rect.y + y), (self.win_width, self.win_height))
+                screen.draw.filled_rect(window_rect, self.win_color)
+
+building_width = 50
+building_height = 175
+building_color = OFF_BLACK
+building_border = 3
+window_spacing = 4
 window_width = 4
+window_height = 4
+window_color = YELLOW
+key_building = Rect((SCREEN_WIDTH/2, 125), (building_width, building_height))
+
+building2 = Building()
 
 '''
 IDEAS
@@ -41,22 +87,12 @@ def on_key_up(key):
         background_move = 0
 
 def update():
-    key_building.move_ip(background_move, 0)
-    if key_building.right < 0:
-       key_building.left = SCREEN_WIDTH - 1
-    elif key_building.left > SCREEN_WIDTH - 1:
-        key_building.right = 0
-                                                    
-def draw():
-    screen.fill(COLOR_SKY_DAY)
+    building2.update(background_move)
 
-    # draw the key_building
-    screen.draw.filled_rect(key_building, (128, 128, 128))
-    # draw one row of windows
-    for x in range(0, 50, window_spacing + window_width):
-        window_rect = Rect((key_building.x + x, key_building.y), (window_width, window_width))
-        screen.draw.filled_rect(window_rect, (0, 0, 0))
-    # TODO: draw multiple rows of windows
+def draw():
+    screen.fill(COLOR_SKY_NIGHT)
+
+    building2.draw()
 
     # draw the cybertruck
     cybertruck.draw()
