@@ -178,7 +178,8 @@ grass_names = [
     "Snivy(Shiny)", "Seedot", "Vileplume", "Gogoat", "Dhelmise", "Arbolivia",
     "Jumpluff"
 ]
-normal_names = [    "Meowth", "Ursaluna", "Staravia", "Komala(Shiny)", "Lechonk", "Braviary",
+normal_names = [
+    "Meowth", "Ursaluna", "Staravia", "Komala(Shiny)", "Lechonk", "Braviary",
     "Unfezant", "Maushold", "Dundunsparce", "Regigigas", "Persian"
 ]
 fire_names = [

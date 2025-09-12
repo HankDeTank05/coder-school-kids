@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("cs-obby")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f516ed410d36a4e4f37b0c8e8e772093e8788e62")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ae0abfa868967641f5053948f4d05c4c346c0b8c")]
 [assembly: System.Reflection.AssemblyProductAttribute("cs-obby")]
 [assembly: System.Reflection.AssemblyTitleAttribute("cs-obby")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
