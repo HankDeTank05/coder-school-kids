@@ -8,6 +8,15 @@ import pygame
 # project imports (my code)
 # none yet
 
+#############
+# CONSTANTS #
+#############
+WIDTH = 1580
+HEIGHT = 900
+COLOR_RED = pygame.Color(255,0,0)
+COLOR_GREEN = pygame.Color(0,255,0)
+COLOR_BLUE = pygame.Color(0,0,255)
+
 #######################
 # GAME MATH FUNCTIONS #
 #######################
@@ -39,7 +48,7 @@ def player_update(frame_time):
     circle_y = max(circle_radius, min(HEIGHT - circle_radius, circle_y))
 
 def player_draw():
-    pygame.draw.circle(screen, (245, 45, 67), (int(circle_x), int(circle_y)), circle_radius)
+    pygame.draw.circle(screen, circle_color, (int(circle_x), int(circle_y)), circle_radius)
 
 ##################
 # FOOD FUNCTIONS #
@@ -101,19 +110,36 @@ def food_draw_all():
 ##################
 
 def start():
-    global circle_x, circle_y, circle_radius, speed, foods, game_state, menu_start_time, boxes
+    global circle_x, circle_y, circle_color, circle_radius, speed, foods, game_state, menu_start_time, boxes, box_colors
     ################
     # Player Setup #
     ################
     circle_x, circle_y = 78, 295
+    circle_color = (245, 45, 67)
     circle_radius = 50
     speed = 500
     # box list
     box_width = 100
     box_height = 100
     boxes = [
-        pygame.Rect(WIDTH /2 - box_width /2, HEIGHT/2 - box_height/2, box_width, box_height),#red rect
+        # pygame.Rect(WIDTH /2 - box_width /2, HEIGHT/2 - box_height/2, box_width, box_height), #red rect
+        pygame.Rect(0, 0, box_width, box_height), #red rect
+        pygame.Rect(0, 0, box_width,box_height),
+        pygame.Rect(0, 0, box_width,box_height),
+        pygame.Rect(0, 0, box_width, box_height)
     ]
+    box_colors = [
+        COLOR_RED,
+        COLOR_GREEN,
+        COLOR_BLUE,
+        (255, 255, 0)
+    ]
+    c = math.floor(len(boxes)/2)
+    print(f"c = {c}")
+    for box_index in range(len(boxes)):
+        change_from_center = box_index - c
+        print(f"change from center = {change_from_center}")
+        boxes[box_index].center = pygame.math.Vector2(WIDTH/2 + change_from_center*box_width,HEIGHT/2)
     # Food List
     foods = [
         [78, 45, 12, (45, 27, 232)],
@@ -131,7 +157,7 @@ pygame.init()
 pygame.mixer.init()
 
 # Screen Setup
-WIDTH, HEIGHT = 1580, 900
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Agario Clone')
 clock = pygame.time.Clock()
@@ -168,21 +194,25 @@ while running:
         #if elapsed_time >= 3000:
             #game_state = "playing"
 
-    #if game_state == "menu":
+        #if game_state == "menu":
         title_text = font.render("Glitchy Ripoff Agario", True, (0, 0, 0))
         #prompt_text = small_font.render("Get Ready...3...2...1!", True, (0, 0, 0))
         screen.blit(title_text, ((WIDTH - title_text.get_width()) // 2, HEIGHT // 3))
         #screen.blit(prompt_text, ((WIDTH - prompt_text.get_width()) // 2, HEIGHT // 2))
 
         mouse_pos = pygame.mouse.get_pos()
-        for box in boxes:
-            pygame.draw.rect(screen, (255,0,0), box)
+        mouse_state = pygame.mouse.get_pressed()
+        for box_index in range(len(boxes)):
+            box = boxes[box_index]
+            box_color = box_colors[box_index]
+            pygame.draw.rect(screen, box_color, box)
             # what are the two conditions that tell us if the player has clicked the color box or not?
             # 1. does the player's mouse hover over the box?
             # 2. did the player click the box when the mouse was in the box?
 
-            if box.collidepoint(mouse_pos):
-                pass
+            if box.collidepoint(mouse_pos) and mouse_state[0] == True:
+                circle_color = box_color
+                game_state = "playing"
                 
 
     elif game_state == "playing":
@@ -196,7 +226,7 @@ while running:
 
         # Draw food and check collisions
         for food in foods:
-            fx, fy, fr, color = food
+            fx, fy, fr, box_color = food
             #  Checks if cirlces overlap                                     If player circle is larger than food circle
             #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv     vvvvvvvvvvvvvvvvvvvv
             if circle_overlap(circle_x, circle_y, circle_radius, fx, fy, fr):
