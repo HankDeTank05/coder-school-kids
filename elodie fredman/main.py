@@ -124,15 +124,13 @@ def start():
     boxes = [
         # pygame.Rect(WIDTH /2 - box_width /2, HEIGHT/2 - box_height/2, box_width, box_height), #red rect
         pygame.Rect(0, 0, box_width, box_height), #red rect
-        pygame.Rect(0, 0, box_width,box_height),
-        pygame.Rect(0, 0, box_width,box_height),
-        pygame.Rect(0, 0, box_width, box_height)
+        pygame.Rect(0, 0, box_width,box_height), #green rect
+        pygame.Rect(0, 0, box_width,box_height) #blue rect
     ]
     box_colors = [
         COLOR_RED,
         COLOR_GREEN,
-        COLOR_BLUE,
-        (255, 255, 0)
+        COLOR_BLUE
     ]
     c = math.floor(len(boxes)/2)
     print(f"c = {c}")
