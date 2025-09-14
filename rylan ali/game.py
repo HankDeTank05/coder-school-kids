@@ -51,8 +51,10 @@ def create_snake():
 def create_food_manager():
     global foodmanager
     foodmanager = foodstuff.FoodManager(sp_max_food=30)
-    for i in range(foodmanager.max_food):
-        foodmanager.create_food()
+
+def create_trap_manager():
+    global trapmanager 
+    trapmanager = t.TrapManager(sp_max_traps=5)
 
 def run():
     ################
@@ -71,8 +73,10 @@ def run():
 
     create_snake()
     create_food_manager()
+    create_trap_manager()
 
-    trap =t.Trap(10,10)
+    # trap =t.Trap(10,10)
+
 
     ##################
     # Main game loop #
@@ -90,12 +94,13 @@ def run():
 
         #part 1: update
         player_snake.update(frame_time)
-        if player_snake.check_collision() == True :
+        foodmanager.update(player_snake)
+        trap.update(player_snake)
+        if player_snake.check_collision() == True or trap.check_trap_act() == True:
+            # reset the game 
             create_snake()
             create_food_manager()
             continue
-        foodmanager.update(player_snake)
-        trap.update(player_snake)
         
         #part 2: draw
         draw_gridlines(screen)
