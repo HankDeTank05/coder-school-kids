@@ -13,9 +13,18 @@ FPS = 60
 # stage constants
 FLOOR_HEIGHT = 690
 
+GRAVITY = 1
+
 # player constants
 PLAYER_WIDTH = 50
 PLAYER_HEIGHT = 100
+
+PLAYER_JUMP_HEIGHT = -15
+
+PLAYER_MAX_JUMPS = 2 
+PLAYER_MAX_SPEED = 5
+# TODO: create a constant for player max health
+# TODO: create a constant for player max meter
 
 # color constants
 BLACK = pygame.Color(0, 0, 0)
@@ -23,6 +32,13 @@ WHITE = pygame.Color(255, 255, 255)
 RED = pygame.Color(255, 0, 0)
 GREEN = pygame.Color(0, 255, 0)
 BLUE = pygame.Color(0, 0, 255)
+
+# hud constants
+HUD_HEALTH_BAR_WIDTH = 32
+HUD_HEALTH_BAR_HEIGHT = 20
+HUD_HEALTH_BAR_COLOR = GREEN
+HUD_HEALTH_BAR_BACKGROUND = BLACK
+HUD_HEALTH_BAR_OUTLINE = BLACK
 
 ################
 # pygame setup #
@@ -40,37 +56,65 @@ running = True
 class Fighter:
 
     # constructor
-    def __init__(self, starting_pstn: pygame.math.Vector2, speed: float, left_key, right_key):
-        self._max_hp = 300
+    def __init__(self, starting_pstn: pygame.math.Vector2, left_key, right_key, jump_key):
+        self._max_hp = 300 # TODO: replace this number with the constant for player max health
         self._current_hp = self._max_hp
 
-        self._max_meter = 100
+        self._max_meter = 100 # TODO: replace this number with the constant for player max meter
         self._current_meter = self._max_meter
 
         self._current_pstn = starting_pstn
-        self._speed = speed
+        self._speed = PLAYER_MAX_SPEED
         size = pygame.math.Vector2(PLAYER_WIDTH, PLAYER_HEIGHT)
         self._rect = pygame.Rect(self._current_pstn, size)
+        self._y_velocity = 0
 
         self._left_key = left_key
         self._right_key = right_key
+        self._jump_key = jump_key
+        self._prev_jump_key = False
+        self._jumps_left = PLAYER_MAX_JUMPS
         
     def update(self, _keys):
-        self._current_pstn.y += 10
-        
-        # this code helps them stand on the floor
-        if self._current_pstn.y > FLOOR_HEIGHT:
-            self._current_pstn.y = FLOOR_HEIGHT
 
-        # this code reads input
+        #############################
+        # this code makes them fall #
+        #############################
+
+        self._y_velocity += GRAVITY
+        self._current_pstn.y += self._y_velocity
+        
+        ###########################################
+        # this code helps them stand on the floor #
+        ###########################################
+
+        if self._current_pstn.y >= FLOOR_HEIGHT:
+            self._current_pstn.y = FLOOR_HEIGHT
+            self._y_velocity = 0
+            self._jumps_left = PLAYER_MAX_JUMPS
+
+        #########################
+        # this code reads input #
+        #########################
+
+        # this code makes the character move left and right
         if _keys[self._left_key]:
             self._current_pstn.x -= self._speed #  go left
         if _keys[self._right_key]:
             self._current_pstn.x += self._speed # go right
 
+        # check if the character is allowed to jump
+        if _keys[self._jump_key] and self._prev_jump_key == False and self._jumps_left>0:
+            # this is the code for jumping
+            self._y_velocity = PLAYER_JUMP_HEIGHT 
+            self._jumps_left -= 1
+
         self._rect.midbottom = self._current_pstn
 
-        # this code makes sure they don't go off screen
+        #################################################
+        # this code makes sure they don't go off screen #
+        #################################################
+
         if self._rect.left < 0:
             self._rect.left = 0
         
@@ -79,19 +123,42 @@ class Fighter:
 
         self._current_pstn = pygame.math.Vector2(self._rect.midbottom)
 
+        #######################
+        # prep for next frame #
+        #######################
+
+        self._prev_jump_key = _keys[self._jump_key]
     
     def draw(self):
-        pygame.draw.rect(SCREEN, WHITE, self._rect)
+        pygame.draw.rect(SCREEN, WHITE, self._rect, width=1)
 
         pygame.draw.circle(SCREEN, RED, self._current_pstn, 7, 1)
         pygame.draw.circle(SCREEN, RED, self._current_pstn, 3)
+
+class Hud: 
+
+    # constructor
+    def __init__(self):
+        pass
+
+    def update(self):
+        pass
+
+    def draw(self):
+        pass
 
 ##################
 # GAME VARIABLES #
 ##################
 
-p1 = Fighter(starting_pstn=pygame.math.Vector2(x = 50, y = 100),                    speed=50,   left_key=pygame.K_a,    right_key= pygame.K_d)
-p2 = Fighter(starting_pstn=pygame.math.Vector2(x = SCREEN_WIDTH - 100, y = 100),    speed=50,   left_key = pygame.K_LEFT,   right_key=pygame.K_RIGHT)
+p1 = Fighter(starting_pstn=pygame.math.Vector2(x = 50, y = 100),   
+             left_key=pygame.K_a,
+             right_key= pygame.K_d,
+             jump_key = pygame.K_w)
+p2 = Fighter(starting_pstn=pygame.math.Vector2(x = SCREEN_WIDTH - 100, y = 100),
+             left_key = pygame.K_LEFT,
+             right_key=pygame.K_RIGHT,
+             jump_key = pygame.K_UP)
 
 ##################
 # MAIN GAME LOOP #
