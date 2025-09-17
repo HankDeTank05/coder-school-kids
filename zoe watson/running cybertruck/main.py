@@ -5,8 +5,18 @@ import random
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+FLORR_HEIGT = 275
+ROAD_HEIRGHT = FLORR_HEIGT + 100
+ROAD_WIDTH = 40
+
 COLOR_SKY_DAY = (173,216,230)
 COLOR_SKY_NIGHT = (16,12,8)
+
+BUILDING_COUNT = 175
+MIN_BUILD_H = 40
+MAX_BUILD_H = 170
+MIN_WIN_SPACE = 1
+MAX_WIN_SPACE = 6
 
 cybertruck = Actor('cybertruck_25_left')
 cybertruck.pos = SCREEN_WIDTH/2, SCREEN_HEIGHT/2
@@ -16,17 +26,17 @@ background_move = 0
 BLACK = (0, 0, 0)
 YELLOW = (255,216,0)
 OFF_BLACK = (51,51,51)
-
+ROAD_BLACK = (35,43,43)
 class Building:
 
     # constructor
-    def __init__(self):
-        self.width = 50
-        self.height = 125
+    def __init__(self, x_pos, width, height, win_space):
+        self.width = width
+        self.height = height
         self.color = OFF_BLACK
         self.border = 3
-        self.rect = Rect((SCREEN_WIDTH / 2, 250 - self.height), (self.width, self.height))
-        self.win_space = 4
+        self.rect = Rect((x_pos, FLORR_HEIGT - self.height), (self.width, self.height))
+        self.win_space = win_space
         self.win_width = 4
         self.win_height = 4
         self.win_color = YELLOW
@@ -59,7 +69,15 @@ window_height = 4
 window_color = YELLOW
 key_building = Rect((SCREEN_WIDTH/2, 125), (building_width, building_height))
 
-building2 = Building()
+#building2 = Building(width = 50, height  = 175)
+buildigds = []
+for b in range(BUILDING_COUNT):
+    building_x = random.randrange(0,SCREEN_WIDTH)
+    building_width = 50
+    building_height = random.randrange(MIN_BUILD_H, MAX_BUILD_H)
+    win_space = random.randrange(MIN_WIN_SPACE, MAX_WIN_SPACE)
+    building = Building(x_pos = building_x, width = building_width, height = building_height, win_space = win_space)
+    buildigds.append(building)
 
 '''
 IDEAS
@@ -87,12 +105,20 @@ def on_key_up(key):
         background_move = 0
 
 def update():
-    building2.update(background_move)
+    #building2.update(background_move)
+    for build in buildigds:
+        build.update(background_move)
 
 def draw():
     screen.fill(COLOR_SKY_NIGHT)
 
-    building2.draw()
+    #building2.draw()
+    for build in buildigds:
+        build.draw()
+
+    # draw the road
+    road = Rect(0, ROAD_HEIRGHT - ROAD_WIDTH/2, SCREEN_WIDTH, ROAD_WIDTH)
+    screen.draw.filled_rect(road, ROAD_BLACK)
 
     # draw the cybertruck
     cybertruck.draw()
