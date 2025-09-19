@@ -30,6 +30,8 @@ BLACK = pygame.Color(0, 0, 0)
 RED = pygame.Color(255, 0, 0)
 BLUE = pygame.Color(0, 0, 255)
 
+FONT_SIZE = 32
+
 ##################
 # math functions #
 ##################
@@ -65,6 +67,7 @@ class Paddle:
         self.color = color
         self.upkey = up_key
         self.downkey = down_key
+        self.score = 0
 
     def update(self, frame_time, keys):
         
@@ -102,10 +105,17 @@ class Ball:
         if self.pos.y < self.radius or self.pos.y > SCREEN_HEIGHT - 1 - self.radius:
             self.dir.y *= -1
 
-        # check if collided with p1 paddle                            check if collide with p2 paddle
-        #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv     vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-        if collide_circle_rect(left_paddle, self.pos, self.radius) or collide_circle_rect(right_paddle, self.pos, self.radius):
+        # check if collided with p1 paddle
+        if collide_circle_rect(left_paddle, self.pos, self.radius):
+            self.pos.x = left_paddle.right + self.radius
             self.dir.x *= -1
+            # push the ball to the right until it is outside of the rectangle
+
+        # check if collide with p2 paddle
+        if collide_circle_rect(right_paddle, self.pos, self.radius):
+            self.pos.x = right_paddle.left - self.radius
+            self.dir.x *= -1
+            # push the ball to the left until it is outside of the rectangle
 
         # move the ball
         self.pos += self.dir * self.speed * frame_time
@@ -130,6 +140,9 @@ class Ball:
 ################
 
 pygame.init()
+pygame.font.init()
+print(pygame.font.get_fonts())
+font = pygame.font.SysFont("comicsansms", FONT_SIZE)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
@@ -174,7 +187,15 @@ while running:
     p1_paddle.update(frame_time, keys)
     p2_paddle.update(frame_time, keys)
     ball.update(frame_time, p1_paddle.rect, p2_paddle.rect)
+
+    # check if ball still on screen
     if collide_circle_rect(screen_rect,ball.pos,ball.radius) == False:
+        if ball.pos.x < 0:
+            # score for player two
+            p2_paddle.score += 1
+        else:
+            # score for player one
+            p1_paddle.score += 1
         ball.reset()
 
     ################
@@ -185,6 +206,15 @@ while running:
     p2_paddle.draw()
     ball.draw()
 
+    p1_score_text = font.render(str(p1_paddle.score), False, WHITE)
+    p1_score_pos = pygame.math.Vector2(SCREEN_WIDTH / 2 - .15 * SCREEN_WIDTH,
+                                       .15 * SCREEN_HEIGHT)
+    screen.blit(p1_score_text, p1_score_pos)
+
+    p2_score_text = font.render(str(p2_paddle.score), False, WHITE)
+    p2_score_pos = pygame.math.Vector2(SCREEN_WIDTH / 2 + .15 * SCREEN_WIDTH, 
+                                       .15 * SCREEN_HEIGHT)
+    screen.blit(p2_score_text, p2_score_pos)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
