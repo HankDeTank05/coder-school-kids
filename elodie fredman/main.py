@@ -1,6 +1,7 @@
 # language imports (stuff built into python)
 import math
 import random
+import time
 
 # library imports (not built in stuff, but not my code)
 import pygame
@@ -16,6 +17,8 @@ HEIGHT = 900
 COLOR_RED = pygame.Color(255,0,0)
 COLOR_GREEN = pygame.Color(0,255,0)
 COLOR_BLUE = pygame.Color(0,0,255)
+COLOR_YELLOW = pygame.Color(255,255,0)
+COLOR_ORANGE = pygame.Color(255,110,0)
 
 #######################
 # GAME MATH FUNCTIONS #
@@ -125,12 +128,16 @@ def start():
         # pygame.Rect(WIDTH /2 - box_width /2, HEIGHT/2 - box_height/2, box_width, box_height), #red rect
         pygame.Rect(0, 0, box_width, box_height), #red rect
         pygame.Rect(0, 0, box_width,box_height), #green rect
-        pygame.Rect(0, 0, box_width,box_height) #blue rect
+        pygame.Rect(0, 0, box_width,box_height), #blue rect
+        pygame.Rect(0,0, box_width, box_height), #yellow rect
+        pygame.Rect(0,0, box_width, box_height) # orange rect
     ]
     box_colors = [
         COLOR_RED,
         COLOR_GREEN,
-        COLOR_BLUE
+        COLOR_BLUE,
+        COLOR_YELLOW,
+        COLOR_ORANGE
     ]
     c = math.floor(len(boxes)/2)
     print(f"c = {c}")
@@ -170,6 +177,8 @@ pygame.mixer.music.play(-1)
 font = pygame.font.SysFont(None, 72)
 small_font = pygame.font.SysFont(None, 48)
 
+win_timer = -1
+
 start()
 
 
@@ -181,10 +190,17 @@ start()
 while running:
     frame_time = clock.tick(60) / 1000  # 60 FPS
     screen.fill((89, 134, 203))  # Background color
+    
 
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        
+
+    if win_timer != -1:
+        if pygame.time.get_ticks() >= win_timer:
+            start()
 
     # Auto switch from menu to playing after 3 seconds (3000 ms)
     if game_state == "menu":
@@ -211,10 +227,11 @@ while running:
             if box.collidepoint(mouse_pos) and mouse_state[0] == True:
                 circle_color = box_color
                 game_state = "playing"
-                
+
+
+
 
     elif game_state == "playing":
-
         ########################
         # step 1: update stuff #
         ########################
@@ -243,6 +260,20 @@ while running:
         player_draw()
         food_draw_all()
 
+        ###################
+        # step 3: winning #
+        ###################
+   
+        if circle_radius >= 1000:
+            game_state = "winning"
+    elif game_state == "winning":
+        screen.fill(COLOR_YELLOW)
+        win_text = font.render("You Win! Another game will begin shortly!", True, (0, 0, 0))
+        screen.blit(win_text, ((WIDTH - win_text.get_width()) // 2, HEIGHT // 3))
+        win_timer = pygame.time.get_ticks() + 3000
+
+   
+   
     pygame.display.flip()
 
 pygame.quit()
