@@ -35,15 +35,44 @@ ORANGE = (255, 100, 0)
 PLAYER_MAX_HEALTH = 700
 
 # obstacle stuff
-OBSTACLE_DMG = 100
+OBSTACLE_DMG_SMALL = 75
+OBSTACLE_DMG_NORMAL = 100
+OBSTACLE_DMG_BIG = 150
 OBSTACLE_WIDTH = 20
 OBSTACLE_HEIGHT = 30
-OBSTACLE_SPEED = 500
+OBSTACLE_SPEED_SMALL = 600
+OBSTACLE_SPEED_NORMAL = 500
+OBSTACLE_SPEED_BIG = 400
 OBSTACLE_SPAWN_DELAY = 0.5
+OBSTACLE_SIZE_SMALL = "small"
+OBSTACLE_SIZE_NORMAL = "normal"
+OBSTACLE_SIZE_BIG = "big"
+OBSTACLE_SPAWN_CHANCE = [
+    OBSTACLE_SIZE_SMALL,
+    OBSTACLE_SIZE_SMALL,
+    OBSTACLE_SIZE_NORMAL,
+    OBSTACLE_SIZE_NORMAL,
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_BIG,
+    OBSTACLE_SIZE_BIG
+]
 
 # HUD stuff
 HEALTH_BAR_WIDTH = WIDTH
-HEALTH_BAR_HEIGHT = 50
+HEALTH_BAR_HEIGHT = 10
 
 ################
 # GAME CLASSES #
@@ -52,18 +81,38 @@ HEALTH_BAR_HEIGHT = 50
 class Obstacle:
 
     # constructor
-    def __init__(self):
-        self._rect = pygame.Rect(
-            random.randint(0, WIDTH - OBSTACLE_WIDTH),
-            -OBSTACLE_HEIGHT,
-            OBSTACLE_WIDTH,
-            OBSTACLE_HEIGHT
-        )
+    def __init__(self, size_name: str):
+        self._rect: pygame.Rect = None
+        self._speed = None
+        self._dmg = None
+        if size_name == OBSTACLE_SIZE_SMALL:
+            self._rect = pygame.Rect(0, 0, 16, 22)
+            self._speed = OBSTACLE_SPEED_SMALL
+            self._dmg = OBSTACLE_DMG_SMALL
+        elif size_name == OBSTACLE_SIZE_NORMAL:
+            self._rect = pygame.Rect(0, 0, 20, 30)
+            self._speed = OBSTACLE_SPEED_NORMAL
+            self._dmg = OBSTACLE_DMG_NORMAL
+        elif size_name == OBSTACLE_SIZE_BIG:
+            self._rect = pygame.Rect(0, 0, 30, 40)
+            self._speed = OBSTACLE_SPEED_BIG
+            self._dmg = OBSTACLE_DMG_BIG
+        assert(self._rect != None) # if you got an error on this line the variable size_name doesn't have a value of "small", "normal", or "big"
+        x = random.randint(0, WIDTH - self._rect.width)
+        y = -self._rect.height
+        self._rect.update(x, y, self._rect.width, self._rect.height)
+
+        # self._rect = pygame.Rect(
+        #     random.randint(0, WIDTH - OBSTACLE_WIDTH),
+        #     -OBSTACLE_HEIGHT,
+        #     OBSTACLE_WIDTH,
+        #     OBSTACLE_HEIGHT
+        # )
 
     # game functions
 
     def update(self, frame_time):
-        self._rect.move_ip(0, OBSTACLE_SPEED * frame_time)
+        self._rect.move_ip(0, self._speed * frame_time)
 
     def draw(self):
         pygame.draw.rect(SCREEN, RED, self._rect)
@@ -72,6 +121,14 @@ class Obstacle:
 
     def get_rect(self) -> pygame.Rect:
         return self._rect
+
+    def get_dmg(self) -> int:
+        return self._dmg
+
+class SmallObstacle(Obstacle):
+
+    def __init__(self):
+        super().__init__(OBSTACLE_SIZE_SMALL)
 
 class ObstacleManager:
 
@@ -86,7 +143,8 @@ class ObstacleManager:
         self._spawn_timer += frame_time
         if self._spawn_timer >= OBSTACLE_SPAWN_DELAY:
             self._spawn_timer -= OBSTACLE_SPAWN_DELAY
-            self._obses.append(Obstacle())
+            size_name = random.choice(OBSTACLE_SPAWN_CHANCE)
+            self._obses.append(Obstacle(size_name=size_name))
         for obs in self._obses:
             obs.update(frame_time)
 
@@ -260,7 +318,7 @@ while running:
         player_rect = player.get_rect()
         obs_rect = obstacle.get_rect()
         if player_rect.colliderect(obs_rect):
-            player.take_damage(OBSTACLE_DMG)
+            player.take_damage(obstacle.get_dmg())
             collided_indices.append(obs_index)
     obs_man.remove_obses(collided_indices)
 
