@@ -139,6 +139,7 @@ class ObstacleManager:
 
     # game functions
 
+    # update all the obstacles
     def update(self, frame_time):
         self._spawn_timer += frame_time
         if self._spawn_timer >= OBSTACLE_SPAWN_DELAY:
@@ -148,6 +149,7 @@ class ObstacleManager:
         for obs in self._obses:
             obs.update(frame_time)
 
+    # draw all the obstacles
     def draw(self):
         for obs in self._obses:
             obs.draw()
