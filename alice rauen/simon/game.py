@@ -1,3 +1,4 @@
+from functools import partial
 import pgzrun
 import random
 
@@ -20,15 +21,40 @@ blue=Rect(320,0,WIDTH/2,HEIGHT/2)
 red=Rect(0,240,WIDTH/2,HEIGHT/2)
 orange=Rect(320,240,WIDTH/2,HEIGHT/2)
 
+# rectangle constants
+PURPLE_END = (purple.x+purple.width, purple.y+purple.height)
+BLUE_END = (blue.x+blue.width, blue.y+blue.height)
+RED_END = (red.x+red.width, red.y+red.height)
+ORANGE_END = (orange.x+orange.width, orange.y+orange.height)
+
 # sequence
 colors=['purple', 'blue', 'red', 'orange']
-sequance=['purple']
-sequance.append(random.choice(colors))
+sequence=['purple']
+sequence.append(random.choice(colors))
 
 def update():
-    if sequance[0] == 'purple':
-        CHICKEN_BANANA.center=purple.center
-    elif
+    # if sequence[0] == 'purple':
+    #     CHICKEN_BANANA.center=purple.center
+    # elif:
+    # for color in sequence:(
+    show_sequence(0)
+    # clock.schedule(partial(show_sequence, 1),4.0)
+    
+def show_sequence(index):
+    if index >= len(sequence):
+        return
+    match sequence[index]:
+        case 'purple':
+            CHICKEN_BANANA.center=purple.center
+        case 'blue':
+            CHICKEN_BANANA.center=blue.center
+        case 'red':
+            CHICKEN_BANANA.center=red.center
+        case 'orange':
+            CHICKEN_BANANA.center=orange.center
+        case _:
+            print('invalid color')
+
 
 def draw():
     screen.draw.filled_rect(purple,lavender)
@@ -36,5 +62,10 @@ def draw():
     screen.draw.filled_rect(red,corel)
     screen.draw.filled_rect(orange,ruby)
     CHICKEN_BANANA.draw()
+
+def on_mouse_down(pos):
+    print(pos)
+    # purple 
+    if pos.x > purple.x and pos.x< PURPLE_END.x and pos.y
 
 pgzrun.go()
