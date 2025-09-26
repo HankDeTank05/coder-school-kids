@@ -1,0 +1,5 @@
+﻿  main.cpp
+C:\Users\north\Documents\GitHub\coder-school-kids\daniel nekrasov\cpp game\guess the number\main.cpp(13,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\north\Documents\GitHub\coder-school-kids\daniel nekrasov\cpp game\guess the number\main.cpp(14,13): warning C4305: 'initializing': truncation from '__int64' to 'int'
+C:\Users\north\Documents\GitHub\coder-school-kids\daniel nekrasov\cpp game\guess the number\main.cpp(14,15): warning C4309: 'initializing': truncation of constant value
+  guess the number.vcxproj -> C:\Users\north\Documents\GitHub\coder-school-kids\daniel nekrasov\cpp game\guess the number\x64\Debug\guess the number.exe
