@@ -1,9 +1,11 @@
 # language imports
 import random
 import math
+import copy
 
 # Example file showing a basic pygame "game loop"
 import pygame
+import pygame.gfxdraw
 
 import paddle as p
 
@@ -23,12 +25,14 @@ PADDLE_SPEED = 300
 # ball variables
 BALL_RADIUS = 15
 BALL_SPEED = 409
+BALL_TRAIL = 10
+BALL_TRAIL_ALPHA_DELTA = 256 / (BALL_TRAIL + 1)
 
 # colors
-WHITE = pygame.Color(255, 255, 255)
-BLACK = pygame.Color(0, 0, 0)
-RED = pygame.Color(255, 0, 0)
-BLUE = pygame.Color(0, 0, 255)
+WHITE = pygame.Color(255, 255, 255, 255)
+BLACK = pygame.Color(0, 0, 0, 255)
+RED = pygame.Color(255, 0, 0, 255)
+BLUE = pygame.Color(0, 0, 255, 255)
 
 FONT_SIZE = 32
 
@@ -96,12 +100,22 @@ class Ball:
         self.radius = BALL_RADIUS
         self.speed = BALL_SPEED
         self.color = WHITE
+        self.past_pos = []
+        for i in range(BALL_TRAIL):
+            self.past_pos.append(None)
 
     def update(self, frame_time, left_paddle: pygame.Rect, right_paddle: pygame.Rect):
+        self.past_pos.insert(0, copy.deepcopy(self.pos))
+        index_to_remove_from = len(self.past_pos) - 1
+        self.past_pos.pop(index_to_remove_from)
+        # for i in range(len(self.past_pos)):
+        #     print(f"previous position: {self.past_pos[i]}")
+        # print()
+
         # check if ball needs to bounce
 
-        # check is at top of screen    check if it is at bottom of screen
-        #  vvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+        # check if at top of screen    check if it is at bottom of screen
+        # vvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
         if self.pos.y < self.radius or self.pos.y > SCREEN_HEIGHT - 1 - self.radius:
             self.dir.y *= -1
 
@@ -119,9 +133,19 @@ class Ball:
 
         # move the ball
         self.pos += self.dir * self.speed * frame_time
+        # print(f"current position: {self.pos}")
 
     def draw(self):
+        # surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         pygame.draw.circle(screen, self.color, self.pos, self.radius)
+        trail_color = copy.deepcopy(self.color)
+        for i in range(len(self.past_pos)):
+            trail_color.a -= int(BALL_TRAIL_ALPHA_DELTA)
+            print(trail_color.a)
+            if self.past_pos[i] is not None:
+                pygame.gfxdraw.filled_circle(screen, int(self.past_pos[i].x), int(self.past_pos[i].y), self.radius, trail_color)
+        # screen.blit(surface, (0, 0))
+        print()
 
     def reset(self):
         #puts the ball in the middle of the screen
@@ -141,8 +165,7 @@ class Ball:
 
 pygame.init()
 pygame.font.init()
-print(pygame.font.get_fonts())
-font = pygame.font.SysFont("comicsansms", FONT_SIZE)
+font = pygame.font.SysFont("tahoma", FONT_SIZE)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
@@ -222,3 +245,4 @@ while running:
     frame_time = clock.tick(60) / 1000  # limits FPS to 60
 
 pygame.quit()
+#hello there :3
