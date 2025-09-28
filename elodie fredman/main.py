@@ -12,8 +12,13 @@ import pygame
 #############
 # CONSTANTS #
 #############
-WIDTH = 1580
-HEIGHT = 900
+WIDTH = 1700
+HEIGHT = 950
+MAX_RADIUS = None
+if WIDTH > HEIGHT:
+    MAX_RADIUS = HEIGHT / 2
+else:
+    MAX_RADIUS = WIDTH / 2
 COLOR_RED = pygame.Color(255,0,0)
 COLOR_GREEN = pygame.Color(0,255,0)
 COLOR_BLUE = pygame.Color(0,0,255)
@@ -32,6 +37,35 @@ def circle_overlap(x1, y1, r1, x2, y2, r2) -> bool:
 ####################
 # PLAYER FUNCTIONS #
 ####################
+
+class Player:
+
+    # constructor
+    def __init__(self):
+        self.x = 78
+        self.y = 295
+        self.color = (245, 45, 67)
+        self.radius = 50
+        self.speed = 500
+
+    def update(self, frame_time):
+        # Establishing the movement of the player
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            self.y -= self.speed * frame_time
+        if keys[pygame.K_DOWN]:
+            self.y += self.speed * frame_time
+        if keys[pygame.K_RIGHT]:
+            self.x += self.speed * frame_time
+        if keys[pygame.K_LEFT]:
+            self.x -= self.speed * frame_time
+
+        # Keep player on screen
+        self.x = max(self.radius, min(WIDTH - self.radius, self.x))
+        self.y = max(self.radius, min(HEIGHT - self.radius, self.y))
+
+    def draw(self):
+        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.radius)
 
 def player_update(frame_time):
     global circle_x, circle_y
@@ -57,6 +91,22 @@ def player_draw():
 # FOOD FUNCTIONS #
 ##################
 
+class Food:
+    
+    # constructor
+    def __init__(self, x, y, radius, color):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.radius = radius
+
+    def update(self,frame_time):
+        pass   
+   
+    def draw(self):
+        pass
+
+    
 def food_update(food, frame_time):
     fx, fy, fr, color = food
 
@@ -114,13 +164,15 @@ def food_draw_all():
 
 def start():
     global circle_x, circle_y, circle_color, circle_radius, speed, foods, game_state, menu_start_time, boxes, box_colors
+    global player
     ################
     # Player Setup #
     ################
-    circle_x, circle_y = 78, 295
-    circle_color = (245, 45, 67)
-    circle_radius = 50
-    speed = 500
+    # circle_x, circle_y = 78, 295
+    # circle_color = (245, 45, 67)
+    # circle_radius = 50
+    # speed = 500
+    player = Player()
     # box list
     box_width = 100
     box_height = 100
@@ -146,11 +198,11 @@ def start():
         print(f"change from center = {change_from_center}")
         boxes[box_index].center = pygame.math.Vector2(WIDTH/2 + change_from_center*box_width,HEIGHT/2)
     # Food List
-    foods = [
-        [78, 45, 12, (45, 27, 232)],
-        [250, 250, 20, (255, 225, 0)],
-        [380, 129, 42, (0, 255, 0)],
-        [703, 159, 89, (225, 171, 22)],
+    foods = [ # TODO: next time, replace each of the following lines with a call to the Food() constructor
+        [78,   45,  12, (45, 27, 232)],
+        [250, 250,  20, (255, 225, 0)],
+        [380, 129,  42, (0, 255, 0)],
+        [703, 159,  89, (225, 171, 22)],
         [684, 547, 109, (0, 247, 255)],
     ]
     # Game State
@@ -181,7 +233,38 @@ win_timer = -1
 
 start()
 
+class MenuState:
+    
+    def update(self):
+        pass
 
+    def draw(self):
+        pass
+
+    def get_next_state(self):
+        pass
+
+class PlayingState:
+    
+    def update(self):
+        pass
+
+    def draw(self):
+        pass
+
+    def get_next_state(self):
+        pass
+
+class WinningState:
+    
+    def update(self):
+        pass
+
+    def draw(self):
+        pass
+
+    def get_next_state(self):
+        pass
 
 #############
 # Game Loop #
@@ -203,6 +286,10 @@ while running:
             start()
 
     # Auto switch from menu to playing after 3 seconds (3000 ms)
+
+    ####################
+    # GAME STATE: MENU #
+    ####################
     if game_state == "menu":
         elapsed_time = pygame.time.get_ticks() - menu_start_time
         #if elapsed_time >= 3000:
@@ -230,13 +317,16 @@ while running:
 
 
 
-
+    #######################
+    # GAME STATE: PLAYING #
+    #######################
     elif game_state == "playing":
         ########################
         # step 1: update stuff #
         ########################
 
-        player_update(frame_time=frame_time)
+        # player_update(frame_time=frame_time)
+        player.update(frame_time=frame_time)
         food_update_all(frame_time=frame_time)
 
         # Draw food and check collisions
@@ -244,35 +334,42 @@ while running:
             fx, fy, fr, box_color = food
             #  Checks if cirlces overlap                                     If player circle is larger than food circle
             #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv     vvvvvvvvvvvvvvvvvvvv
-            if circle_overlap(circle_x, circle_y, circle_radius, fx, fy, fr):
-                if circle_radius >= fr:
+            if circle_overlap(player.x, player.y, player.radius, fx, fy, fr):
+                if player.radius >= fr:
                     eat_sound.play()
-                    circle_radius += int(fr * 0.25)
+                    player.radius += int(fr * 0.25)
                     foods.remove(food)
                     create_new_food()
-                elif circle_radius < fr:
+                elif player.radius < fr:
                     start()
 
         ######################
         # step 2: draw stuff #
         ######################
 
-        player_draw()
+        # player_draw()
+        player.draw()
         food_draw_all()
 
         ###################
         # step 3: winning #
         ###################
    
-        if circle_radius >= 1000:
+        if player.radius >= MAX_RADIUS:
             game_state = "winning"
+            win_timer = pygame.time.get_ticks() + 3000
+
+
+
+
+    #######################
+    # GAME STATE: WINNING #
+    #######################
     elif game_state == "winning":
         screen.fill(COLOR_YELLOW)
         win_text = font.render("You Win! Another game will begin shortly!", True, (0, 0, 0))
         screen.blit(win_text, ((WIDTH - win_text.get_width()) // 2, HEIGHT // 3))
-        win_timer = pygame.time.get_ticks() + 3000
-
-   
+        
    
     pygame.display.flip()
 
