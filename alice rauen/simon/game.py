@@ -31,10 +31,14 @@ ORANGE_END = (orange.x+orange.width, orange.y+orange.height)
 # sequence
 colors=['purple', 'blue', 'red', 'orange']
 my_sequence=['purple']
+number=0000
+time_counter=0
+curent_color=None
+
 my_sequence.append(random.choice(colors))
-for color in my_sequence:
-    print(color)
-    time.sleep(3)
+#for color in my_sequence:
+#    print(color)
+#    time.sleep(3)
 
 def on_mouse_down(pos):
     print(pos)
@@ -49,14 +53,27 @@ def on_mouse_down(pos):
         print('red')
 
 def update():
-    pass
-
+    global time_counter
+    global number
+    curent_color=my_sequence[number]
+    print(curent_color)
+    time_counter+=1
+    if time_counter==180:
+        time_counter=0
+        number+=1
+        # TODO: next time, if number is to big, set current color to None
 
 def draw():
     screen.draw.filled_rect(purple,lavender)
     screen.draw.filled_rect(blue,columbia)
     screen.draw.filled_rect(red,corel)
     screen.draw.filled_rect(orange,ruby)
+    #determine where the chicken banana is going to go
+    
+    if curent_color=='blue':
+        CHICKEN_BANANA.center=blue.center
+    elif curent_color=='purple':
+        CHICKEN_BANANA.center=purple.center
     CHICKEN_BANANA.draw()
 
 
