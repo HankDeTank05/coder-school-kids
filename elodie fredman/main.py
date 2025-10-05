@@ -67,6 +67,8 @@ class Player:
     def draw(self):
         pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.radius)
 
+# TODO: we shouldn't be using the two functions below any more. comment them out and see what happens
+
 def player_update(frame_time):
     global circle_x, circle_y
     # Establishing the movement of the player
@@ -100,13 +102,14 @@ class Food:
         self.color = color
         self.radius = radius
 
-    def update(self,frame_time):
-        pass   
+    def update(self, frame_time):
+        pass
    
     def draw(self):
-        pass
-
+        pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
     
+# TODO: we shouldn't be using the two functions below any more. comment them out and see what happens
+
 def food_update(food, frame_time):
     fx, fy, fr, color = food
 
@@ -117,6 +120,56 @@ def food_draw(food):
 #############################
 # FOOD MANAGEMENT FUNCTIONS #
 #############################
+
+class FoodManager:
+
+    def __init__(self):
+        self.foods = [
+            Food(78,45,12,(45,27,255)),
+            Food(250, 250,  20, (255, 225, 255)),
+            Food(380, 129,  42, (0, 255, 0)),
+            Food(703, 159,  89, (225, 171, 22)),
+            Food(684, 547, 109, (0, 0, 0)),
+        ]
+
+    def update(self, frame_time):
+        for food in self.foods:
+            food.update(frame_time)
+
+    def draw(self):
+        for food in self.foods:
+            food.draw()
+
+    def create_new(self):
+        while True:
+            # STEP 0: generate new food
+            new_radius = random.randint(10, 80)
+            new_x = random.randint(new_radius, WIDTH - new_radius)
+            new_y = random.randint(new_radius, HEIGHT - new_radius)
+            new_color = (
+                random.randint(0, 255),
+                random.randint(0, 255),
+                random.randint(0, 255)
+            )
+            overlap = False
+            # STEP 1. check if the newly created food overlaps with ANY existing food
+            for index in range(len(self.foods)):
+                food = self.foods[index]
+                overlap = circle_overlap(x1=food.x, y1=food.y, r1=food.radius, x2=new_x, y2=new_y, r2=new_radius)
+                if overlap == True:
+                    break
+            
+            # 1a. if it does, re-run the WHILE loop
+            if overlap == True:
+                continue
+
+            # 1b. if it does not, exit the loop
+            elif overlap == False:
+                break
+        new_food = Food(new_x, new_y, new_radius, new_color)
+        self.foods.append(new_food)
+
+# TODO: we shouldn't be using the three functions below any more. comment them out and see what happens...
 
 def create_new_food():
     global foods
@@ -134,10 +187,7 @@ def create_new_food():
         # STEP 1. check if the newly created food overlaps with ANY existing food
         for index in range(len(foods)):
             food = foods[index]
-            fx = food[0]
-            fy = food[1]
-            fr = food[2]
-            overlap = circle_overlap(x1=fx, y1=fy, r1=fr, x2=new_x, y2=new_y, r2=new_radius)
+            overlap = circle_overlap(x1=food.x, y1=food.y, r1=food.radius, x2=new_x, y2=new_y, r2=new_radius)
             if overlap == True:
                 break
         
@@ -148,23 +198,24 @@ def create_new_food():
         # 1b. if it does not, exit the loop
         elif overlap == False:
             break
-    foods.append([new_x, new_y, new_radius, new_color])
+    new_food = Food(new_x, new_y, new_radius, new_color)
+    foods.append(new_food)
 
 def food_update_all(frame_time):
     for food in foods:
-        food_update(food=food, frame_time=frame_time)
+        food.update(frame_time)
 
 def food_draw_all():
     for food in foods:
-        food_draw(food=food)
+        food.draw()
 
 ##################
 # GAME FUNCTIONS #
 ##################
 
 def start():
-    global circle_x, circle_y, circle_color, circle_radius, speed, foods, game_state, menu_start_time, boxes, box_colors
-    global player
+    global foods, game_state, menu_start_time, boxes, box_colors
+    global player, food_man
     ################
     # Player Setup #
     ################
@@ -197,14 +248,15 @@ def start():
         change_from_center = box_index - c
         print(f"change from center = {change_from_center}")
         boxes[box_index].center = pygame.math.Vector2(WIDTH/2 + change_from_center*box_width,HEIGHT/2)
-    # Food List
-    foods = [ # TODO: next time, replace each of the following lines with a call to the Food() constructor
-        [78,   45,  12, (45, 27, 232)],
-        [250, 250,  20, (255, 225, 0)],
-        [380, 129,  42, (0, 255, 0)],
-        [703, 159,  89, (225, 171, 22)],
-        [684, 547, 109, (0, 247, 255)],
-    ]
+    # # Food List
+    # foods = [
+    #     Food(78,45,12,(45,27,255)),
+    #     Food(250, 250,  20, (255, 225, 255)),
+    #     Food(380, 129,  42, (0, 255, 0)),
+    #     Food(703, 159,  89, (225, 171, 22)),
+    #     Food(684, 547, 109, (0, 0, 0)),
+    # ]
+    food_man = FoodManager()
     # Game State
     game_state = "menu"
     menu_start_time = pygame.time.get_ticks()  # Get start time of menu
@@ -331,16 +383,15 @@ while running:
 
         # Draw food and check collisions
         for food in foods:
-            fx, fy, fr, box_color = food
             #  Checks if cirlces overlap                                     If player circle is larger than food circle
             #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv     vvvvvvvvvvvvvvvvvvvv
-            if circle_overlap(player.x, player.y, player.radius, fx, fy, fr):
-                if player.radius >= fr:
+            if circle_overlap(player.x, player.y, player.radius, food.x, food.y, food.radius):
+                if player.radius >= food.radius:
                     eat_sound.play()
-                    player.radius += int(fr * 0.25)
+                    player.radius += int(food.radius * 0.25)
                     foods.remove(food)
                     create_new_food()
-                elif player.radius < fr:
+                elif player.radius < food.radius:
                     start()
 
         ######################
