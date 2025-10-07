@@ -35,23 +35,30 @@ ORANGE = (255, 100, 0)
 PLAYER_MAX_HEALTH = 700
 
 # obstacle stuff
+OBS_FAST_CHANCE = 8
 OBSTACLE_DMG_SMALL = 75
 OBSTACLE_DMG_NORMAL = 100
 OBSTACLE_DMG_BIG = 150
 OBSTACLE_WIDTH = 20
 OBSTACLE_HEIGHT = 30
-OBSTACLE_SPEED_SMALL = 600
+OBSTACLE_SPEED_SMALL = 650
 OBSTACLE_SPEED_NORMAL = 500
 OBSTACLE_SPEED_BIG = 400
 OBSTACLE_SPAWN_DELAY = 0.5
 OBSTACLE_SIZE_SMALL = "small"
 OBSTACLE_SIZE_NORMAL = "normal"
 OBSTACLE_SIZE_BIG = "big"
+OBSTACLE_SMALL_WIDTH = 14
+OBSTACLE_SMALL_HEIGHT = 20
+OBSTACLE_NORMAL_WIDTH = 20
+OBSTACLE_NORMAL_HEIGHT = 30
+OBSTACLE_BIG_WIDTH = 30
+OBSTACLE_BIG_HEIGHT = 40
 OBSTACLE_SPAWN_CHANCE = [
     OBSTACLE_SIZE_SMALL,
     OBSTACLE_SIZE_SMALL,
+    OBSTACLE_SIZE_SMALL,
     OBSTACLE_SIZE_NORMAL,
-    OBSTACLE_SIZE_NORMAL,
     OBSTACLE_SIZE_NORMAL, 
     OBSTACLE_SIZE_NORMAL, 
     OBSTACLE_SIZE_NORMAL, 
@@ -65,7 +72,7 @@ OBSTACLE_SPAWN_CHANCE = [
     OBSTACLE_SIZE_NORMAL, 
     OBSTACLE_SIZE_NORMAL, 
     OBSTACLE_SIZE_NORMAL, 
-    OBSTACLE_SIZE_NORMAL, 
+    OBSTACLE_SIZE_BIG, 
     OBSTACLE_SIZE_BIG,
     OBSTACLE_SIZE_BIG
 ]
@@ -81,33 +88,13 @@ HEALTH_BAR_HEIGHT = 10
 class Obstacle:
 
     # constructor
-    def __init__(self, size_name: str):
+    def __init__(self):
         self._rect: pygame.Rect = None
         self._speed = None
         self._dmg = None
-        if size_name == OBSTACLE_SIZE_SMALL:
-            self._rect = pygame.Rect(0, 0, 16, 22)
-            self._speed = OBSTACLE_SPEED_SMALL
-            self._dmg = OBSTACLE_DMG_SMALL
-        elif size_name == OBSTACLE_SIZE_NORMAL:
-            self._rect = pygame.Rect(0, 0, 20, 30)
-            self._speed = OBSTACLE_SPEED_NORMAL
-            self._dmg = OBSTACLE_DMG_NORMAL
-        elif size_name == OBSTACLE_SIZE_BIG:
-            self._rect = pygame.Rect(0, 0, 30, 40)
-            self._speed = OBSTACLE_SPEED_BIG
-            self._dmg = OBSTACLE_DMG_BIG
-        assert(self._rect != None) # if you got an error on this line the variable size_name doesn't have a value of "small", "normal", or "big"
-        x = random.randint(0, WIDTH - self._rect.width)
-        y = -self._rect.height
-        self._rect.update(x, y, self._rect.width, self._rect.height)
+        self._is_fast = random.randint(1, 100) < OBS_FAST_CHANCE
+        # assert(self._rect != None) # if you got an error on this line the variable size_name doesn't have a value of "small", "normal", or "big"
 
-        # self._rect = pygame.Rect(
-        #     random.randint(0, WIDTH - OBSTACLE_WIDTH),
-        #     -OBSTACLE_HEIGHT,
-        #     OBSTACLE_WIDTH,
-        #     OBSTACLE_HEIGHT
-        # )
 
     # game functions
 
@@ -125,10 +112,39 @@ class Obstacle:
     def get_dmg(self) -> int:
         return self._dmg
 
+    # mutators
+
+    def _set_start_pos(self):
+        x = random.randint(0, WIDTH - self._rect.width)
+        y = -self._rect.height
+        self._rect.update(x, y, self._rect.width, self._rect.height)
+
 class SmallObstacle(Obstacle):
 
     def __init__(self):
-        super().__init__(OBSTACLE_SIZE_SMALL)
+        super().__init__()
+        self._rect = pygame.Rect(0, 0, OBSTACLE_SMALL_WIDTH, OBSTACLE_SMALL_HEIGHT)
+        self._speed = OBSTACLE_SPEED_SMALL
+        self._dmg = OBSTACLE_DMG_SMALL
+        self._set_start_pos()
+
+class NormalObstacle(Obstacle):
+    
+    def __init__(self):
+        super().__init__()
+        self._rect = pygame.Rect(0, 0, OBSTACLE_NORMAL_WIDTH, OBSTACLE_NORMAL_HEIGHT)
+        self._speed = OBSTACLE_SPEED_NORMAL
+        self._dmg = OBSTACLE_DMG_NORMAL
+        self._set_start_pos()
+
+class BigObstacle(Obstacle):
+    
+    def __init__(self):
+        super().__init__()
+        self._rect = pygame.Rect(0, 0, OBSTACLE_BIG_WIDTH, OBSTACLE_BIG_HEIGHT)
+        self._speed = OBSTACLE_SPEED_BIG
+        self._dmg = OBSTACLE_DMG_BIG
+        self._set_start_pos()
 
 class ObstacleManager:
 
@@ -145,7 +161,16 @@ class ObstacleManager:
         if self._spawn_timer >= OBSTACLE_SPAWN_DELAY:
             self._spawn_timer -= OBSTACLE_SPAWN_DELAY
             size_name = random.choice(OBSTACLE_SPAWN_CHANCE)
-            self._obses.append(Obstacle(size_name=size_name))
+            if size_name == OBSTACLE_SIZE_SMALL:
+                new_obs = SmallObstacle()
+            elif size_name == OBSTACLE_SIZE_NORMAL:
+                new_obs = NormalObstacle()
+            elif size_name == OBSTACLE_SIZE_BIG:
+                new_obs = BigObstacle()
+            else:
+                assert(False) # crashes the game if size_name doesn't have a value listed above
+                # (is there a problem with OBSTACLE_SPAWN_CHANCE or the if/elif sequence above?)
+            self._obses.append(new_obs)
         for obs in self._obses:
             obs.update(frame_time)
 
