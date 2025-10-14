@@ -19,7 +19,7 @@ pygame.font.init()
 WIDTH = 500
 HEIGHT = 600
 FPS = 60
-SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Dodge the Obstacle")
 
 # COLORS
@@ -102,7 +102,7 @@ class Obstacle:
         self._rect.move_ip(0, self._speed * frame_time)
 
     def draw(self):
-        pygame.draw.rect(SCREEN, RED, self._rect)
+        pygame.draw.rect(screen, RED, self._rect)
 
     # accessors
 
@@ -249,7 +249,7 @@ class Player:
             self._rect.bottom = bottom_bound
 
     def draw(self):
-        pygame.draw.rect(SCREEN, BLUE, self._rect)
+        pygame.draw.rect(screen, BLUE, self._rect)
 
     # accessors
 
@@ -291,33 +291,117 @@ class Hud:
 
     # game functions
 
-    def update(self, frame_time):
+    def update(self, frame_time, player):
         self._health_pcent = player.get_hp() / PLAYER_MAX_HEALTH
 
     def draw(self):
         # draw the background rectangle
         bg_rect = pygame.Rect((0, 0), (HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
         bg_rect.midbottom = pygame.math.Vector2(WIDTH/2, HEIGHT-1)
-        pygame.draw.rect(SCREEN, BLACK, bg_rect)
+        pygame.draw.rect(screen, BLACK, bg_rect)
         # draw the current health rectangle
         hp_rect = pygame.Rect(bg_rect.topleft, (self._health_pcent * HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
-        pygame.draw.rect(SCREEN, RED, hp_rect)
+        pygame.draw.rect(screen, RED, hp_rect)
+
+#################
+# STATE CLASSES #
+#################
+
+class GameState:
+
+    def __init__(self):
+        self._start_state = StartState()
+        self._playing_state = PlayingState()
+
+    def get_next_state(self):
+        print("you should never see this")
+        assert(False)
+
+
+class StartState(GameState):
+
+    def __init__(self):
+        self._begin_game = False
+    
+    def update(self, frame_time):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_RSHIFT]:
+            self._begin_game = True
+
+    def draw(self):
+        screen.fill(GREEN)
+
+    def get_next_state(self) -> GameState:
+        if self._begin_game:
+            return playing_state
+        else:
+            return self
+
+class PlayingState(GameState):
+    
+    def __init__(self):
+        self._player = Player()
+        self._obs_man = ObstacleManager()
+        self._hud = Hud()
+
+    def update(self, frame_time):
+        self._player.update(frame_time)
+        self._obs_man.update(frame_time)
+        self._hud.update(frame_time, self._player)
+
+        # do collision
+        collided_indices = []
+        obses_list = self._obs_man.get_obses()
+        for obs_index in range(len(obses_list)):
+            obstacle = obses_list[obs_index]
+            player_rect = self._player.get_rect()
+            obs_rect = obstacle.get_rect()
+            if player_rect.colliderect(obs_rect):
+                self._player.take_damage(obstacle.get_dmg())
+                collided_indices.append(obs_index)
+        self._obs_man.remove_obses(collided_indices)
+
+    def draw(self):
+        self._player.draw()
+        self._obs_man.draw()
+        self._hud.draw()
+
+    def get_next_state(self) -> GameState:
+        if self._player.get_hp() <= 0:
+            return game_over_state
+        else:
+            return self
+
+class GameOverState(GameState):
+
+    def __init__(self):
+        self._start_over = False
+
+    def update(self, frame_time):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LSHIFT]:
+            self._start_over = True
+
+    def draw(self):
+        screen.fill(BLACK)
+
+    def get_next_state(self) -> GameState:
+        if self._start_over:
+            return starting_state
+        else:
+            return self
+
 
 font = pygame.font.SysFont(None, 48)
-
 clock = pygame.time.Clock()
-
-# Create player variables
-player = Player()
-
-# obstacle manager
-obs_man = ObstacleManager()
-
-# create the hud
-hud = Hud()
 
 frame_time = 0
 running = True
+
+starting_state = StartState()
+playing_state = PlayingState()
+game_over_state = GameOverState()
+current_state: GameState = starting_state
 
 while running:
     # poll for events
@@ -327,38 +411,26 @@ while running:
             running = False
 
     # fill the screen with a color to wipe away anything from last frame
-    SCREEN.fill(WHITE)
+    screen.fill(WHITE)
 
     ##################
     # PART 1: UPDATE #
     ##################
 
-    player.update(frame_time)
-    obs_man.update(frame_time)
-    hud.update(frame_time)
-
-    # do collision
-    collided_indices = []
-    obses_list = obs_man.get_obses()
-    for obs_index in range(len(obses_list)):
-        obstacle = obses_list[obs_index]
-        player_rect = player.get_rect()
-        obs_rect = obstacle.get_rect()
-        if player_rect.colliderect(obs_rect):
-            player.take_damage(obstacle.get_dmg())
-            collided_indices.append(obs_index)
-    obs_man.remove_obses(collided_indices)
+    current_state.update(frame_time)
 
     ################
     # PART 2: DRAW #
     ################
 
-    player.draw()
-    obs_man.draw()
-    hud.draw()
+    current_state.draw()
+    pygame.display.flip() # flip() the display to put your work on screen
 
-    # flip() the display to put your work on screen
-    pygame.display.flip()
+    ##########################
+    # PART 3: GET NEXT STATE #
+    ##########################
+
+    current_state = current_state.get_next_state()
 
     frame_time = clock.tick(FPS) / 1000  # limits FPS to 60
 
