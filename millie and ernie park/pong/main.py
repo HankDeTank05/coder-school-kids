@@ -3,7 +3,6 @@ import random
 import math
 import copy
 
-# Example file showing a basic pygame "game loop"
 import pygame
 import pygame.gfxdraw
 
@@ -24,7 +23,7 @@ PADDLE_SPEED = 300
 
 # ball variables
 BALL_RADIUS = 15
-BALL_SPEED = 409
+BALL_SPEED = 500
 BALL_TRAIL = 10
 BALL_TRAIL_ALPHA_DELTA = 256 / (BALL_TRAIL + 1)
 
@@ -35,6 +34,10 @@ RED = pygame.Color(255, 0, 0, 255)
 BLUE = pygame.Color(0, 0, 255, 255)
 
 FONT_SIZE = 32
+
+# particle vars
+PARTICLE_LIFETIME = 3.67
+PARTICLE_SPEED = BALL_SPEED
 
 ##################
 # math functions #
@@ -139,9 +142,10 @@ class Ball:
         # surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         pygame.draw.circle(screen, self.color, self.pos, self.radius)
         trail_color = copy.deepcopy(self.color)
+        # draws ball trail increasingly transparent
         for i in range(len(self.past_pos)):
             trail_color.a -= int(BALL_TRAIL_ALPHA_DELTA)
-            print(trail_color.a)
+            # print(trail_color.a)
             if self.past_pos[i] is not None:
                 pygame.gfxdraw.filled_circle(screen, int(self.past_pos[i].x), int(self.past_pos[i].y), self.radius, trail_color)
         # screen.blit(surface, (0, 0))
@@ -157,7 +161,46 @@ class Ball:
         self.dir = pygame.math.Vector2(random_x, random_y)
         self.dir.normalize_ip()
 
+class Particle:
 
+    def __init__(self, pos, dir, color):
+        self.pos = pos
+        self.dir = dir
+        self.speed = PARTICLE_SPEED
+        self.color = color
+        self.lifetime = PARTICLE_LIFETIME
+        self.age = 0
+
+    def update(self, frame_time):
+        self.pos += self.dir * self.speed * frame_time
+        self.age += frame_time
+
+    def draw(self):
+        pixel = pygame.Rect(self.pos, (1,1))
+        pygame.draw.rect(screen, self.color, pixel)
+
+class ParticleManager:
+
+    def __init__(self):
+        self.particles = []
+
+    def _create_particle(self, pos, dir, color):
+        new_part = Particle(pos, dir, color)
+        self.particles.append(new_part)
+
+    def create_burst(self, part_count, pos, color):
+        for particle in range(part_count):
+            dir = pygame.math.Vector2()
+            dir.x = random.randint(-100, 100)
+            dir.y = random.randint(-100, 100)
+            dir.normalize_ip()
+            self._create_particle(pos, dir, color)
+
+    def update(self, frame_time):
+        pass # TODO: update every particle
+
+    def draw(self):
+        pass # TODO: draw every particle
 
 ################
 # pygame setup #
