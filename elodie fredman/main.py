@@ -132,9 +132,22 @@ class FoodManager:
             Food(684, 547, 109, (0, 0, 0)),
         ]
 
-    def update(self, frame_time):
+    def update(self, frame_time, _player: Player):
         for food in self.foods:
             food.update(frame_time)
+
+        # Draw food and check collisions
+        for food in self.foods:
+            #  Checks if cirlces overlap                                     If player circle is larger than food circle
+            #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv     vvvvvvvvvvvvvvvvvvvv
+            if circle_overlap(_player.x, _player.y, _player.radius, food.x, food.y, food.radius):
+                if _player.radius >= food.radius:
+                    eat_sound.play()
+                    _player.radius += int(food.radius * 0.25)
+                    self.foods.remove(food)
+                    self.create_new()
+                elif _player.radius < food.radius:
+                    start()
 
     def draw(self):
         for food in self.foods:
@@ -214,7 +227,7 @@ def food_draw_all():
 ##################
 
 def start():
-    global foods, game_state, menu_start_time, boxes, box_colors
+    global game_state, menu_start_time, boxes, box_colors
     global player, food_man
     ################
     # Player Setup #
@@ -285,31 +298,99 @@ win_timer = -1
 
 start()
 
-class MenuState:
+class GameState:
     
-    def update(self):
+    def __init__(self):
         pass
+
+class MenuState(GameState):
+
+    def __init__(self):
+        box_width = 100
+        box_height = 100
+        self.boxes = [
+            # pygame.Rect(WIDTH /2 - box_width /2, HEIGHT/2 - box_height/2, box_width, box_height), #red rect
+            pygame.Rect(0, 0, box_width, box_height), #red rect
+            pygame.Rect(0, 0, box_width,box_height), #green rect
+            pygame.Rect(0, 0, box_width,box_height), #blue rect
+            pygame.Rect(0,0, box_width, box_height), #yellow rect
+            pygame.Rect(0,0, box_width, box_height) # orange rect
+        ]
+        self.box_colors = [
+            COLOR_RED,
+            COLOR_GREEN,
+            COLOR_BLUE,
+            COLOR_YELLOW,
+            COLOR_ORANGE
+        ]
+        c = math.floor(len(self.boxes)/2)
+        print(f"c = {c}")
+        for box_index in range(len(self.boxes)):
+            change_from_center = box_index - c
+            print(f"change from center = {change_from_center}")
+            self.boxes[box_index].center = pygame.math.Vector2(WIDTH/2 + change_from_center*box_width,HEIGHT/2)
+
+        self.box_clicked = False
+        self.clicked_color = None
+    
+    def update(self, frame_time):
+        for box_index in range(len(self.boxes)):
+            box = self.boxes[box_index]
+            box_color = self.box_colors[box_index]
+
+            # what are the two conditions that tell us if the player has clicked the color box or not?
+            # 1. does the player's mouse hover over the box?
+            # 2. did the player click the box when the mouse was in the box?
+
+            if box.collidepoint(mouse_pos) and mouse_state[0] == True:
+                self.box_clicked = True
+                self.clicked_color = box_color
 
     def draw(self):
-        pass
+        # these lines make the title 'Glitchy Ripoff Agario' appear on the screen
+        title_text = font.render("Glitchy Ripoff Agario", False, (0, 0, 0))
+        screen.blit(title_text, ((WIDTH - title_text.get_width()) // 2, HEIGHT // 3))
 
-    def get_next_state(self):
-        pass
+        #these next lines go one by one to draw each of the boxes
+        for box_index in range(len(self.boxes)):
+            box = self.boxes[box_index]
+            box_color = self.box_colors[box_index]
+            pygame.draw.rect(screen, box_color, box)
 
-class PlayingState:
+    def get_next_state(self) -> GameState:
+        if self.box_clicked == True:
+            return PlayingState()
+        else:
+            return self
+
+class PlayingState(GameState):
+
+    def __init__(self):
+        self.player = Player()
+        self.food_man = FoodManager()
     
-    def update(self):
-        pass
+    def update(self, frame_time):
+        self.player.update(frame_time=frame_time)
+        self.food_man.update(frame_time=frame_time, _player=self.player)
 
     def draw(self):
-        pass
+        self.player.draw()
+        self.food_man.draw()
 
     def get_next_state(self):
-        pass
+        if the player wins...
+            return a WinningState object
+        elif the player loses...
+            return a MenuState object
+        else:
+            return self
 
-class WinningState:
+class WinningState(GameState):
+
+    def __init__(self):
+        pass
     
-    def update(self):
+    def update(self, frame_time):
         pass
 
     def draw(self):
@@ -344,11 +425,9 @@ while running:
     ####################
     if game_state == "menu":
         elapsed_time = pygame.time.get_ticks() - menu_start_time
-        #if elapsed_time >= 3000:
-            #game_state = "playing"
 
         #if game_state == "menu":
-        title_text = font.render("Glitchy Ripoff Agario", True, (0, 0, 0))
+        title_text = font.render("Glitchy Ripoff Agario", True , (0, 0, 0))
         #prompt_text = small_font.render("Get Ready...3...2...1!", True, (0, 0, 0))
         screen.blit(title_text, ((WIDTH - title_text.get_width()) // 2, HEIGHT // 3))
         #screen.blit(prompt_text, ((WIDTH - prompt_text.get_width()) // 2, HEIGHT // 2))
@@ -359,6 +438,7 @@ while running:
             box = boxes[box_index]
             box_color = box_colors[box_index]
             pygame.draw.rect(screen, box_color, box)
+
             # what are the two conditions that tell us if the player has clicked the color box or not?
             # 1. does the player's mouse hover over the box?
             # 2. did the player click the box when the mouse was in the box?
@@ -377,30 +457,15 @@ while running:
         # step 1: update stuff #
         ########################
 
-        # player_update(frame_time=frame_time)
         player.update(frame_time=frame_time)
-        food_update_all(frame_time=frame_time)
-
-        # Draw food and check collisions
-        for food in foods:
-            #  Checks if cirlces overlap                                     If player circle is larger than food circle
-            #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv     vvvvvvvvvvvvvvvvvvvv
-            if circle_overlap(player.x, player.y, player.radius, food.x, food.y, food.radius):
-                if player.radius >= food.radius:
-                    eat_sound.play()
-                    player.radius += int(food.radius * 0.25)
-                    foods.remove(food)
-                    create_new_food()
-                elif player.radius < food.radius:
-                    start()
+        food_man.update(frame_time=frame_time, _player = player)
 
         ######################
         # step 2: draw stuff #
         ######################
 
-        # player_draw()
         player.draw()
-        food_draw_all()
+        food_man.draw()
 
         ###################
         # step 3: winning #
