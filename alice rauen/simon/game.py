@@ -10,6 +10,8 @@ HEIGHT = 480
 CHICKEN_BANANA=Actor('chicken_banana!')
 CHICKEN_BANANA.center=(320,240)
 
+LEVEL_UP=Actor('LEVELUP')
+LLEEVVEELL__UUPP
 # colors go here
 lavender=(181,126,220)
 columbia=(155,221,255)
@@ -36,6 +38,10 @@ time_counter=0
 curent_color=None
 
 my_sequence.append(random.choice(colors))
+my_sequence.append(random.choice(colors))
+my_sequence.append(random.choice(colors))
+my_sequence.append(random.choice(colors))
+my_sequence.append(random.choice(colors))
 #for color in my_sequence:
 #    print(color)
 #    time.sleep(3)
@@ -44,24 +50,30 @@ def on_mouse_down(pos):
     print(pos)
     # purple 
     if purple.left<pos[0]<purple.right and purple.top<pos[1]<purple.bottom:
-        print('purple')
+        print('purple clicked')
     elif blue.left<pos[0]<blue.right and blue.top<pos[1]<blue.bottom:
-        print('blue')
+        print('blue clicked')
     elif orange.left<pos[0]<orange.right and orange.top<pos[1]<orange.bottom:
-        print('orange')
+        print('orange clicked')
     elif red.left<pos[0]<red.right and red.top<pos[1]<red.bottom:
-        print('red')
+        print('red clicked')
 
 def update():
     global time_counter
     global number
-    curent_color=my_sequence[number]
-    print(curent_color)
+    global curent_color
+    if number<len(my_sequence):
+        curent_color=my_sequence[number]
+    else:
+        curent_color=None
     time_counter+=1
-    if time_counter==180:
+    if time_counter==120:
+        print(curent_color)
         time_counter=0
         number+=1
         # TODO: next time, if number is to big, set current color to None
+        if number>=len(my_sequence):
+            curent_color=None 
 
 def draw():
     screen.draw.filled_rect(purple,lavender)
@@ -70,11 +82,21 @@ def draw():
     screen.draw.filled_rect(orange,ruby)
     #determine where the chicken banana is going to go
     
+
     if curent_color=='blue':
         CHICKEN_BANANA.center=blue.center
+        CHICKEN_BANANA.draw()
     elif curent_color=='purple':
         CHICKEN_BANANA.center=purple.center
-    CHICKEN_BANANA.draw()
+        CHICKEN_BANANA.draw()
+    elif curent_color=='orange':    
+        CHICKEN_BANANA.center=orange.center
+        CHICKEN_BANANA.draw()
+    elif curent_color=='red':
+        CHICKEN_BANANA.center=red.center
+        CHICKEN_BANANA.draw()
+    elif curent_color == None:
+        pass
 
 
 

@@ -26,6 +26,9 @@ BALL_RADIUS = 15
 BALL_SPEED = 500
 BALL_TRAIL = 10
 BALL_TRAIL_ALPHA_DELTA = 256 / (BALL_TRAIL + 1)
+BALL_PART = 100
+
+# particle variables
 
 # colors
 WHITE = pygame.Color(255, 255, 255, 255)
@@ -36,8 +39,31 @@ BLUE = pygame.Color(0, 0, 255, 255)
 FONT_SIZE = 32
 
 # particle vars
-PARTICLE_LIFETIME = 3.67
-PARTICLE_SPEED = BALL_SPEED
+PARTICLE_LIFETIME = 30
+PARTICLE_SPEED = BALL_SPEED * 1.5
+PARTICLE_SIZE = 10
+
+################
+# pygame setup #
+################
+
+pygame.init()
+pygame.font.init()
+font = pygame.font.SysFont("tahoma", FONT_SIZE)
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+clock = pygame.time.Clock()
+running = True
+frame_time = 0
+
+text_colors = [
+    (255, 0, 0), # red
+    (255, 255, 0), # yellow
+    (0, 255, 0), # green
+    (0, 255, 255), # cyan
+    (0, 0, 255), # blue
+    (255, 0, 255) # magenta
+]
+start_color_index = 0
 
 ##################
 # math functions #
@@ -93,6 +119,72 @@ class Paddle:
     def draw(self):
         pygame.draw.rect(screen, self.color, self.rect)
 
+class Particle:
+
+    def __init__(self, pos, dir, color):
+        global start_color_index
+        self.pos = pos
+        self.dir = dir
+        self.speed = PARTICLE_SPEED
+        self.color = color
+        self.lifetime = PARTICLE_LIFETIME
+        self.age = 0
+
+    def update(self, frame_time):
+        assert(0.99 <= self.dir.length_squared() <= 1.01)
+        self.pos += self.dir * self.speed * frame_time
+        self.age += frame_time
+
+    def draw(self):
+        pixel = pygame.Rect(self.pos, (PARTICLE_SIZE, PARTICLE_SIZE))
+        pygame.draw.rect(screen, self.color, pixel)
+
+
+class ParticleManager:
+
+    def __init__(self):
+        self.particles = []
+
+    def _create_particle(self, pos, dir, color):
+        new_part = Particle(pos, dir, color)
+        self.particles.append(new_part)
+
+    def create_burst(self, part_count, pos, color):
+        for particle in range(part_count):
+            dir = pygame.math.Vector2(0,0)
+            while dir.x == 0:
+                dir.x = random.randint(-100, 100)
+            while dir.y == 0:
+                dir.y = random.randint(-100, 100)
+            dir.normalize_ip()
+            '''
+            angle = random.randrange(0, 628, 1)
+            angle /= 100
+            print(f"new angle = {angle * (180/3.14)}")
+            dir = pygame.math.Vector2(math.cos(angle), math.sin(angle))
+            '''
+            # print(dir)
+            self._create_particle(copy.deepcopy(pos), dir, color)
+
+    def update(self, frame_time):
+        # update every particle
+        # print("particle positions:")
+        for part in self.particles:
+            part.update(frame_time)
+            # print(f"\t{part.pos} -> {part.dir * part.speed * frame_time}")
+        # print("that's it")
+
+        # removes particle if they are too old
+        for part_index in range(len(self.particles)-1, -1, -1):
+            part = self.particles[part_index]
+            if part.age > part.lifetime:
+                self.particles.pop(part_index)
+
+    def draw(self):
+        # TODO: draw every particle
+        for part in self.particles:
+            part.draw()
+
 class Ball:
 
     # constructor
@@ -107,7 +199,7 @@ class Ball:
         for i in range(BALL_TRAIL):
             self.past_pos.append(None)
 
-    def update(self, frame_time, left_paddle: pygame.Rect, right_paddle: pygame.Rect):
+    def update(self, frame_time, left_paddle: pygame.Rect, right_paddle: pygame.Rect, part_man: ParticleManager):
         self.past_pos.insert(0, copy.deepcopy(self.pos))
         index_to_remove_from = len(self.past_pos) - 1
         self.past_pos.pop(index_to_remove_from)
@@ -117,22 +209,26 @@ class Ball:
 
         # check if ball needs to bounce
 
-        # check if at top of screen    check if it is at bottom of screen
-        # vvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-        if self.pos.y < self.radius or self.pos.y > SCREEN_HEIGHT - 1 - self.radius:
+        hit_top = self.pos.y < self.radius # check if at top of screen
+        hit_btm = self.pos.y > SCREEN_HEIGHT - 1 - self.radius # check if it is at bottom of screen
+        if hit_top or hit_btm:
             self.dir.y *= -1
+            if hit_top:
+                part_man.create_burst(BALL_PART, self.pos + pygame.math.Vector2(0, -self.radius), WHITE)
+            elif hit_btm:
+                part_man.create_burst(BALL_PART, self.pos + pygame.math.Vector2(0, self.radius), WHITE)
 
         # check if collided with p1 paddle
         if collide_circle_rect(left_paddle, self.pos, self.radius):
             self.pos.x = left_paddle.right + self.radius
             self.dir.x *= -1
-            # push the ball to the right until it is outside of the rectangle
+            part_man.create_burst(BALL_PART, self.pos + pygame.math.Vector2(-self.radius, 0), RED)
 
         # check if collide with p2 paddle
         if collide_circle_rect(right_paddle, self.pos, self.radius):
             self.pos.x = right_paddle.left - self.radius
             self.dir.x *= -1
-            # push the ball to the left until it is outside of the rectangle
+            part_man.create_burst(BALL_PART, self.pos + pygame.math.Vector2(self.radius, 0), BLUE)
 
         # move the ball
         self.pos += self.dir * self.speed * frame_time
@@ -149,7 +245,7 @@ class Ball:
             if self.past_pos[i] is not None:
                 pygame.gfxdraw.filled_circle(screen, int(self.past_pos[i].x), int(self.past_pos[i].y), self.radius, trail_color)
         # screen.blit(surface, (0, 0))
-        print()
+        # print()
 
     def reset(self):
         #puts the ball in the middle of the screen
@@ -160,59 +256,6 @@ class Ball:
         random_y = random.choice([-1, 1])
         self.dir = pygame.math.Vector2(random_x, random_y)
         self.dir.normalize_ip()
-
-class Particle:
-
-    def __init__(self, pos, dir, color):
-        self.pos = pos
-        self.dir = dir
-        self.speed = PARTICLE_SPEED
-        self.color = color
-        self.lifetime = PARTICLE_LIFETIME
-        self.age = 0
-
-    def update(self, frame_time):
-        self.pos += self.dir * self.speed * frame_time
-        self.age += frame_time
-
-    def draw(self):
-        pixel = pygame.Rect(self.pos, (1,1))
-        pygame.draw.rect(screen, self.color, pixel)
-
-class ParticleManager:
-
-    def __init__(self):
-        self.particles = []
-
-    def _create_particle(self, pos, dir, color):
-        new_part = Particle(pos, dir, color)
-        self.particles.append(new_part)
-
-    def create_burst(self, part_count, pos, color):
-        for particle in range(part_count):
-            dir = pygame.math.Vector2()
-            dir.x = random.randint(-100, 100)
-            dir.y = random.randint(-100, 100)
-            dir.normalize_ip()
-            self._create_particle(pos, dir, color)
-
-    def update(self, frame_time):
-        pass # TODO: update every particle
-
-    def draw(self):
-        pass # TODO: draw every particle
-
-################
-# pygame setup #
-################
-
-pygame.init()
-pygame.font.init()
-font = pygame.font.SysFont("tahoma", FONT_SIZE)
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-clock = pygame.time.Clock()
-running = True
-frame_time = 0
 
 ##################
 # game variables #
@@ -228,6 +271,8 @@ ball = Ball()
 
 #screen vars
 screen_rect = pygame.Rect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
+
+part_man = ParticleManager()
 
 #################
 # the game code #
@@ -252,7 +297,8 @@ while running:
     keys = pygame.key.get_pressed()
     p1_paddle.update(frame_time, keys)
     p2_paddle.update(frame_time, keys)
-    ball.update(frame_time, p1_paddle.rect, p2_paddle.rect)
+    ball.update(frame_time, p1_paddle.rect, p2_paddle.rect, part_man)
+    part_man.update(frame_time)
 
     # check if ball still on screen
     if collide_circle_rect(screen_rect,ball.pos,ball.radius) == False:
@@ -271,6 +317,7 @@ while running:
     p1_paddle.draw()
     p2_paddle.draw()
     ball.draw()
+    part_man.draw()
 
     p1_score_text = font.render(str(p1_paddle.score), False, WHITE)
     p1_score_pos = pygame.math.Vector2(SCREEN_WIDTH / 2 - .15 * SCREEN_WIDTH,

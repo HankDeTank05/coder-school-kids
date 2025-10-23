@@ -303,6 +303,28 @@ class Hud:
         hp_rect = pygame.Rect(bg_rect.topleft, (self._health_pcent * HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
         pygame.draw.rect(screen, RED, hp_rect)
 
+class Leaderboard:
+
+    def __init__(self):
+        self._scores: list[float] = []
+
+    def submit_score(self, your_score):
+        #case 1: empty leaderboard
+        #case 2: insert at end (new score is lowest)
+        #        case 1                             case 2
+        #  vvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+        if len(self._scores) == 0 or your_score < self._scores[len(self._scores) - 1]:
+            self._scores.append(your_score)
+        # TODO: case 3: insert in the middle of the list (your score is not highest or lowest)
+        # TODO: case 4: insert at beginning of list (your score is the highest)
+
+
+    def update(self, frame_time):
+        pass
+
+    def draw(self):
+        pass
+
 #################
 # STATE CLASSES #
 #################
@@ -317,11 +339,12 @@ class GameState:
         print("you should never see this")
         assert(False)
 
-
 class StartState(GameState):
 
     def __init__(self):
         self._begin_game = False
+        self._text = font.render("To play press right shift.", True, BLACK)
+        self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     
     def update(self, frame_time):
         keys = pygame.key.get_pressed()
@@ -330,10 +353,11 @@ class StartState(GameState):
 
     def draw(self):
         screen.fill(GREEN)
+        screen.blit(self._text, self._text_rect)
 
     def get_next_state(self) -> GameState:
         if self._begin_game:
-            return playing_state
+            return PlayingState()
         else:
             return self
 
@@ -368,7 +392,7 @@ class PlayingState(GameState):
 
     def get_next_state(self) -> GameState:
         if self._player.get_hp() <= 0:
-            return game_over_state
+            return GameOverState()
         else:
             return self
 
@@ -376,6 +400,8 @@ class GameOverState(GameState):
 
     def __init__(self):
         self._start_over = False
+        self._text = font.render("To play again press left shift.", True, ORANGE)
+        self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
 
     def update(self, frame_time):
         keys = pygame.key.get_pressed()
@@ -384,10 +410,11 @@ class GameOverState(GameState):
 
     def draw(self):
         screen.fill(BLACK)
+        screen.blit(self._text, self._text_rect)
 
     def get_next_state(self) -> GameState:
         if self._start_over:
-            return starting_state
+            return StartState()
         else:
             return self
 
@@ -397,11 +424,7 @@ clock = pygame.time.Clock()
 
 frame_time = 0
 running = True
-
-starting_state = StartState()
-playing_state = PlayingState()
-game_over_state = GameOverState()
-current_state: GameState = starting_state
+current_state: GameState = StartState()
 
 while running:
     # poll for events

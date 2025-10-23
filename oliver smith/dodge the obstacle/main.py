@@ -506,6 +506,6 @@ while running:
         SCREEN.blit(text, text_rect)
 
     pygame.display.flip()
-time.sleep(5)
+
 
 pygame.quit()
