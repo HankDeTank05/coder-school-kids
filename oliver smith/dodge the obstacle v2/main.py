@@ -80,6 +80,7 @@ OBSTACLE_SPAWN_CHANCE = [
 # HUD stuff
 HEALTH_BAR_WIDTH = WIDTH
 HEALTH_BAR_HEIGHT = 10
+CHEAT_TIME_PREVENTION = 5
 
 ################
 # GAME CLASSES #
@@ -286,12 +287,13 @@ class Hud:
 
     # constructor
     def __init__(self):
+        # health bar
         self._max_health_bar_width = HEALTH_BAR_WIDTH
         self._health_pcent = 1
 
     # game functions
 
-    def update(self, frame_time, player):
+    def update(self, frame_time, player: Player):
         self._health_pcent = player.get_hp() / PLAYER_MAX_HEALTH
 
     def draw(self):
@@ -415,6 +417,71 @@ class GameOverState(GameState):
     def get_next_state(self) -> GameState:
         if self._start_over:
             return StartState()
+        else:
+            return self
+
+class CheatingState:
+    
+    def __init__(self):
+        pass
+
+    def get_next_state(self):
+        print("you should never see this")
+        assert(False)
+
+class NotCheatingState(CheatingState):
+
+    def __init__(self):
+        super().__init__()
+
+    def update(self, frame_time):
+        pass
+
+    def draw(self):
+        pass
+
+    def get_next_state(self, player_y: int | float) -> CheatingState:
+        if player_y <= 0:
+            return IsCheatingState()
+        else:
+            return self
+
+class IsCheatingState(CheatingState):
+
+    def __init__(self):
+        super().__init__()
+        self._cheat_time = 0
+
+    def update(self, frame_time):
+        self._cheat_time += frame_time
+
+    def draw(self):
+        pass
+
+    def get_next_state(self, player_y: int | float) -> CheatingState:
+        if player_y <= 0:
+            if self._cheat_time >= CHEAT_TIME_PREVENTION:
+                return PostCheating()
+            else:
+                return self
+        else:
+            return NotCheatingState()
+
+class PostCheating(CheatingState):
+
+    def __init__(self):
+        super().__init__()
+        self._post_cheat_time = 0
+
+    def update(self, frame_time):
+        self._post_cheat_time += frame_time
+
+    def draw(self):
+        pass
+
+    def get_next_state(self) -> CheatingState:
+        if self._post_cheat_time >= 2:
+            return NotCheatingState()
         else:
             return self
 
