@@ -14,6 +14,9 @@ for item_index in range(ITEMS_ON_SCREEN):
     x = (SCREEN_WIDTH / (ITEMS_ON_SCREEN + 1)) * (item_index + 1)
     ITEM_X.append(x)
 
+HIGHLIGHT_RECT_WIDTH = 100
+HIGHLIGHT_RECT_HEIGHT = 50
+
 # colors
 BLACK = pygame.Color(0,0,0)
 WHITE = pygame.Color(255, 255, 255)
@@ -31,12 +34,10 @@ running = True
 font = pygame.font.Font(size = 32)
 item_categories = ["element", "acid"]
 category_index = 0
-elements_text = [
-    "ice",
-    "earth",
-    "magic"
-]
+
+elements_text = ["ice", "earth", "magic"]
 current_element_index = 0
+
 current_acid = MIN_ACID
 
 
@@ -75,6 +76,16 @@ while running:
             current_element_index += 3
 
     # TODO: next time, read for left and right arrow key presses here
+    lt_arow_curr_state = keys[pygame.K_LEFT]
+    if lt_arow_curr_state == True and lt_arow_prev_state == False:
+        category_index -= 1
+        if category_index < 0:
+            category_index = len(ITEM_X) - 1
+    rt_arow_curr_state = keys[pygame.K_RIGHT]
+    if rt_arow_curr_state == True and rt_arow_prev_state == False:
+        category_index += 1 
+        if category_index >= len(ITEM_X):
+            category_index = 0
 
     # render element text 
     element_text = font.render(elements_text[current_element_index], True, WHITE)
@@ -85,6 +96,10 @@ while running:
     acid_text = font.render(f"acid: {current_acid}", True, WHITE)
     acid_text_rect = acid_text.get_rect()
     acid_text_rect.center = pygame.math.Vector2(ITEM_X[1], SCREEN_HEIGHT / 2)
+
+    #this makes the highlight rect
+    hlight_rect = pygame.Rect(0, 0, HIGHLIGHT_RECT_WIDTH, HIGHLIGHT_RECT_HEIGHT)
+    hlight_rect.center = pygame.math.Vector2(ITEM_X[category_index], SCREEN_HEIGHT / 2)
 
 
     ##########################
@@ -98,6 +113,9 @@ while running:
     screen.blit(element_text, element_text_rect)
     screen.blit(acid_text, acid_text_rect)
 
+    # this code is rendering the highlight rectangle on screen
+    pygame.draw.rect(screen, WHITE, hlight_rect, 10)
+
     # this code makes everything we've drawn appear on screen
     pygame.display.flip()
 
@@ -107,6 +125,8 @@ while running:
 
     up_arow_prev_state = up_arow_curr_state
     dn_arow_prev_state = dn_arow_curr_state
+    lt_arow_prev_state = lt_arow_curr_state
+    rt_arow_prev_state = rt_arow_curr_state
 
     clock.tick(FPS)
 
