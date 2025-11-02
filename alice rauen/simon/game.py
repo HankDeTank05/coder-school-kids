@@ -44,20 +44,27 @@ orange_color=ruby
 colors=['purple', 'blue', 'red', 'orange']
 my_sequence=['purple']
 number=0000
-time_counter=0
 click_counter=0
 is_clicked=False
 seq_index = 0
 curent_color=None
 
-my_sequence.append(random.choice(colors))
-my_sequence.append(random.choice(colors))
-my_sequence.append(random.choice(colors))
-my_sequence.append(random.choice(colors))
-my_sequence.append(random.choice(colors))
+# my_sequence.append(random.choice(colors))
+# my_sequence.append(random.choice(colors))
+# my_sequence.append(random.choice(colors))
+# my_sequence.append(random.choice(colors))
+# my_sequence.append(random.choice(colors))
 #for color in my_sequence:
 #    print(color)
 #    time.sleep(3)
+
+def level_up():
+    global seq_index
+    print("LEVEL UP!")
+    seq_index=0
+    new_color=random.choice(colors)
+    my_sequence.append(new_color)
+
 
 def on_mouse_down(pos):
     global purple_color
@@ -65,24 +72,43 @@ def on_mouse_down(pos):
     global red_color
     global orange_color
     global is_clicked
+    global seq_index
     print(pos)
-    is_clicked=True
+    # is_clicked=True
     # purple 
+    click=None 
     if purple.left<pos[0]<purple.right and purple.top<pos[1]<purple.bottom:
-        check_rect('purple')
+        click=check_rect('purple')
         purple_color=white
     elif blue.left<pos[0]<blue.right and blue.top<pos[1]<blue.bottom:
-        check_rect('blue')
+        click=check_rect('blue')
         blue_color=white
     elif orange.left<pos[0]<orange.right and orange.top<pos[1]<orange.bottom:
-        check_rect('orange')
+        click=check_rect('orange')
         orange_color=white
     elif red.left<pos[0]<red.right and red.top<pos[1]<red.bottom:
-        check_rect('red')
+        click=check_rect('red')
         red_color=white
 
+    if click ==True:
+        print("CORRECT")
+        seq_index+=1
+        if seq_index ==len(my_sequence):
+            level_up()
+
+
+def on_mouse_up(pos):
+    global purple_color,blue_color,orange_color,red_color
+    if purple_color ==white:
+         purple_color=lavender
+    if blue_color ==white:
+        blue_color=columbia
+    if red_color ==white:
+        red_color=corel
+    if orange_color ==white:
+        orange_color=ruby
+
 def update():
-    global time_counter
     global number
     global curent_color
     global purple_color
@@ -95,22 +121,14 @@ def update():
         curent_color=my_sequence[number]
     else:
         curent_color=None
-    time_counter+=1
-    if is_clicked:
-        click_counter+=1
-    if time_counter==120:
-        print(curent_color)
-        time_counter=0
-        number+=1
-        # TODO: next time, if number is to big, set current color to None
-        if number>=len(my_sequence):
-            curent_color=None 
-    if click_counter>=15:
-        purple_color=lavender
-        blue_color=columbia
-        red_color=corel
-        orange_color=ruby
-        click_counter=0
+    # if is_clicked:
+    #     click_counter+=1
+    # if click_counter>=15:
+    #     purple_color=lavender
+    #     blue_color=columbia
+    #     red_color=corel
+    #     orange_color=ruby
+    #     click_counter=0
 
 def draw():
     screen.draw.filled_rect(purple,purple_color)
@@ -133,7 +151,6 @@ def draw():
         CHICKEN_BANANA.draw()
     elif curent_color == None:
         pass
-
 
 def check_rect(color: str) -> bool:
     print(f"This ran and color: {color} and getnext: {get_next()}")
