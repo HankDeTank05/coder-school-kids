@@ -136,4 +136,6 @@ def run_tree():
     fractal_tree(pen, branch_len=120, angle=40, factor=0.9, depth=9)
     pen.hideturtle()
 
+# run_sierpinski()
+# run_koch()
 run_tree()
