@@ -22,11 +22,21 @@ class Basics {
         System.out.println("THAT'S A WROOP");
     }
     public static void main(String[] args) {
-        Basics.basics1();
-        String[] pokemon = {"Diggersby", "Greninja", "Victreebel"};
-        for(int index = 0; index < pokemon.length; index+=1){
-            System.out.println(pokemon[index]);
+        String[] pokemon = {"Diggersby", "Wartortle", "Victreebel", "Snorlax","Throh" };
+
+        // int number = 0;
+        // System.out.println(pokemon[number]);
+        // number+=1;
+        // System.out.println(pokemon[number]);
+        // number+=1;
+        // System.out.println(pokemon[number]);
+        // number+=1;
+        // System.out.println(pokemon[number]);
+        // number+=1;
+        // System.out.println(pokemon[number]);
+
+        for(int number = 0; number < pokemon.length; number+=1){
+            System.out.println(pokemon[number]);
         }
-        System.out.println(pokemon);
     }
 }

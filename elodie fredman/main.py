@@ -24,6 +24,7 @@ COLOR_GREEN = pygame.Color(0,255,0)
 COLOR_BLUE = pygame.Color(0,0,255)
 COLOR_YELLOW = pygame.Color(255,255,0)
 COLOR_ORANGE = pygame.Color(255,110,0)
+WIN_SCREEN_TIME = 3000
 
 #######################
 # GAME MATH FUNCTIONS #
@@ -41,10 +42,10 @@ def circle_overlap(x1, y1, r1, x2, y2, r2) -> bool:
 class Player:
 
     # constructor
-    def __init__(self):
+    def __init__(self, player_color):
         self.x = 78
         self.y = 295
-        self.color = (245, 45, 67)
+        self.color = player_color
         self.radius = 50
         self.speed = 500
 
@@ -67,27 +68,6 @@ class Player:
     def draw(self):
         pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.radius)
 
-# TODO: we shouldn't be using the two functions below any more. comment them out and see what happens
-
-def player_update(frame_time):
-    global circle_x, circle_y
-    # Establishing the movement of the player
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP]:
-        circle_y -= speed * frame_time
-    if keys[pygame.K_DOWN]:
-        circle_y += speed * frame_time
-    if keys[pygame.K_RIGHT]:
-        circle_x += speed * frame_time
-    if keys[pygame.K_LEFT]:
-        circle_x -= speed * frame_time
-
-    # Keep player on screen
-    circle_x = max(circle_radius, min(WIDTH - circle_radius, circle_x))
-    circle_y = max(circle_radius, min(HEIGHT - circle_radius, circle_y))
-
-def player_draw():
-    pygame.draw.circle(screen, circle_color, (int(circle_x), int(circle_y)), circle_radius)
 
 ##################
 # FOOD FUNCTIONS #
@@ -108,14 +88,6 @@ class Food:
     def draw(self):
         pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
     
-# TODO: we shouldn't be using the two functions below any more. comment them out and see what happens
-
-def food_update(food, frame_time):
-    fx, fy, fr, color = food
-
-def food_draw(food):
-    fx, fy, fr, color = food
-    pygame.draw.circle(screen, color, (int(fx), int(fy)), fr) # Puts food on screen / draws food
 
 #############################
 # FOOD MANAGEMENT FUNCTIONS #
@@ -124,6 +96,7 @@ def food_draw(food):
 class FoodManager:
 
     def __init__(self):
+        self.game_over = False
         self.foods = [
             Food(78,45,12,(45,27,255)),
             Food(250, 250,  20, (255, 225, 255)),
@@ -147,7 +120,7 @@ class FoodManager:
                     self.foods.remove(food)
                     self.create_new()
                 elif _player.radius < food.radius:
-                    start()
+                    self.game_over = True
 
     def draw(self):
         for food in self.foods:
@@ -182,45 +155,6 @@ class FoodManager:
         new_food = Food(new_x, new_y, new_radius, new_color)
         self.foods.append(new_food)
 
-# TODO: we shouldn't be using the three functions below any more. comment them out and see what happens...
-
-def create_new_food():
-    global foods
-    while True:
-        # STEP 0: generate new food
-        new_radius = random.randint(10, 80)
-        new_x = random.randint(new_radius, WIDTH - new_radius)
-        new_y = random.randint(new_radius, HEIGHT - new_radius)
-        new_color = (
-            random.randint(0, 255),
-            random.randint(0, 255),
-            random.randint(0, 255)
-        )
-        overlap = False
-        # STEP 1. check if the newly created food overlaps with ANY existing food
-        for index in range(len(foods)):
-            food = foods[index]
-            overlap = circle_overlap(x1=food.x, y1=food.y, r1=food.radius, x2=new_x, y2=new_y, r2=new_radius)
-            if overlap == True:
-                break
-        
-        # 1a. if it does, re-run the WHILE loop
-        if overlap == True:
-            continue
-
-        # 1b. if it does not, exit the loop
-        elif overlap == False:
-            break
-    new_food = Food(new_x, new_y, new_radius, new_color)
-    foods.append(new_food)
-
-def food_update_all(frame_time):
-    for food in foods:
-        food.update(frame_time)
-
-def food_draw_all():
-    for food in foods:
-        food.draw()
 
 ##################
 # GAME FUNCTIONS #
@@ -377,27 +311,37 @@ class PlayingState(GameState):
         self.player.draw()
         self.food_man.draw()
 
-    def get_next_state(self):
-        if the player wins...
-            return a WinningState object
-        elif the player loses...
-            return a MenuState object
+    def get_next_state(self) -> GameState:
+        # if the player wins...
+        if self.player.radius >= MAX_RADIUS:
+            # return a WinningState object
+            return WinningState()
+        # elif the player loses...
+        if  self.food_man.game_over == True:
+            # return a MenuState object
+            return MenuState()
         else:
             return self
 
 class WinningState(GameState):
 
     def __init__(self):
-        pass
+        self.win_text = font.render("You Win! Another game will begin shortly!", False, (0, 0, 0))
+        self.restart_win_menu_checker_thing_time = pygame.time.get_ticks() + WIN_SCREEN_TIME
     
     def update(self, frame_time):
         pass
 
     def draw(self):
-        pass
+        screen.fill(COLOR_YELLOW)
+        screen.blit(self.win_text, ((WIDTH - self.win_text.get_width()) // 2, HEIGHT // 3))
 
-    def get_next_state(self):
-        pass
+    def get_next_state(self) -> GameState:
+        if pygame.time.get_ticks() >= self.restart_win_menu_checker_thing_time:
+            return MenuState()
+        return self
+    
+current_state = MenuState()
 
 #############
 # Game Loop #
@@ -406,14 +350,22 @@ class WinningState(GameState):
 while running:
     frame_time = clock.tick(60) / 1000  # 60 FPS
     screen.fill((89, 134, 203))  # Background color
-    
-
-    
+        
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        
 
+    ### PART 1: UPDATE ###
+    current_state.update(frame_time)
+
+    ### PART 2: DRAW ###
+    current_state.draw()
+
+    ### PART 3: PREP FOR NEXT FRAME ###
+    current_state = current_state.get_next_state()
+
+    
+    """
     if win_timer != -1:
         if pygame.time.get_ticks() >= win_timer:
             start()
@@ -485,6 +437,7 @@ while running:
         screen.fill(COLOR_YELLOW)
         win_text = font.render("You Win! Another game will begin shortly!", True, (0, 0, 0))
         screen.blit(win_text, ((WIDTH - win_text.get_width()) // 2, HEIGHT // 3))
+    """
         
    
     pygame.display.flip()

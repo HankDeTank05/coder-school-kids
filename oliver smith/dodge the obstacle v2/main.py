@@ -80,6 +80,7 @@ OBSTACLE_SPAWN_CHANCE = [
 # HUD stuff
 HEALTH_BAR_WIDTH = WIDTH
 HEALTH_BAR_HEIGHT = 10
+CHEAT_TIME_PREVENTION = 5
 
 ################
 # GAME CLASSES #
@@ -286,13 +287,19 @@ class Hud:
 
     # constructor
     def __init__(self):
+        # health bar
         self._max_health_bar_width = HEALTH_BAR_WIDTH
         self._health_pcent = 1
+        self._cheating_state = NotCheatingState()
 
     # game functions
 
-    def update(self, frame_time, player):
+    def update(self, frame_time, player: Player):
+        player_pos = player.get_pos()
+        self._cheating_state = self._cheating_state.get_next_state(player_y=player_pos.y)
         self._health_pcent = player.get_hp() / PLAYER_MAX_HEALTH
+        self._cheating_state.update(frame_time)
+
 
     def draw(self):
         # draw the background rectangle
@@ -302,6 +309,7 @@ class Hud:
         # draw the current health rectangle
         hp_rect = pygame.Rect(bg_rect.topleft, (self._health_pcent * HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
         pygame.draw.rect(screen, RED, hp_rect)
+        self._cheating_state.draw()
 
 class Leaderboard:
 
@@ -335,7 +343,7 @@ class GameState:
         self._start_state = StartState()
         self._playing_state = PlayingState()
 
-    def get_next_state(self):
+    def get_next_state(self) -> 'GameState':
         print("you should never see this")
         assert(False)
 
@@ -418,6 +426,69 @@ class GameOverState(GameState):
         else:
             return self
 
+class CheatingState:
+    
+    def __init__(self):
+        pass
+
+class NotCheatingState(CheatingState):
+
+    def __init__(self):
+        super().__init__()
+
+    def update(self, frame_time):
+        pass
+
+    def draw(self):
+        pass
+
+    def get_next_state(self, player_y: int | float) -> CheatingState:
+        if player_y < 0:
+            return IsCheatingState()
+        else:
+            return self
+
+class IsCheatingState(CheatingState):
+
+    def __init__(self):
+        super().__init__()
+        self._cheat_time = 0
+        self._text = font.render("YOU'RE A BAD PERSON ", True, RED)
+        self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+
+    def update(self, frame_time):
+        self._cheat_time += frame_time
+
+    def draw(self):
+        screen.blit(self._text, self._text_rect)
+
+    def get_next_state(self, player_y: int | float) -> CheatingState:
+        if player_y < 0:
+            if self._cheat_time >= CHEAT_TIME_PREVENTION:
+                return PostCheating()
+            else:
+                return self
+        else:
+            return NotCheatingState()
+
+class PostCheating(CheatingState):
+
+    def __init__(self):
+        super().__init__()
+        self._post_cheat_time = 0
+
+    def update(self, frame_time):
+        self._post_cheat_time += frame_time
+
+    def draw(self):
+        pass
+
+    def get_next_state(self, player_y: int | float) -> CheatingState:
+        if self._post_cheat_time >= 2:
+            return NotCheatingState()
+        else:
+            return self
+
 
 font = pygame.font.SysFont(None, 48)
 clock = pygame.time.Clock()
@@ -433,8 +504,6 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill(WHITE)
 
     ##################
     # PART 1: UPDATE #
@@ -446,7 +515,10 @@ while running:
     # PART 2: DRAW #
     ################
 
+    screen.fill(WHITE) # fill the screen with a color to wipe away anything from last frame
+
     current_state.draw()
+
     pygame.display.flip() # flip() the display to put your work on screen
 
     ##########################

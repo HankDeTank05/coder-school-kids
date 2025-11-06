@@ -20,7 +20,7 @@ circle_drawer.color("white")
 wave_drawer.color("cyan")
 
 # parameters
-NUM_TERMS = 10
+NUM_TERMS = 1
 BASE_RADIUS = 75
 time_step = 0
 wave_points = []
