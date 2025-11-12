@@ -1,3 +1,4 @@
+# this function returns text of choosen option
 def prompt_for_input(prompt: str, options: list[str]) -> str:
 
     input_is_valid = False
@@ -35,6 +36,7 @@ def prompt_for_input(prompt: str, options: list[str]) -> str:
 
     return chosen_option
 
+# this function returns a number repersenting a change in alignment
 def moral_choice(prompt: str, choice_evil: str, choice_neutral: str, choice_good: str) -> float:
     while True: 
         print(prompt)
