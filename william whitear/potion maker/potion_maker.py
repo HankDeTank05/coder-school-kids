@@ -1,10 +1,18 @@
+# language imports
+import os.path
+
+# library import
 import pygame
+
+# debugging variables
+IN_DEVELOPMENT = True # TODO: explain this at the start of next session (delete this once explained!)
 
 # rendering variables
 SCREEN_WIDTH = 1280 
 SCREEN_HEIGHT = 720
 FPS = 100
 selected = 1
+
 # game constants
 MIN_ACID = 1 
 MAX_ACID = 5
@@ -23,6 +31,20 @@ WHITE = pygame.Color(255, 255, 255)
 ELECTRIC_CYAN = pygame.Color(0,255,255)
 FOREST_GREEN = pygame.Color(34,139,34)
 DARK_VIOLET = pygame.Color(148,0,211)
+
+#sprites
+if IN_DEVELOPMENT: # TODO: explain this at the start of next session (delete this once explained!)
+    bottle_classic_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_classic.png")
+    # bottle_cube_rel_path = 
+else:
+    bottle_classic_rel_path = os.path.join("assets", "images", "bottle_classic.png")
+    # bottle_cube_rel_path = 
+
+bottle_classic_abs_path = os.path.abspath(bottle_classic_rel_path)
+spr_bottle_classic = pygame.image.load(bottle_classic_abs_path)
+
+# bottle_cube_abs_path = 
+# spr_bottle_cube = 
 
 #pygame setup
 pygame.init()
@@ -89,6 +111,14 @@ def decrease_acid():
     if current_acid < MIN_ACID:
         current_acid = MAX_ACID
 
+
+def render_text(string_to_render, text_color, center_x, center_y):
+    rendered_text = font.render(string_to_render, True, text_color)
+    rendered_text_rect = rendered_text.get_rect()
+    rendered_text_rect.center = pygame.math.Vector2(center_x, center_y)
+    return (rendered_text, rendered_text_rect)
+
+
 while running: 
     #allows the player to quit the game
     for event in pygame.event.get():
@@ -124,14 +154,10 @@ while running:
         next_category()
 
     # render element text 
-    element_text = font.render(elements_text[current_element_index], True, WHITE)
-    element_text_rect = element_text.get_rect()
-    element_text_rect.center = pygame.math.Vector2(ITEM_X[0], SCREEN_HEIGHT / 2)
+    element_text, element_text_rect = render_text(elements_text[current_element_index], WHITE, ITEM_X[0], SCREEN_HEIGHT / 2)
 
     #render acid text
-    acid_text = font.render(f"acid: {current_acid}", True, WHITE)
-    acid_text_rect = acid_text.get_rect()
-    acid_text_rect.center = pygame.math.Vector2(ITEM_X[1], SCREEN_HEIGHT / 2)
+    acid_text, acid_text_rect = render_text(f"acid: {current_acid}", WHITE, ITEM_X[1], SCREEN_HEIGHT / 2)
 
     #this makes the highlight rect
     hlight_rect = pygame.Rect(0, 0, HIGHLIGHT_RECT_WIDTH, HIGHLIGHT_RECT_HEIGHT)
