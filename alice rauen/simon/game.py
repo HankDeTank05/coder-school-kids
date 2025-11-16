@@ -5,15 +5,19 @@ import time
 
 from pygame import Rect
 
-WIDTH = 640
-HEIGHT = 480
+WIDTH = 1920
+HEIGHT = 1080
 
 #chicken banana
 CHICKEN_BANANA=Actor('chicken_banana!')
-CHICKEN_BANANA.center=(320,240)
+CHICKEN_BANANA.center=(WIDTH/2,HEIGHT/2)
 
 LEVEL_UP=Actor('levelup')
-LEVEL_UP.center=(320,240)
+LEVEL_UP.center=(WIDTH/2,HEIGHT/2)
+
+GAME_OVER=Actor('dolphin')
+GAME_OVER.center=(WIDTH/2,HEIGHT/2)
+
 # colors go here
 lavender=(181,126,220)
 columbia=(155,221,255)
@@ -23,9 +27,9 @@ white=(255,255,255)
 
 # rectangles go here
 purple=Rect(0,0, WIDTH/2, HEIGHT/2)
-blue=Rect(320,0,WIDTH/2,HEIGHT/2)
-red=Rect(0,240,WIDTH/2,HEIGHT/2)
-orange=Rect(320,240,WIDTH/2,HEIGHT/2)
+blue=Rect(WIDTH/2,0,WIDTH/2,HEIGHT/2)
+red=Rect(0,HEIGHT/2,WIDTH/2,HEIGHT/2)
+orange=Rect(WIDTH/2,HEIGHT/2,WIDTH/2,HEIGHT/2)
 
 # rectangle constants
 #PURPLE_END = (, purple.y+purple.height)
@@ -50,6 +54,7 @@ sequence_timer=0
 curent_color=None
 game_state='sequence'
 level_timer=0
+game_over_timer=0
 
 # my_sequence.append(random.choice(colors))
 # my_sequence.append(random.choice(colors))
@@ -59,6 +64,20 @@ level_timer=0
 #for color in my_sequence:
 #    print(color)
 #    time.sleep(3)
+
+def start_over():
+    global my_sequence 
+    global click_index
+    global sequence_index
+    global sequence_timer
+    global game_over_timer
+    game_over_timer = 0
+    click_index=0
+    sequence_index=0
+    sequence_timer=0 
+    my_sequence=[]
+    new_color=random.choice(colors)
+    my_sequence.append(new_color)
 
 def level_up():
     global click_index
@@ -83,6 +102,7 @@ def on_mouse_down(pos):
     global orange_color
     global is_clicked
     global click_index
+    global game_state
     print(pos)
     # is_clicked=True
     # purple 
@@ -109,7 +129,7 @@ def on_mouse_down(pos):
 
 
         elif click==False:
-            pass
+            game_state='GAME_OVER'
 
 
 def on_mouse_up(pos):
@@ -135,6 +155,7 @@ def update():
     global is_clicked
     global game_state
     global level_timer
+    global game_over_timer
     if game_state=='sequence':
         if sequence_index<len(my_sequence):
             curent_color=my_sequence[sequence_index]
@@ -150,6 +171,11 @@ def update():
     elif game_state=='level up':
         level_timer+=1
         if level_timer>=180:
+            game_state='sequence'
+    elif game_state=='GAME_OVER':
+        game_over_timer+=1
+        if game_over_timer>=180:
+            start_over()
             game_state='sequence'
 
 def draw():
@@ -175,6 +201,8 @@ def draw():
             CHICKEN_BANANA.draw()
     elif game_state=='level up':
         LEVEL_UP.draw()
+    elif game_state=='GAME_OVER':
+        GAME_OVER.draw()
 
 def check_rect(color: str) -> bool:
     print(f"This ran and color: {color} and getnext: {get_next()}")
