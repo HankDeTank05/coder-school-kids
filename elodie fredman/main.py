@@ -166,10 +166,6 @@ def start():
     ################
     # Player Setup #
     ################
-    # circle_x, circle_y = 78, 295
-    # circle_color = (245, 45, 67)
-    # circle_radius = 50
-    # speed = 500
     player = Player()
     # box list
     box_width = 100
@@ -195,14 +191,6 @@ def start():
         change_from_center = box_index - c
         print(f"change from center = {change_from_center}")
         boxes[box_index].center = pygame.math.Vector2(WIDTH/2 + change_from_center*box_width,HEIGHT/2)
-    # # Food List
-    # foods = [
-    #     Food(78,45,12,(45,27,255)),
-    #     Food(250, 250,  20, (255, 225, 255)),
-    #     Food(380, 129,  42, (0, 255, 0)),
-    #     Food(703, 159,  89, (225, 171, 22)),
-    #     Food(684, 547, 109, (0, 0, 0)),
-    # ]
     food_man = FoodManager()
     # Game State
     game_state = "menu"
@@ -230,7 +218,30 @@ small_font = pygame.font.SysFont(None, 48)
 
 win_timer = -1
 
-start()
+#start()
+
+class Leaderboard:
+
+    def __init__(self):
+        self.scores = {}
+        
+    def add_score(self, score_number, player_username):
+        self.scores[player_username] = score_number
+
+    def draw(self):
+        row = 0
+        for (username, score) in zip(self.scores.keys(), self.scores.values()):
+            username_text = font.render (username, False, (0,0,0))
+            username_text_rect = username_text.get_rect()
+            username_text_rect.right = WIDTH / 2
+            username_text_rect.top = row * 30
+            screen.blit(username_text, username_text_rect)
+            score_text = font.render (f'{score}', False, (0,0,0))
+            score_text_rect = score_text.get_rect()
+            score_text_rect.left = WIDTH / 2
+            score_text_rect.top = row * 30
+            screen.blit(score_text, score_text_rect)
+            row += 1
 
 class GameState:
     
@@ -275,7 +286,8 @@ class MenuState(GameState):
             # what are the two conditions that tell us if the player has clicked the color box or not?
             # 1. does the player's mouse hover over the box?
             # 2. did the player click the box when the mouse was in the box?
-
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_state = pygame.mouse.get_pressed()
             if box.collidepoint(mouse_pos) and mouse_state[0] == True:
                 self.box_clicked = True
                 self.clicked_color = box_color
@@ -293,19 +305,21 @@ class MenuState(GameState):
 
     def get_next_state(self) -> GameState:
         if self.box_clicked == True:
-            return PlayingState()
+            return PlayingState(self.clicked_color)
         else:
             return self
 
 class PlayingState(GameState):
 
-    def __init__(self):
-        self.player = Player()
+    def __init__(self, player_color):
+        self.player = Player(player_color)
         self.food_man = FoodManager()
+        self.score = 0
     
     def update(self, frame_time):
         self.player.update(frame_time=frame_time)
         self.food_man.update(frame_time=frame_time, _player=self.player)
+        self.score += frame_time
 
     def draw(self):
         self.player.draw()
@@ -315,7 +329,7 @@ class PlayingState(GameState):
         # if the player wins...
         if self.player.radius >= MAX_RADIUS:
             # return a WinningState object
-            return WinningState()
+            return NameState(new_score=self.score)
         # elif the player loses...
         if  self.food_man.game_over == True:
             # return a MenuState object
@@ -323,11 +337,65 @@ class PlayingState(GameState):
         else:
             return self
 
+class NameState(GameState):
+    def __init__(self, new_score):
+        self.username = None
+        self.temp_username = ""
+        self.score = new_score
+        self.rendered_text = None
+        self.rendered_text_rect = None
+        self.key_dict = {
+            pygame.K_a: "Aa",
+            pygame.K_b: "Bb",
+            pygame.K_c: "Aa",
+            pygame.K_d: "Aa",
+            pygame.K_e: "Aa",
+            pygame.K_f: "Aa",
+            pygame.K_g: "Aa",
+            pygame.K_h: "Aa",
+            pygame.K_i: "Aa",
+            pygame.K_j: "Aa",
+            pygame.K_k: "Aa",
+            pygame.K_l: "Aa",
+            pygame.K_m: "Aa",
+            pygame.K_n: "Aa",
+            pygame.K_o: "Aa",
+            pygame.K_p: "Aa",
+            pygame.K_q: "Aa",
+            pygame.K_r: "Aa",
+            pygame.K_s: "Aa",
+            pygame.K_t: "Aa",
+            pygame.K_u: "Aa",
+            pygame.K_v: "Aa",
+            pygame.K_w: "Aa",
+            pygame.K_x: "Aa",
+            pygame.K_y: "Aa",
+            pygame.K_z: "Aa",
+        }
+
+    def update(self, frame_time):
+        key_states = pygame.key.get_pressed()
+
+        self.rendered_text = font.render("What is your username? ", False, (0,0,0))
+        self.rendered_text_rect = self.rendered_text.get_rect()
+        self.rendered_text_rect.topleft = (0,0)
+
+    def draw(self):
+        screen.blit(self.rendered_text, self.rendered_text_rect)
+
+    def get_next_state(self):
+        if self.username is None:
+            return self
+        else:
+            return WinningState(self.score, self.username)
+
 class WinningState(GameState):
 
-    def __init__(self):
+    def __init__(self, new_score, new_username):
         self.win_text = font.render("You Win! Another game will begin shortly!", False, (0, 0, 0))
         self.restart_win_menu_checker_thing_time = pygame.time.get_ticks() + WIN_SCREEN_TIME
+        self.leaderboard = Leaderboard()
+        self.leaderboard.add_score(new_score, new_username)
     
     def update(self, frame_time):
         pass
@@ -335,12 +403,17 @@ class WinningState(GameState):
     def draw(self):
         screen.fill(COLOR_YELLOW)
         screen.blit(self.win_text, ((WIDTH - self.win_text.get_width()) // 2, HEIGHT // 3))
+        self.leaderboard.draw()
+
 
     def get_next_state(self) -> GameState:
         if pygame.time.get_ticks() >= self.restart_win_menu_checker_thing_time:
             return MenuState()
         return self
     
+
+
+
 current_state = MenuState()
 
 #############
@@ -363,7 +436,6 @@ while running:
 
     ### PART 3: PREP FOR NEXT FRAME ###
     current_state = current_state.get_next_state()
-
     
     """
     if win_timer != -1:
@@ -438,7 +510,6 @@ while running:
         win_text = font.render("You Win! Another game will begin shortly!", True, (0, 0, 0))
         screen.blit(win_text, ((WIDTH - win_text.get_width()) // 2, HEIGHT // 3))
     """
-        
    
     pygame.display.flip()
 

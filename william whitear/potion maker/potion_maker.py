@@ -1,10 +1,18 @@
+# language imports
+import os.path
+
+# library import
 import pygame
+
+# debugging variables
+IN_DEVELOPMENT = True # TODO: explain this at the start of next session (delete this once explained!)
 
 # rendering variables
 SCREEN_WIDTH = 1280 
 SCREEN_HEIGHT = 720
 FPS = 100
 selected = 1
+
 # game constants
 MIN_ACID = 1 
 MAX_ACID = 5
@@ -13,6 +21,8 @@ ITEM_X = []
 for item_index in range(ITEMS_ON_SCREEN):
     x = (SCREEN_WIDTH / (ITEMS_ON_SCREEN + 1)) * (item_index + 1)
     ITEM_X.append(x)
+
+SPRITE_SCALE = 7
 
 HIGHLIGHT_RECT_WIDTH = 100
 HIGHLIGHT_RECT_HEIGHT = 50
@@ -23,6 +33,34 @@ WHITE = pygame.Color(255, 255, 255)
 ELECTRIC_CYAN = pygame.Color(0,255,255)
 FOREST_GREEN = pygame.Color(34,139,34)
 DARK_VIOLET = pygame.Color(148,0,211)
+
+#sprites
+# if IN_DEVELOPMENT: # TODO: explain this at the start of next session (delete this once explained!)
+#     bottle_classic_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_classic.png")
+#     bottle_cube_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_cube.png")
+# else:
+#     bottle_classic_rel_path = os.path.join("assets", "images", "bottle_classic.png")
+#     bottle_cube_rel_path = os.path.join("assets", "images", "bottle_cube.png")
+
+# bottle_classic_abs_path = os.path.abspath(bottle_classic_rel_path)
+# spr_bottle_classic = pygame.image.load(bottle_classic_abs_path)
+# spr_bottle_classic = pygame.transform.scale(spr_bottle_classic, (SPRITE_SCALE*spr_bottle_classic.get_width(), SPRITE_SCALE*spr_bottle_classic.get_height()))
+
+# bottle_cube_abs_path = os.path.abspath(bottle_cube_rel_path)
+# spr_bottle_cube = pygame.image.load(bottle_cube_abs_path)
+# spr_bottle_cube = pygame.transform.scale(spr_bottle_cube, (SPRITE_SCALE*spr_bottle_cube.get_width(), SPRITE_SCALE*spr_bottle_cube.get_height()))
+
+def load_scaled_sprite(img_name, scale = 1) -> pygame.Surface:
+    if IN_DEVELOPMENT:
+        rel_path = os.path.join("william whitear", "potion maker", "assets", "images", img_name)
+    else:
+        rel_path = os.path.join("assets", "images", img_name)
+    abs_path =  os.path.abspath(rel_path)
+    spr = pygame.image.load(abs_path)
+    spr = pygame.transform.scale(spr, (scale*spr.get_width(), scale*spr.get_height()))
+    return spr
+
+spr_bottle = load_scaled_sprite (img_name="bottle_cube.png", scale= SPRITE_SCALE)
 
 #pygame setup
 pygame.init()
@@ -39,6 +77,9 @@ elements_text = ["ice", "earth", "magic"]
 current_element_index = 0
 
 current_acid = MIN_ACID
+
+bottle_draw_pos = pygame.math.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT * (2/3))
+spr_center_adjust = pygame.math.Vector2(-spr_bottle.get_width()/ 2, - spr_bottle.get_height()/ 2)
 
 
 # key states 
@@ -89,6 +130,14 @@ def decrease_acid():
     if current_acid < MIN_ACID:
         current_acid = MAX_ACID
 
+
+def render_text(string_to_render, text_color, center_x, center_y):
+    rendered_text = font.render(string_to_render, True, text_color)
+    rendered_text_rect = rendered_text.get_rect()
+    rendered_text_rect.center = pygame.math.Vector2(center_x, center_y)
+    return (rendered_text, rendered_text_rect)
+
+
 while running: 
     #allows the player to quit the game
     for event in pygame.event.get():
@@ -124,14 +173,10 @@ while running:
         next_category()
 
     # render element text 
-    element_text = font.render(elements_text[current_element_index], True, WHITE)
-    element_text_rect = element_text.get_rect()
-    element_text_rect.center = pygame.math.Vector2(ITEM_X[0], SCREEN_HEIGHT / 2)
+    element_text, element_text_rect = render_text(elements_text[current_element_index], WHITE, ITEM_X[0], SCREEN_HEIGHT / 2)
 
     #render acid text
-    acid_text = font.render(f"acid: {current_acid}", True, WHITE)
-    acid_text_rect = acid_text.get_rect()
-    acid_text_rect.center = pygame.math.Vector2(ITEM_X[1], SCREEN_HEIGHT / 2)
+    acid_text, acid_text_rect = render_text(f"acid: {current_acid}", WHITE, ITEM_X[1], SCREEN_HEIGHT / 2)
 
     #this makes the highlight rect
     hlight_rect = pygame.Rect(0, 0, HIGHLIGHT_RECT_WIDTH, HIGHLIGHT_RECT_HEIGHT)
@@ -151,6 +196,8 @@ while running:
 
     # this code is rendering the highlight rectangle on screen
     pygame.draw.rect(screen, WHITE, hlight_rect, 10)
+
+    screen.blit(spr_bottle, bottle_draw_pos + spr_center_adjust)
 
     # this code makes everything we've drawn appear on screen
     pygame.display.flip()
