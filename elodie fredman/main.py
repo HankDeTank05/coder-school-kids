@@ -5,6 +5,7 @@ import time
 
 # library imports (not built in stuff, but not my code)
 import pygame
+import pygame_textinput
 
 # project imports (my code)
 # none yet
@@ -230,15 +231,16 @@ class Leaderboard:
 
     def draw(self):
         row = 0
+        PADDING = 150
         for (username, score) in zip(self.scores.keys(), self.scores.values()):
             username_text = font.render (username, False, (0,0,0))
             username_text_rect = username_text.get_rect()
-            username_text_rect.right = WIDTH / 2
+            username_text_rect.right = WIDTH / 2 - PADDING
             username_text_rect.top = row * 30
             screen.blit(username_text, username_text_rect)
-            score_text = font.render (f'{score}', False, (0,0,0))
+            score_text = font.render (f'{round(score)}', False, (0,0,0))
             score_text_rect = score_text.get_rect()
-            score_text_rect.left = WIDTH / 2
+            score_text_rect.left = WIDTH / 2 + PADDING
             score_text_rect.top = row * 30
             screen.blit(score_text, score_text_rect)
             row += 1
@@ -339,43 +341,18 @@ class PlayingState(GameState):
 
 class NameState(GameState):
     def __init__(self, new_score):
+        self.text_input = pygame_textinput.TextInputVisualizer(font_object=font)
         self.username = None
-        self.temp_username = ""
         self.score = new_score
         self.rendered_text = None
         self.rendered_text_rect = None
-        self.key_dict = {
-            pygame.K_a: "Aa",
-            pygame.K_b: "Bb",
-            pygame.K_c: "Aa",
-            pygame.K_d: "Aa",
-            pygame.K_e: "Aa",
-            pygame.K_f: "Aa",
-            pygame.K_g: "Aa",
-            pygame.K_h: "Aa",
-            pygame.K_i: "Aa",
-            pygame.K_j: "Aa",
-            pygame.K_k: "Aa",
-            pygame.K_l: "Aa",
-            pygame.K_m: "Aa",
-            pygame.K_n: "Aa",
-            pygame.K_o: "Aa",
-            pygame.K_p: "Aa",
-            pygame.K_q: "Aa",
-            pygame.K_r: "Aa",
-            pygame.K_s: "Aa",
-            pygame.K_t: "Aa",
-            pygame.K_u: "Aa",
-            pygame.K_v: "Aa",
-            pygame.K_w: "Aa",
-            pygame.K_x: "Aa",
-            pygame.K_y: "Aa",
-            pygame.K_z: "Aa",
-        }
 
     def update(self, frame_time):
-        key_states = pygame.key.get_pressed()
-
+        self.text_input.update(events)
+        screen.blit(self.text_input.surface, (600, 0))
+        for event in events:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                self.username = self.text_input.value
         self.rendered_text = font.render("What is your username? ", False, (0,0,0))
         self.rendered_text_rect = self.rendered_text.get_rect()
         self.rendered_text_rect.topleft = (0,0)
@@ -423,8 +400,8 @@ current_state = MenuState()
 while running:
     frame_time = clock.tick(60) / 1000  # 60 FPS
     screen.fill((89, 134, 203))  # Background color
-        
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             running = False
 
