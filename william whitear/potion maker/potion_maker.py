@@ -35,20 +35,20 @@ FOREST_GREEN = pygame.Color(34,139,34)
 DARK_VIOLET = pygame.Color(148,0,211)
 
 #sprites
-# if IN_DEVELOPMENT: # TODO: explain this at the start of next session (delete this once explained!)
-#     bottle_classic_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_classic.png")
-#     bottle_cube_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_cube.png")
-# else:
-#     bottle_classic_rel_path = os.path.join("assets", "images", "bottle_classic.png")
-#     bottle_cube_rel_path = os.path.join("assets", "images", "bottle_cube.png")
+ if IN_DEVELOPMENT: # TODO: explain this at the start of next session (delete this once explained!)
+     bottle_classic_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_classic.png")
+     bottle_cube_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_cube.png")
+ else:
+     bottle_classic_rel_path = os.path.join("assets", "images", "bottle_classic.png")
+     bottle_cube_rel_path = os.path.join("assets", "images", "bottle_cube.png")
 
-# bottle_classic_abs_path = os.path.abspath(bottle_classic_rel_path)
-# spr_bottle_classic = pygame.image.load(bottle_classic_abs_path)
-# spr_bottle_classic = pygame.transform.scale(spr_bottle_classic, (SPRITE_SCALE*spr_bottle_classic.get_width(), SPRITE_SCALE*spr_bottle_classic.get_height()))
+ bottle_classic_abs_path = os.path.abspath(bottle_classic_rel_path)
+ spr_bottle_classic = pygame.image.load(bottle_classic_abs_path)
+ spr_bottle_classic = pygame.transform.scale(spr_bottle_classic, (SPRITE_SCALE*spr_bottle_classic.get_width(), SPRITE_SCALE*spr_bottle_classic.get_height()))
 
-# bottle_cube_abs_path = os.path.abspath(bottle_cube_rel_path)
-# spr_bottle_cube = pygame.image.load(bottle_cube_abs_path)
-# spr_bottle_cube = pygame.transform.scale(spr_bottle_cube, (SPRITE_SCALE*spr_bottle_cube.get_width(), SPRITE_SCALE*spr_bottle_cube.get_height()))
+ bottle_cube_abs_path = os.path.abspath(bottle_cube_rel_path)
+ spr_bottle_cube = pygame.image.load(bottle_cube_abs_path)
+ spr_bottle_cube = pygame.transform.scale(spr_bottle_cube, (SPRITE_SCALE*spr_bottle_cube.get_width(), SPRITE_SCALE*spr_bottle_cube.get_height()))
 
 def load_scaled_sprite(img_name, scale = 1) -> pygame.Surface:
     if IN_DEVELOPMENT:
