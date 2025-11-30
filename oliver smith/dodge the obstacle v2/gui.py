@@ -32,17 +32,19 @@ class Hud:
 class Leaderboard:
 
     def __init__(self):
-        self._scores: list[float] = []
+        self._scores: dict[str, float] = {}
 
-    def submit_score(self, your_score):
-        #case 1: empty leaderboard
-        #case 2: insert at end (new score is lowest)
-        #        case 1                             case 2
-        #  vvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-        if len(self._scores) == 0 or your_score < self._scores[len(self._scores) - 1]:
-            self._scores.append(your_score)
-        # TODO: case 3: insert in the middle of the list (your score is not highest or lowest)
-        # TODO: case 4: insert at beginning of list (your score is the highest)
+    def submit_score(self, your_name: str, your_score: float) -> bool:
+        # case 1 is your name is already in the keys and you have a new high score
+        # case 2 is your name is not in the keys
+        # case 3 is the code 
+        #                          case 1                                                       case 2
+        #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+        if (your_name in self._scores.keys() and your_score > self._scores[your_name]) or your_name not in self._scores.keys():
+                self._scores[your_name] = your_score
+                return True
+        else: # case 3
+            return False
 
 
     def update(self, frame_time):
