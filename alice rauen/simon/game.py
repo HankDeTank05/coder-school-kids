@@ -5,8 +5,8 @@ import time
 
 from pygame import Rect
 
-WIDTH = 1920
-HEIGHT = 1080
+WIDTH = 1280
+HEIGHT = 720
 
 #chicken banana
 CHICKEN_BANANA=Actor('chicken_banana!')
@@ -56,6 +56,9 @@ game_state='sequence'
 level_timer=0
 game_over_timer=0
 
+# music
+music.play('chicken banana')
+
 # my_sequence.append(random.choice(colors))
 # my_sequence.append(random.choice(colors))
 # my_sequence.append(random.choice(colors))
@@ -92,7 +95,8 @@ def level_up():
     new_color=random.choice(colors)
     my_sequence.append(new_color)
     game_state='level up'
-    level_timer=0
+    level_timer=0 
+    sounds.ss.play()
 
 
 def on_mouse_down(pos):
