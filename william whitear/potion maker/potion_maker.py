@@ -35,32 +35,31 @@ FOREST_GREEN = pygame.Color(34,139,34)
 DARK_VIOLET = pygame.Color(148,0,211)
 
 #sprites
- if IN_DEVELOPMENT: # TODO: explain this at the start of next session (delete this once explained!)
-     bottle_classic_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_classic.png")
-     bottle_cube_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_cube.png")
- else:
-     bottle_classic_rel_path = os.path.join("assets", "images", "bottle_classic.png")
-     bottle_cube_rel_path = os.path.join("assets", "images", "bottle_cube.png")
+ #if IN_DEVELOPMENT: # TODO: explain this at the start of next session (delete this once explained!)
+    # bottle_classic_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_classic.png")
+    # bottle_cube_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_cube.png")
+ #else:
+     #bottle_classic_rel_path = os.path.join("assets", "images", "bottle_classic.png")
+     #bottle_cube_rel_path = os.path.join("assets", "images", "bottle_cube.png")
 
- bottle_classic_abs_path = os.path.abspath(bottle_classic_rel_path)
- spr_bottle_classic = pygame.image.load(bottle_classic_abs_path)
- spr_bottle_classic = pygame.transform.scale(spr_bottle_classic, (SPRITE_SCALE*spr_bottle_classic.get_width(), SPRITE_SCALE*spr_bottle_classic.get_height()))
+ #bottle_classic_abs_path = os.path.abspath(bottle_classic_rel_path)
+ #spr_bottle_classic = pygame.image.load(bottle_classic_abs_path)
+ #spr_bottle_classic = pygame.transform.scale(spr_bottle_classic, (SPRITE_SCALE*spr_bottle_classic.get_width(), SPRITE_SCALE*spr_bottle_classic.get_height()))
 
- bottle_cube_abs_path = os.path.abspath(bottle_cube_rel_path)
- spr_bottle_cube = pygame.image.load(bottle_cube_abs_path)
- spr_bottle_cube = pygame.transform.scale(spr_bottle_cube, (SPRITE_SCALE*spr_bottle_cube.get_width(), SPRITE_SCALE*spr_bottle_cube.get_height()))
+ #bottle_cube_abs_path = os.path.abspath(bottle_cube_rel_path)
+ #spr_bottle_cube = pygame.image.load(bottle_cube_abs_path)
+ #spr_bottle_cube = pygame.transform.scale(spr_bottle_cube, (SPRITE_SCALE*spr_bottle_cube.get_width(), SPRITE_SCALE*spr_bottle_cube.get_height()))
 
-def load_scaled_sprite(img_name, scale = 1) -> pygame.Surface:
-    if IN_DEVELOPMENT:
-        rel_path = os.path.join("william whitear", "potion maker", "assets", "images", img_name)
-    else:
-        rel_path = os.path.join("assets", "images", img_name)
-    abs_path =  os.path.abspath(rel_path)
-    spr = pygame.image.load(abs_path)
-    spr = pygame.transform.scale(spr, (scale*spr.get_width(), scale*spr.get_height()))
-    return spr
+## if IN_DEVELOPMENT:
+        #rel_path = os.path.join("william whitear", "potion maker", "assets", "images", img_name)
+    #else:
+        #rel_path = os.path.join("assets", "images", img_name)
+   #abs_path =  os.path.abspath(rel_path)
+   # spr = pygame.image.load(abs_path)
+    #spr = pygame.transform.scale(spr, (scale*spr.get_width(), scale*spr.get_height()))
+   #return spr
 
-spr_bottle = load_scaled_sprite (img_name="bottle_cube.png", scale= SPRITE_SCALE)
+#spr_bottle = load_scaled_sprite (img_name="bottle_cube.png", scale= SPRITE_SCALE)
 
 #pygame setup
 pygame.init()
@@ -78,8 +77,8 @@ current_element_index = 0
 
 current_acid = MIN_ACID
 
-bottle_draw_pos = pygame.math.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT * (2/3))
-spr_center_adjust = pygame.math.Vector2(-spr_bottle.get_width()/ 2, - spr_bottle.get_height()/ 2)
+#bottle_draw_pos = pygame.math.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT * (2/3))
+#spr_center_adjust = pygame.math.Vector2(-spr_bottle.get_width()/ 2, - spr_bottle.get_height()/ 2)
 
 
 # key states 
@@ -197,7 +196,7 @@ while running:
     # this code is rendering the highlight rectangle on screen
     pygame.draw.rect(screen, WHITE, hlight_rect, 10)
 
-    screen.blit(spr_bottle, bottle_draw_pos + spr_center_adjust)
+    #screen.blit(spr_bottle, bottle_draw_pos + spr_center_adjust)
 
     # this code makes everything we've drawn appear on screen
     pygame.display.flip()

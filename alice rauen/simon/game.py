@@ -96,7 +96,7 @@ def level_up():
     my_sequence.append(new_color)
     game_state='level up'
     level_timer=0 
-    sounds.ss.play()
+    sounds.dolphin.play()
 
 
 def on_mouse_down(pos):
@@ -127,6 +127,7 @@ def on_mouse_down(pos):
 
         if click ==True:
             print("CORRECT")
+            sounds.a.play()
             click_index+=1
             if click_index==len(my_sequence):
                 level_up()
