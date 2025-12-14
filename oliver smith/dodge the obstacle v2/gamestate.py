@@ -1,8 +1,9 @@
 #library
 import pygame
+import pygame_textinput
 #project
 from constants import *
-from gui import Hud
+from gui import Hud, Leaderboard
 from player import Player
 from obstacles import ObstacleManager
 
@@ -45,11 +46,13 @@ class PlayingState(GameState):
         self._player = Player()
         self._obs_man = ObstacleManager()
         self._hud = Hud()
+        self._time = 0
 
     def update(self, frame_time):
         self._player.update(frame_time)
         self._obs_man.update(frame_time)
         self._hud.update(frame_time, self._player.get_hp())
+        self._time += frame_time
 
         # do collision
         collided_indices = []
@@ -70,25 +73,32 @@ class PlayingState(GameState):
 
     def get_next_state(self) -> GameState:
         if self._player.get_hp() <= 0:
-            return GameOverState()
+            return GameOverState(self._time)
         else:
             return self
 
 class GameOverState(GameState):
 
-    def __init__(self):
+    def __init__(self, time):
+        self._text_input = pygame_textinput.TextInputVisualizer(font_object=FONT)
         self._start_over = False
         self._text = FONT.render("To play again press left shift.", True, ORANGE)
         self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+        self._leaderboard = Leaderboard()
+        self._score = time
 
     def update(self, frame_time):
+        self._text_input.update(pygame.event.get())
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LSHIFT]:
             self._start_over = True
+            name = self._text_input.value
+            self._leaderboard.submit_score(your_name=name, your_score=self._score)
 
     def draw(self, screen):
-        screen.fill(BLACK)
+        screen.fill(YELLOW)
         screen.blit(self._text, self._text_rect)
+        screen.blit(self._text_input.surface, (0,0))
 
     def get_next_state(self) -> GameState:
         if self._start_over:

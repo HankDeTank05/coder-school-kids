@@ -33,19 +33,28 @@ class Leaderboard:
 
     def __init__(self):
         self._scores: dict[str, float] = {}
+        self._read_data()
 
     def submit_score(self, your_name: str, your_score: float) -> bool:
         # case 1 is your name is already in the keys and you have a new high score
         # case 2 is your name is not in the keys
-        # case 3 is the code 
+        # case 3 is your name is already in the keys but you dont have a new high score
         #                          case 1                                                       case 2
         #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
         if (your_name in self._scores.keys() and your_score > self._scores[your_name]) or your_name not in self._scores.keys():
                 self._scores[your_name] = your_score
+                self._write_data()
                 return True
         else: # case 3
             return False
 
+    def _read_data(self):
+        pass
+
+    def _write_data(self):
+        with open(FILE_NAME, "w") as lb_file:
+            for (name, score) in zip(self._scores.keys(), self._scores.values()):
+                lb_file.write(f"{name},{score}\n")
 
     def update(self, frame_time):
         pass
