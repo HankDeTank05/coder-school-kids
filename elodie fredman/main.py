@@ -2,6 +2,7 @@
 import math
 import random
 import time
+import os.path
 
 # library imports (not built in stuff, but not my code)
 import pygame
@@ -209,8 +210,8 @@ clock = pygame.time.Clock()
 running = True
 
 # Load Sounds
-eat_sound = pygame.mixer.Sound("eat.mp3")
-pygame.mixer.music.load("backgroundMusic.mp3")
+eat_sound = pygame.mixer.Sound(os.path.join("elodie fredman", "eat.mp3"))
+pygame.mixer.music.load(os.path.join("elodie fredman", "backgroundMusic.mp3"))
 pygame.mixer.music.play(-1)
 
 # Fonts
@@ -223,17 +224,36 @@ win_timer = -1
 
 class Leaderboard:
 
+    FILE_NAME = 'scores.txt'
+
     def __init__(self):
         self.scores = {}
+        self.read_data()
         
-    def add_score(self, score_number, player_username):
-        self.scores[player_username] = score_number
+    def write_data(self):
+        with open(Leaderboard.FILE_NAME, 'w') as score_file:
+            for (username,score) in zip(self.scores.keys(), self.scores.values()):
+                score_file.write(f'{username},{score}\n')
+
+    def read_data(self):
+        with open(Leaderboard.FILE_NAME, 'r') as score_file:
+            for line in score_file:
+                text_line = score_file.readline()
+                values = text_line.split(sep=',')
+                username = values[0]
+                score = float(values[1])
+                self.scores[username]=score
+
+    def add_score(self, new_score_number, player_username):
+        if player_username not in self.scores.keys() or self.scores[player_username] > new_score_number:
+            self.scores[player_username] = new_score_number
+            self.write_data()
 
     def draw(self):
         row = 0
         PADDING = 150
         for (username, score) in zip(self.scores.keys(), self.scores.values()):
-            username_text = font.render (username, False, (0,0,0))
+            username_text = font.render(username, False, (0,0,0))
             username_text_rect = username_text.get_rect()
             username_text_rect.right = WIDTH / 2 - PADDING
             username_text_rect.top = row * 30
@@ -340,6 +360,7 @@ class PlayingState(GameState):
             return self
 
 class NameState(GameState):
+
     def __init__(self, new_score):
         self.text_input = pygame_textinput.TextInputVisualizer(font_object=font)
         self.username = None
@@ -382,13 +403,10 @@ class WinningState(GameState):
         screen.blit(self.win_text, ((WIDTH - self.win_text.get_width()) // 2, HEIGHT // 3))
         self.leaderboard.draw()
 
-
     def get_next_state(self) -> GameState:
         if pygame.time.get_ticks() >= self.restart_win_menu_checker_thing_time:
             return MenuState()
         return self
-    
-
 
 
 current_state = MenuState()
