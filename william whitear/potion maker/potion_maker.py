@@ -15,7 +15,7 @@ selected = 1
 
 # game constants
 MIN_ACID = 1 
-MAX_ACID = 5
+MAX_ACID = 3
 ITEMS_ON_SCREEN = 2
 ITEM_X = []
 for item_index in range(ITEMS_ON_SCREEN):
@@ -72,7 +72,7 @@ font = pygame.font.Font(size = 32)
 item_categories = ["element", "acid"]
 category_index = 0
 
-elements_text = ["ice", "earth", "magic"]
+elements_text = ["water", "wind", "earth", "fire" "magic"]
 current_element_index = 0
 
 current_acid = MIN_ACID
