@@ -1,7 +1,4 @@
-# language imports
 import os.path
-
-# library import
 import pygame
 
 # debugging variables
@@ -9,9 +6,9 @@ IN_DEVELOPMENT = True # TODO: explain this at the start of next session (delete 
 
 # rendering variables
 SCREEN_WIDTH = 1280 
-SCREEN_HEIGHT = 720
+SCREEN_HEIGHT = 720 
 FPS = 100
-selected = 1
+selected = 1 
 
 # game constants
 MIN_ACID = 1 
@@ -34,38 +31,15 @@ ELECTRIC_CYAN = pygame.Color(0,255,255)
 FOREST_GREEN = pygame.Color(34,139,34)
 DARK_VIOLET = pygame.Color(148,0,211)
 
-#sprites
- #if IN_DEVELOPMENT: # TODO: explain this at the start of next session (delete this once explained!)
-    # bottle_classic_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_classic.png")
-    # bottle_cube_rel_path = os.path.join("william whitear", "potion maker", "assets", "images", "bottle_cube.png")
- #else:
-     #bottle_classic_rel_path = os.path.join("assets", "images", "bottle_classic.png")
-     #bottle_cube_rel_path = os.path.join("assets", "images", "bottle_cube.png")
-
- #bottle_classic_abs_path = os.path.abspath(bottle_classic_rel_path)
- #spr_bottle_classic = pygame.image.load(bottle_classic_abs_path)
- #spr_bottle_classic = pygame.transform.scale(spr_bottle_classic, (SPRITE_SCALE*spr_bottle_classic.get_width(), SPRITE_SCALE*spr_bottle_classic.get_height()))
-
- #bottle_cube_abs_path = os.path.abspath(bottle_cube_rel_path)
- #spr_bottle_cube = pygame.image.load(bottle_cube_abs_path)
- #spr_bottle_cube = pygame.transform.scale(spr_bottle_cube, (SPRITE_SCALE*spr_bottle_cube.get_width(), SPRITE_SCALE*spr_bottle_cube.get_height()))
-
-## if IN_DEVELOPMENT:
-        #rel_path = os.path.join("william whitear", "potion maker", "assets", "images", img_name)
-    #else:
-        #rel_path = os.path.join("assets", "images", img_name)
-   #abs_path =  os.path.abspath(rel_path)
-   # spr = pygame.image.load(abs_path)
-    #spr = pygame.transform.scale(spr, (scale*spr.get_width(), scale*spr.get_height()))
-   #return spr
-
-#spr_bottle = load_scaled_sprite (img_name="bottle_cube.png", scale= SPRITE_SCALE)
 
 #pygame setup
 pygame.init()
 screen = pygame.display.set_mode( (SCREEN_WIDTH, SCREEN_HEIGHT) )
 clock = pygame.time.Clock()
 running = True
+
+pygame.display.set_caption("Potion Maker")
+
 
 # game variables
 font = pygame.font.Font(size = 32)
