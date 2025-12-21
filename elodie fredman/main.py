@@ -26,7 +26,7 @@ COLOR_GREEN = pygame.Color(0,255,0)
 COLOR_BLUE = pygame.Color(0,0,255)
 COLOR_YELLOW = pygame.Color(255,255,0)
 COLOR_ORANGE = pygame.Color(255,110,0)
-WIN_SCREEN_TIME = 3000
+WIN_SCREEN_TIME = 5000
 
 #######################
 # GAME MATH FUNCTIONS #
@@ -238,8 +238,8 @@ class Leaderboard:
     def read_data(self):
         with open(Leaderboard.FILE_NAME, 'r') as score_file:
             for line in score_file:
-                text_line = score_file.readline()
-                values = text_line.split(sep=',')
+                #text_line = score_file.readline()
+                values = line.split(sep=',')
                 username = values[0]
                 score = float(values[1])
                 self.scores[username]=score
@@ -252,16 +252,22 @@ class Leaderboard:
     def draw(self):
         row = 0
         PADDING = 150
-        for (username, score) in zip(self.scores.keys(), self.scores.values()):
-            username_text = font.render(username, False, (0,0,0))
+        SPACING = 50
+        sorted_scores = sorted(self.scores.items(), key=lambda keyValue: (keyValue[1], keyValue[0]))
+        print (sorted_scores)
+        for index in range(5):
+            entry = sorted_scores[index]
+            username = entry[0]
+            score = entry[1]
+            username_text = font.render(f'{index+1}. {username}', False, (0,0,0))
             username_text_rect = username_text.get_rect()
             username_text_rect.right = WIDTH / 2 - PADDING
-            username_text_rect.top = row * 30
+            username_text_rect.top = row * SPACING
             screen.blit(username_text, username_text_rect)
             score_text = font.render (f'{round(score)}', False, (0,0,0))
             score_text_rect = score_text.get_rect()
             score_text_rect.left = WIDTH / 2 + PADDING
-            score_text_rect.top = row * 30
+            score_text_rect.top = row * SPACING
             screen.blit(score_text, score_text_rect)
             row += 1
 
@@ -374,7 +380,7 @@ class NameState(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 self.username = self.text_input.value
-        self.rendered_text = font.render("What is your username? ", False, (0,0,0))
+        self.rendered_text = font.render("What is your username? ", True, (0,0,0))
         self.rendered_text_rect = self.rendered_text.get_rect()
         self.rendered_text_rect.topleft = (0,0)
 
