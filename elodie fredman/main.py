@@ -23,9 +23,10 @@ else:
     MAX_RADIUS = WIDTH / 2
 COLOR_RED = pygame.Color(255,0,0)
 COLOR_GREEN = pygame.Color(0,255,0)
-COLOR_BLUE = pygame.Color(0,0,255)
+COLOR_BLUE = pygame.Color(0,50,205)
 COLOR_YELLOW = pygame.Color(255,255,0)
 COLOR_ORANGE = pygame.Color(255,110,0)
+COLOR_BLACK = pygame.Color(0,0,0)
 WIN_SCREEN_TIME = 5000
 
 #######################
@@ -104,7 +105,7 @@ class FoodManager:
             Food(250, 250,  20, (255, 225, 255)),
             Food(380, 129,  42, (0, 255, 0)),
             Food(703, 159,  89, (225, 171, 22)),
-            Food(684, 547, 109, (0, 0, 0)),
+            Food(684, 547, 109, COLOR_BLACK),
         ]
 
     def update(self, frame_time, _player: Player):
@@ -254,7 +255,6 @@ class Leaderboard:
         PADDING = 150
         SPACING = 50
         sorted_scores = sorted(self.scores.items(), key=lambda keyValue: (keyValue[1], keyValue[0]))
-        print (sorted_scores)
         for index in range(5):
             entry = sorted_scores[index]
             username = entry[0]
@@ -264,7 +264,7 @@ class Leaderboard:
             username_text_rect.right = WIDTH / 2 - PADDING
             username_text_rect.top = row * SPACING
             screen.blit(username_text, username_text_rect)
-            score_text = font.render (f'{round(score)}', False, (0,0,0))
+            score_text = font.render(f'{round(score)} seconds to beat the game.', False, (0,0,0))
             score_text_rect = score_text.get_rect()
             score_text_rect.left = WIDTH / 2 + PADDING
             score_text_rect.top = row * SPACING
@@ -322,7 +322,7 @@ class MenuState(GameState):
 
     def draw(self):
         # these lines make the title 'Glitchy Ripoff Agario' appear on the screen
-        title_text = font.render("Glitchy Ripoff Agario", False, (0, 0, 0))
+        title_text = font.render("Glitchy Ripoff Agario", False, COLOR_BLACK)
         screen.blit(title_text, ((WIDTH - title_text.get_width()) // 2, HEIGHT // 3))
 
         #these next lines go one by one to draw each of the boxes
@@ -380,7 +380,7 @@ class NameState(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 self.username = self.text_input.value
-        self.rendered_text = font.render("What is your username? ", True, (0,0,0))
+        self.rendered_text = font.render("What is your username?\nPlease don't use a comma!", True, (0,0,0))
         self.rendered_text_rect = self.rendered_text.get_rect()
         self.rendered_text_rect.topleft = (0,0)
 
@@ -396,21 +396,32 @@ class NameState(GameState):
 class WinningState(GameState):
 
     def __init__(self, new_score, new_username):
-        self.win_text = font.render("You Win! Another game will begin shortly!", False, (0, 0, 0))
+        self.win_text = font.render("You Win! Click on the blue box to start another game!", False, COLOR_BLACK)
         self.restart_win_menu_checker_thing_time = pygame.time.get_ticks() + WIN_SCREEN_TIME
         self.leaderboard = Leaderboard()
         self.leaderboard.add_score(new_score, new_username)
+        self.button_rect = pygame.Rect(200, 127, 130, 119)
+        self.box_clicked = False
+        self.your_score = new_score
     
     def update(self, frame_time):
-        pass
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_state = pygame.mouse.get_pressed()
+        if self.button_rect.collidepoint(mouse_pos) and mouse_state[0] == True:
+            self.box_clicked = True
 
     def draw(self):
         screen.fill(COLOR_YELLOW)
         screen.blit(self.win_text, ((WIDTH - self.win_text.get_width()) // 2, HEIGHT // 3))
+        your_score_text = font.render(f'"Your score is {round(self.your_score)}. "', False, COLOR_BLACK)
+        your_score_text_rect = your_score_text.get_rect()
+        your_score_text_rect.center = (WIDTH / 2, HEIGHT / 2)
+        screen.blit(your_score_text, your_score_text_rect)
         self.leaderboard.draw()
+        pygame.draw.rect(screen, COLOR_BLUE, self.button_rect)
 
     def get_next_state(self) -> GameState:
-        if pygame.time.get_ticks() >= self.restart_win_menu_checker_thing_time:
+        if self.box_clicked == True:
             return MenuState()
         return self
 
