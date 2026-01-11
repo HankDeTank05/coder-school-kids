@@ -20,13 +20,13 @@ class Player:
 
     # Game functions
 
-    def update(self, frame_time):
+    def update(self, frame_time, keys):
 
         ###################
         # move the player #
         ###################
 
-        keys = pygame.key.get_pressed()
+        #keys = pygame.key.get_pressed()
         move_x = 0
         move_y = 0
         if keys[pygame.K_UP]:

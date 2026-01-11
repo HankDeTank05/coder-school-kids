@@ -1,5 +1,5 @@
 # language imports (these are built in to python)
-
+# DONT HOLD TAB
 # library imports (this is stuff that's not ours, but not built in to python)
 import pygame
 
@@ -22,7 +22,8 @@ current_state: GameState = StartState()
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.QUIT:
             running = False
 
@@ -31,7 +32,8 @@ while running:
     # PART 1: UPDATE #
     ##################
 
-    current_state.update(frame_time)
+    keys = pygame.key.get_pressed()
+    current_state.update(frame_time, events, keys)
 
     ################
     # PART 2: DRAW #

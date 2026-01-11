@@ -25,8 +25,7 @@ class StartState(GameState):
         self._text = FONT.render("To play press right shift.", True, BLACK)
         self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     
-    def update(self, frame_time):
-        keys = pygame.key.get_pressed()
+    def update(self, frame_time, events, keys):
         if keys[pygame.K_RSHIFT]:
             self._begin_game = True
 
@@ -48,8 +47,8 @@ class PlayingState(GameState):
         self._hud = Hud()
         self._time = 0
 
-    def update(self, frame_time):
-        self._player.update(frame_time)
+    def update(self, frame_time, events, keys):
+        self._player.update(frame_time, keys)
         self._obs_man.update(frame_time)
         self._hud.update(frame_time, self._player.get_hp())
         self._time += frame_time
@@ -80,28 +79,56 @@ class PlayingState(GameState):
 class GameOverState(GameState):
 
     def __init__(self, time):
-        self._text_input = pygame_textinput.TextInputVisualizer(font_object=FONT)
-        self._start_over = False
+        self._start_over = False # when this variable is true transitions to startstate
+        self._to_lboard = False # when this variable is true you transition to LeaderboardState
         self._text = FONT.render("To play again press left shift.", True, ORANGE)
         self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-        self._leaderboard = Leaderboard()
         self._score = time
 
-    def update(self, frame_time):
-        self._text_input.update(pygame.event.get())
-        keys = pygame.key.get_pressed()
+    def update(self, frame_time, events, keys):
         if keys[pygame.K_LSHIFT]:
             self._start_over = True
-            name = self._text_input.value
-            self._leaderboard.submit_score(your_name=name, your_score=self._score)
-
+        if keys[pygame.K_TAB]:
+            self._to_lboard = True
+       
     def draw(self, screen):
-        screen.fill(YELLOW)
+        screen.fill(BLUE)
         screen.blit(self._text, self._text_rect)
-        screen.blit(self._text_input.surface, (0,0))
 
     def get_next_state(self) -> GameState:
         if self._start_over:
             return StartState()
+        elif self._to_lboard:
+            return LeaderboardState(self._score)
         else:
             return self
+
+class LeaderboardState(GameState):
+
+    def __init__(self, time):
+        self._to_game_over = False #when this variable is true you transition to Game over state
+        self._text_input = pygame_textinput.TextInputVisualizer(font_object=FONT)
+        self._leaderboard = Leaderboard()
+        self._score = time
+        self._holding_tab = True
+
+
+    def update(self, frame_time, events, keys):
+        self._text_input.update(events)
+        if keys[pygame.K_RETURN]:
+            name = self._text_input.value
+            self._leaderboard.submit_score(your_name=name, your_score=self._score)
+        if self._holding_tab and keys[pygame.K_TAB] == False:
+            self._holding_tab = False
+        elif not self._holding_tab and keys[pygame.K_TAB]:
+            self._to_game_over = True
+
+    def draw(self, screen):
+        screen.blit(self._text_input.surface, (0,0))
+
+
+    def get_next_state(self)-> GameState:
+        if self._to_game_over:
+            return GameOverState(self._score)
+        else:
+            return self 
