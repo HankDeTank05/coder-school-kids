@@ -211,8 +211,8 @@ clock = pygame.time.Clock()
 running = True
 
 # Load Sounds
-eat_sound = pygame.mixer.Sound(os.path.join("elodie fredman", "eat.mp3"))
-pygame.mixer.music.load(os.path.join("elodie fredman", "backgroundMusic.mp3"))
+eat_sound = pygame.mixer.Sound(os.path.join("eat.mp3"))
+pygame.mixer.music.load(os.path.join("backgroundMusic.mp3"))
 pygame.mixer.music.play(-1)
 
 # Fonts
@@ -371,8 +371,10 @@ class NameState(GameState):
         self.text_input = pygame_textinput.TextInputVisualizer(font_object=font)
         self.username = None
         self.score = new_score
-        self.rendered_text = None
-        self.rendered_text_rect = None
+        self.rendered_text_username = None
+        self.rendered_text_username_rect = None
+        self.rendered_text_note = None
+        self.rendered_text_note_rect = None
 
     def update(self, frame_time):
         self.text_input.update(events)
@@ -380,12 +382,18 @@ class NameState(GameState):
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 self.username = self.text_input.value
-        self.rendered_text = font.render("What is your username?\nPlease don't use a comma!", True, (0,0,0))
-        self.rendered_text_rect = self.rendered_text.get_rect()
-        self.rendered_text_rect.topleft = (0,0)
+
+        self.rendered_text_username = font.render("What is your username?", True, (0,0,0))
+        self.rendered_text_username_rect = self.rendered_text_username.get_rect()
+        self.rendered_text_username_rect.topleft = (0,0)
+
+        self.rendered_text_note = font.render("Please don't use a comma!", True, (0,0,0))
+        self.rendered_text_note_rect = self.rendered_text_note.get_rect()
+        self.rendered_text_note_rect.bottomleft = (0, HEIGHT)
 
     def draw(self):
-        screen.blit(self.rendered_text, self.rendered_text_rect)
+        screen.blit(self.rendered_text_username, self.rendered_text_username_rect)
+        screen.blit(self.rendered_text_note, self.rendered_text_note_rect)
 
     def get_next_state(self):
         if self.username is None:
@@ -413,7 +421,7 @@ class WinningState(GameState):
     def draw(self):
         screen.fill(COLOR_YELLOW)
         screen.blit(self.win_text, ((WIDTH - self.win_text.get_width()) // 2, HEIGHT // 3))
-        your_score_text = font.render(f'"Your score is {round(self.your_score)}. "', False, COLOR_BLACK)
+        your_score_text = font.render(f'It took you {round(self.your_score)} seconds to beat the game. ', False, COLOR_BLACK)
         your_score_text_rect = your_score_text.get_rect()
         your_score_text_rect.center = (WIDTH / 2, HEIGHT / 2)
         screen.blit(your_score_text, your_score_text_rect)
