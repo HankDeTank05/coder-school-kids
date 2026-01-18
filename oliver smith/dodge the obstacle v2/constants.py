@@ -5,7 +5,8 @@ WIDTH = 500
 HEIGHT = 600
 FPS = 60
 pygame.font.init()
-FONT = pygame.font.SysFont(None, 48)
+FONT_SIZE = 48
+FONT = pygame.font.SysFont(None, FONT_SIZE)
 pygame.display.set_caption("Dodge the Obstacle")
 
 # COLORS
@@ -16,6 +17,7 @@ BLACK = (0, 0, 0)
 GREEN = (0, 240, 225)
 YELLOW = (255, 255, 0)
 ORANGE = (255, 100, 0)
+TEAL = (125,249,255)
 
 # player stuff
 PLAYER_MAX_HEALTH = 700

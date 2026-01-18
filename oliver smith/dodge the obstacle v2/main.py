@@ -31,7 +31,6 @@ while running:
     ##################
     # PART 1: UPDATE #
     ##################
-
     keys = pygame.key.get_pressed()
     current_state.update(frame_time, events, keys)
 

@@ -72,23 +72,26 @@ class PlayingState(GameState):
 
     def get_next_state(self) -> GameState:
         if self._player.get_hp() <= 0:
-            return GameOverState(self._time)
+            return GameOverState(self._time, False)
         else:
             return self
 
 class GameOverState(GameState):
 
-    def __init__(self, time):
+    def __init__(self, time: float, holding_tab: bool ):
         self._start_over = False # when this variable is true transitions to startstate
         self._to_lboard = False # when this variable is true you transition to LeaderboardState
         self._text = FONT.render("To play again press left shift.", True, ORANGE)
         self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         self._score = time
+        self._holding_tab= holding_tab
 
     def update(self, frame_time, events, keys):
         if keys[pygame.K_LSHIFT]:
             self._start_over = True
-        if keys[pygame.K_TAB]:
+        if self._holding_tab and keys[pygame.K_TAB] == False:
+            self._holding_tab = False
+        elif not self._holding_tab and keys[pygame.K_TAB]:
             self._to_lboard = True
        
     def draw(self, screen):
@@ -112,7 +115,6 @@ class LeaderboardState(GameState):
         self._score = time
         self._holding_tab = True
 
-
     def update(self, frame_time, events, keys):
         self._text_input.update(events)
         if keys[pygame.K_RETURN]:
@@ -125,10 +127,10 @@ class LeaderboardState(GameState):
 
     def draw(self, screen):
         screen.blit(self._text_input.surface, (0,0))
-
+        self._leaderboard.draw(screen)
 
     def get_next_state(self)-> GameState:
         if self._to_game_over:
-            return GameOverState(self._score)
+            return GameOverState(self._score, True)
         else:
             return self 

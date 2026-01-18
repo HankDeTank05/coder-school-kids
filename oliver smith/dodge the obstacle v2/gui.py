@@ -60,4 +60,18 @@ class Leaderboard:
         pass
 
     def draw(self, screen):
-        pass
+        sorted_scores = dict(
+            sorted(self._scores.items(), key=lambda item: item[1], reverse=True)
+        )
+        place = 1
+        for pair in zip(self._scores.keys(), self._scores.values()):
+            #print(pair)
+            name = pair[0]
+            score = pair[1]
+            entry_text = FONT.render(f"{place}. {name} : {score}", True, TEAL)
+            entry_text_rect = entry_text.get_rect(
+                midtop = (WIDTH // 2, place * FONT_SIZE)
+            )
+            screen.blit(entry_text, entry_text_rect)
+            place += 1
+
