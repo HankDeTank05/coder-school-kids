@@ -2,14 +2,16 @@
 import pygame
 
 # game imports
+from common import *
 import player
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
 frame_time = 0
+
 
 # game variables
 p1 = player.Player()
