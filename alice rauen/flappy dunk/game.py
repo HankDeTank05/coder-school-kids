@@ -20,6 +20,7 @@ ring_front.pos=667,563
 hoop_width=239
 rim_width=73
 
+game_over=Actor('bird8910dot12345ngrhj')
 
 
 def on_key_down(key):
