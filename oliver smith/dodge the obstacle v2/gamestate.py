@@ -72,19 +72,20 @@ class PlayingState(GameState):
 
     def get_next_state(self) -> GameState:
         if self._player.get_hp() <= 0:
-            return GameOverState(self._time, False)
+            return GameOverState( time=self._time, holding_tab=False, submitted=False)
         else:
             return self
 
 class GameOverState(GameState):
 
-    def __init__(self, time: float, holding_tab: bool ):
+    def __init__(self, time: float, holding_tab: bool, submitted: bool ):
         self._start_over = False # when this variable is true transitions to startstate
         self._to_lboard = False # when this variable is true you transition to LeaderboardState
         self._text = FONT.render("To play again press left shift.", True, ORANGE)
         self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         self._score = time
         self._holding_tab= holding_tab
+        self._submitted_score = submitted
 
     def update(self, frame_time, events, keys):
         if keys[pygame.K_LSHIFT]:
@@ -102,24 +103,27 @@ class GameOverState(GameState):
         if self._start_over:
             return StartState()
         elif self._to_lboard:
-            return LeaderboardState(self._score)
+            return LeaderboardState(self._score, submitted=self._submitted_score)
         else:
             return self
 
 class LeaderboardState(GameState):
 
-    def __init__(self, time):
+    def __init__(self, time: float, submitted: bool):
         self._to_game_over = False #when this variable is true you transition to Game over state
         self._text_input = pygame_textinput.TextInputVisualizer(font_object=FONT)
         self._leaderboard = Leaderboard()
         self._score = time
         self._holding_tab = True
+        # self._submitted_score = False
+        self._submitted_score = submitted
 
     def update(self, frame_time, events, keys):
         self._text_input.update(events)
-        if keys[pygame.K_RETURN]:
+        if keys[pygame.K_RETURN] and self._submitted_score == False:
             name = self._text_input.value
             self._leaderboard.submit_score(your_name=name, your_score=self._score)
+            self._submitted_score = True
         if self._holding_tab and keys[pygame.K_TAB] == False:
             self._holding_tab = False
         elif not self._holding_tab and keys[pygame.K_TAB]:
@@ -131,6 +135,6 @@ class LeaderboardState(GameState):
 
     def get_next_state(self)-> GameState:
         if self._to_game_over:
-            return GameOverState(self._score, True)
+            return GameOverState(time=self._score, holding_tab=True, submitted=self._submitted_score)
         else:
             return self 

@@ -49,7 +49,17 @@ class Leaderboard:
             return False
 
     def _read_data(self):
-        pass
+        with open(FILE_NAME, "r") as lb_file:
+            while True:
+                line=lb_file.readline()
+                if len(line) == 0:
+                    break
+                else:
+                    items = line.split(',')
+                    name = items[0]
+                    score = float(items[1])
+                    self._scores[name] = score
+                    continue
 
     def _write_data(self):
         with open(FILE_NAME, "w") as lb_file:
