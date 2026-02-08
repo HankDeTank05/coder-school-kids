@@ -5,7 +5,7 @@ class Player:
 
     def __init__(self):
         self._pos = pygame.math.Vector2(0,0)
-        self._speed = 1000
+        self._speed = 250
         self._size = 10
 
     def update(self, frame_time, keys):
