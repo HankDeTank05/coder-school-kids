@@ -6,7 +6,7 @@ from constants import *
 from gui import Hud, Leaderboard
 from player import Player
 from obstacles import ObstacleManager
-
+from powerups import PowerupManager
 
 class GameState:
 
@@ -45,12 +45,14 @@ class PlayingState(GameState):
         self._player = Player()
         self._obs_man = ObstacleManager()
         self._hud = Hud()
+        self._puman = PowerupManager()
         self._time = 0
 
     def update(self, frame_time, events, keys):
         self._player.update(frame_time, keys)
         self._obs_man.update(frame_time)
         self._hud.update(frame_time, self._player.get_hp())
+        self._puman.update(frame_time)
         self._time += frame_time
 
         # do collision
@@ -69,6 +71,7 @@ class PlayingState(GameState):
         self._player.draw(screen)
         self._obs_man.draw(screen)
         self._hud.draw(screen)
+        self._puman.draw(screen)
 
     def get_next_state(self) -> GameState:
         if self._player.get_hp() <= 0:
