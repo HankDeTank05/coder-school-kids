@@ -32,7 +32,7 @@ while running:
     # part 1: update #
     ##################
     keys = pygame.key.get_pressed()
-    p1.update(frame_time, keys)
+    p1.update(frame_time, keys, current_map_screen=map_screen)
     map_screen.update(frame_time)
 
     ################

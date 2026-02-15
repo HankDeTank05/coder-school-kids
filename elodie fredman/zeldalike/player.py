@@ -6,9 +6,9 @@ class Player:
     def __init__(self):
         self._pos = pygame.math.Vector2(0,0)
         self._speed = 250
-        self._size = 10
+        self._size = pygame.math.Vector2(TILE_WIDTH_PX, TILE_HEIGHT_PX)
 
-    def update(self, frame_time, keys):
+    def update(self, frame_time, keys, current_map_screen):
         pos_delta = pygame.math.Vector2(0,0)
 
         #calculate movement
@@ -31,13 +31,16 @@ class Player:
         # stay on screen
         if self._pos.x < 0:
             self._pos.x = 0
-        elif self._pos.x > WIDTH - 1 - self._size:
-            self._pos.x = WIDTH - 1 - self._size
+        elif self._pos.x > WIDTH - 1 - self._size.x:
+            self._pos.x = WIDTH - 1 - self._size.x
         
         if self._pos.y < 0:
             self._pos.y = 0
-        elif self._pos.y > HEIGHT - 1 - self._size:
-            self._pos.y = HEIGHT - 1 - self._size 
+        elif self._pos.y > HEIGHT - 1 - self._size.y:
+            self._pos.y = HEIGHT - 1 - self._size.y 
+
+        # TODO: check for collision w/ map screen
+        
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (0,255,0), pygame.Rect(self._pos, (self._size, self._size)))
+        pygame.draw.rect(screen, (0,255,0), pygame.Rect(self._pos, self._size))

@@ -31,11 +31,8 @@ pygame.display.set_caption("potion maker.")
 clock = pygame.time.Clock()
 running = True 
 
-item_catagories = ["element", "acid"]
-catagory_index = 0
-
 element_text = ["water", "wind", "earth", "fire", "magic"]
-current_element_index = 0 
+current_element_index = 1
 
 current_acid = MIN_ACID
 acid_count = 0
@@ -62,20 +59,30 @@ potion_effects = {
     ("magic", 3): "arcane overlode"
 }
 
-def prev_catagory():
-    global catagory_index
-    catagory_index = (catagory_index - 1) % len(item_catagories)
+mouse_pressed_last_frame = False
+mouse_just_pressed = False
+
+def prev_element():
+    global current_element_index
+    current_element_index = (current_element_index - 1) % len(element_text) 
+    
  
-def next_catagory():
-    global catagory_index
-    catagory_index = (catagory_index + 1) % len(item_catagories)
+def next_element():
+    global current_element_index
+    current_element_index = (current_element_index + 1) % len(element_text) 
 
 def add_acid():
+    global acid_count
     acid_count += 1
+    if acid_count >= 4: 
+        acid_count = 0
 
 def remove_acid():
+    global acid_count
     acid_count -= 1
-
+    if acid_count <= -1:
+        acid_count = 3
+    
 def potion_scene():
     acid_up_arrow = pygame.image.load("up arrow.png")
     acid_up_arrow = pygame.transform.scale(acid_up_arrow, (160,160))
@@ -83,23 +90,45 @@ def potion_scene():
     acid_down_arrow = pygame.image.load("down arrow.png")
     acid_down_arrow = pygame.transform.scale(acid_down_arrow, (160,160))
 
-
     screen.blit(acid_up_arrow,(200, 48))
     screen.blit(acid_down_arrow,(200, 220))
+
+    if mouse_just_pressed:
+        if pygame.mouse.get_pos()[0] >= 200 and pygame.mouse.get_pos()[0] <= 360 and pygame.mouse.get_pos()[1] >= 48 and pygame.mouse.get_pos()[1] <= 208:
+            add_acid()
+        
+        if pygame.mouse.get_pos()[0] <= 360 and pygame.mouse.get_pos()[0] >= 200 and pygame.mouse.get_pos()[1] >= 220 and pygame.mouse.get_pos()[1] <= 380:
+            remove_acid()
+
+    left_arrow = pygame.image.load("left arrow.png")
+    left_arrow = pygame.transform.scale(left_arrow, (160,160))
+
+    right_arrow = pygame.image.load("right arrow.png")
+    right_arrow = pygame.transform.scale(right_arrow, (160,160))
+
+    screen.blit(left_arrow,(650, 100))
+    screen.blit(right_arrow,(800, 100))
+
+    element = element_text[current_element_index]
+
+    element_image = pygame.image.load(element + ".png")
+    element_image = pygame.transform.scale(element_image, (112, 112))
+
     potion_image = pygame.image.load("empty.png")
     potion_image = pygame.transform.scale(potion_image, (128,128))
+
     acid_image = pygame.image.load("acid 0.png")
     if acid_count == 1:
         acid_image = pygame.image.load("acid 1.png")
     elif acid_count == 2:
         acid_image = pygame.image.load("acid 2.png")
-    if acid_count == 3:
+    elif acid_count == 3:
         acid_image = pygame.image.load("acid 3.png")
-    acid_image = pygame.transform.scale(acid_image, (96,96))
+    acid_image = pygame.transform.scale(acid_image, (112,112))
 
-    screen.blit(acid_image,(232,150))
-    screen.blit(potion_image,(1000, 100))
-
+    screen.blit(acid_image,(228,155))
+    screen.blit(potion_image,(1100, 70))
+    screen.blit(element_image, (750, 125))
     
 
 
@@ -111,31 +140,16 @@ while running:
 #potion shop
 #customer comes up, makes vague request
 #fit potion to request and give to customer
-    potion_scene()
+    if (not mouse_pressed_last_frame) and pygame.mouse.get_pressed()[0]:
+        mouse_just_pressed = True
+    else: 
+        mouse_just_pressed = False
+    potion_scene() 
 
 
-
-
+    mouse_pressed_last_frame = pygame.mouse.get_pressed()[0]
     pygame.display.flip()
     clock.tick(60)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
