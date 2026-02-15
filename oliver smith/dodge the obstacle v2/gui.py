@@ -74,10 +74,10 @@ class Leaderboard:
             sorted(self._scores.items(), key=lambda item: item[1], reverse=True)
         )
         place = 1
-        for pair in zip(self._scores.keys(), self._scores.values()):
+        for pair in zip(sorted_scores.keys(), sorted_scores.values()):
             #print(pair)
             name = pair[0]
-            score = pair[1]
+            score = round(pair[1], 3)
             entry_text = FONT.render(f"{place}. {name} : {score}", True, TEAL)
             entry_text_rect = entry_text.get_rect(
                 midtop = (WIDTH // 2, place * FONT_SIZE)

@@ -10,13 +10,13 @@ from constants import *
 class Obstacle:
 
     # constructor
-    def __init__(self):
-        self._rect: pygame.Rect = None
-        self._speed = None
-        self._dmg = None
+    def __init__(self, rect: pygame.Rect, speed: float, dmg: float):
+        self._rect: pygame.Rect = rect
+        self._speed = speed
+        self._dmg = dmg
         self._is_fast = random.randint(1, 100) < OBS_FAST_CHANCE
         # assert(self._rect != None) # if you got an error on this line the variable size_name doesn't have a value of "small", "normal", or "big"
-
+        self._color = RED
 
     # game functions
 
@@ -24,7 +24,7 @@ class Obstacle:
         self._rect.move_ip(0, self._speed * frame_time)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, RED, self._rect)
+        pygame.draw.rect(screen, self._color, self._rect)
 
     # accessors
 
@@ -44,28 +44,22 @@ class Obstacle:
 class SmallObstacle(Obstacle):
 
     def __init__(self):
-        super().__init__()
-        self._rect = pygame.Rect(0, 0, OBSTACLE_SMALL_WIDTH, OBSTACLE_SMALL_HEIGHT)
-        self._speed = OBSTACLE_SPEED_SMALL
-        self._dmg = OBSTACLE_DMG_SMALL
+        temp_rect = pygame.Rect(0, 0, OBSTACLE_SMALL_WIDTH, OBSTACLE_SMALL_HEIGHT)
+        super().__init__(temp_rect, OBSTACLE_SPEED_SMALL, OBSTACLE_DMG_SMALL)
         self._set_start_pos()
 
 class NormalObstacle(Obstacle):
     
     def __init__(self):
-        super().__init__()
-        self._rect = pygame.Rect(0, 0, OBSTACLE_NORMAL_WIDTH, OBSTACLE_NORMAL_HEIGHT)
-        self._speed = OBSTACLE_SPEED_NORMAL
-        self._dmg = OBSTACLE_DMG_NORMAL
+        temp_rect = pygame.Rect(0, 0, OBSTACLE_NORMAL_WIDTH, OBSTACLE_NORMAL_HEIGHT)
+        super().__init__(temp_rect, OBSTACLE_SPEED_NORMAL, OBSTACLE_DMG_NORMAL)
         self._set_start_pos()
 
 class BigObstacle(Obstacle):
     
     def __init__(self):
-        super().__init__()
-        self._rect = pygame.Rect(0, 0, OBSTACLE_BIG_WIDTH, OBSTACLE_BIG_HEIGHT)
-        self._speed = OBSTACLE_SPEED_BIG
-        self._dmg = OBSTACLE_DMG_BIG
+        temp_rect = pygame.Rect(0, 0, OBSTACLE_BIG_WIDTH, OBSTACLE_BIG_HEIGHT)
+        super().__init__(temp_rect, OBSTACLE_SPEED_BIG, OBSTACLE_DMG_BIG)
         self._set_start_pos()
 
 class ObstacleManager:
