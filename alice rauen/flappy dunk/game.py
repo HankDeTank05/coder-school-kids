@@ -1,3 +1,5 @@
+import os
+os.environ['SDL_VIDEO_WINDOW_POS'] = f'{50},{50}'
 import pgzrun
 
 WIDTH=1280
@@ -44,20 +46,21 @@ def update():
     global go_up, score, did_score
     
     # move the ball down
-    flappy.y+=1
+    flappy.y+=5 
 
     # it makes the ball go up
     if go_up==True:
         go_up=False
-        flappy.y-=70
+        flappy.y-=130
 
     # this code makes the ball stop at the top of the screen
-    if flappy.y<0:
-        flappy.y=0
+    # if flappy.y<0:
+    #     flappy.y=0
 
-    # they move the ring left
-    ring_back.x-=1
-    ring_front.x-=1
+    # they move the ring left 
+    ring_speed=5
+    ring_back.x-=ring_speed
+    ring_front.x-=ring_speed
 
     # this code makes the ring loop around the screen
     if ring_back.right<0:
@@ -69,18 +72,19 @@ def update():
 
     # this code checks for a basket
     if did_score == False:
-        if flappy.midtop[1]<ring_back.midbottom[1]<flappy.midbottom[1]:
-            if hoop_width/2-ball_width/2>=abs(flappy.center[0]-ring_back.center[0]):
-                print('swish')
+        if flappy.midtop[1]<ring_front.midbottom[1]<flappy.midbottom[1]:
+            if hoop_width/2-ball_width/2>=abs(flappy.center[0]-ring_front.center[0]):
+                # print('swish')
                 score+=3
                 did_score = True
-            elif (hoop_width/2-ball_width/2)+rim_width>=abs(flappy.center[0]-ring_back.center[0]):
-                print('basket')
+            elif (hoop_width/2-ball_width/2)+rim_width>=abs(flappy.center[0]-ring_front.center[0]):
+                # print('basket')
                 score+=1
                 did_score = True
             else:
-                print('miss')
-            print(score)
+                # print('miss')
+                pass
+            # print(score)
 
 
 def draw():
@@ -88,9 +92,10 @@ def draw():
     ring_back.draw()
     flappy.draw()
     ring_front.draw()
+    screen.draw.text(f"Score: {score}",(0,0),fontsize=50)
 
     # this code displays the game over screen
-    if flappy.y>HEIGHT:
+    if flappy.y>HEIGHT or flappy.y<0:
         game_over.draw()
 
 
