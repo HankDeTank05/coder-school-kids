@@ -77,6 +77,9 @@ class Player:
     
     def get_hp(self) -> int:
         return self._hp
+    
+    def get_max_hp(self) -> int:
+        return self._max_hp
 
     def get_rect(self) -> pygame.Rect:
         return self._rect

@@ -5,19 +5,18 @@ import copy
 import pygame
 #project
 from constants import *
+from movingobj import MovingObject
 
 
-class Obstacle:
+class Obstacle(MovingObject):
 
     # constructor
     def __init__(self, rect: pygame.Rect, speed: float, dmg: float):
-        self._rect: pygame.Rect = rect
-        self._speed = speed
+        super().__init__(rect, speed, RED)
         self._dmg = dmg
         self._is_fast = random.randint(1, 100) < OBS_FAST_CHANCE
         # assert(self._rect != None) # if you got an error on this line the variable size_name doesn't have a value of "small", "normal", or "big"
-        self._color = RED
-
+        
     # game functions
 
     def update(self, frame_time):
@@ -36,10 +35,10 @@ class Obstacle:
 
     # mutators
 
-    def _set_start_pos(self):
-        x = random.randint(0, WIDTH - self._rect.width)
-        y = -self._rect.height
-        self._rect.update(x, y, self._rect.width, self._rect.height)
+    # def _set_start_pos(self):
+    #     x = random.randint(0, WIDTH - self._rect.width)
+    #     y = -self._rect.height
+    #     self._rect.update(x, y, self._rect.width, self._rect.height)
 
 class SmallObstacle(Obstacle):
 

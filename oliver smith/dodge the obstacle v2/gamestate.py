@@ -52,7 +52,9 @@ class PlayingState(GameState):
         self._player.update(frame_time, keys)
         self._obs_man.update(frame_time)
         self._hud.update(frame_time, self._player.get_hp())
-        self._puman.update(frame_time)
+        self._puman.update(frame_time,
+                           player_hp=self._player.get_hp(),
+                           player_max_hp=self._player.get_max_hp())
         self._time += frame_time
 
         # do collision

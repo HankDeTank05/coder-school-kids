@@ -1,22 +1,25 @@
 import pygame
 import random
 from constants import *
+from movingobj import MovingObject
 
 
-class Powerup:
+class Powerup(MovingObject):
 
     def __init__(self, rect: pygame.Rect, color):
-        self._speed = OBSTACLE_SPEED_BIG
-        self._rect: pygame.Rect = rect
-        self._color = color
+        super().__init__(rect, POWERUP_SPEED, color)
         self._stop_range_top = 0.4
-        self._stop_range_btm = 1.0
+        self._stop_range_btm = 0.9
+        rounded_stop_rangetop = round(self._stop_range_top * HEIGHT, None)
+        rounded_stop_rangebtm = round(self._stop_range_btm * HEIGHT, None)
         self._stop_point = random.randint(
-            self._stop_range_top * HEIGHT,
-            self._stop_range_btm * HEIGHT
+            rounded_stop_rangetop,
+            rounded_stop_rangebtm
         )
         self._stopped_time = 25
         self._current_stop_time = 0
+        self._set_start_pos()
+        
 
     # game functions
 
@@ -49,8 +52,16 @@ class PowerupManager:
     def __init__(self):
         self._powers: list[Powerup] = []
         self._spawn_timer = 0
+        
 
-    def update(self, frame_time):
+    def update(self, frame_time, player_hp, player_max_hp):
+        if player_hp <= player_max_hp * POWERUP_SPAWN_HEALTH_AMT:
+            self._spawn_timer += frame_time
+            print(self._spawn_timer)
+            if self._spawn_timer >= POWERUP_SPAWN_DELAY:
+                self._spawn_timer -= POWERUP_SPAWN_DELAY
+                new_power = Invincibility()
+                self._powers.append(new_power)
         for power in self._powers:
             power.update(frame_time)
 
