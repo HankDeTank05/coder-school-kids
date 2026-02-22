@@ -14,7 +14,8 @@ class Map:
 
 class MapScreen:
     
-    def __init__(self):
+    def __init__(self, spawn_tile_pos: pygame.math.Vector2):
+        self._spawn_tile_pos = spawn_tile_pos
         self._tiles = []
         for tile_y in range(SCREEN_TILE_HEIGHT):
             self._tiles.append([])
@@ -36,13 +37,14 @@ class MapScreen:
         # draw map tiles
         for y in range(len(self._tiles)): # for every row in the grid
             for x in range(len(self._tiles[y])): #for every tile in the row 
-                tile_rect = pygame.Rect(x * TILE_WIDTH_PX, y * TILE_HEIGHT_PX, TILE_WIDTH_PX, TILE_HEIGHT_PX)
-                if self._tiles[y][x]== '#':
-                    pygame.draw.rect(screen, TILE_WALL_COLOR, tile_rect)
-                elif self._tiles[y][x] == ' ':
-                    pygame.draw.rect(screen, TILE_FLOOR_COLOR, tile_rect)
+                self._tiles[y][x].draw(screen)
         # makes grid lines for the map
         for x in range(0,WIDTH - 1, TILE_WIDTH_PX):
             pygame.draw.line(screen, COLOR_BLACK, (x,0), (x,HEIGHT-1))
         for y in range(0, HEIGHT - 1, TILE_HEIGHT_PX):
             pygame.draw.line(screen, COLOR_BLACK, (0,y), (WIDTH - 1, y))
+
+    # accessors
+
+    def get_spawn_tile_pos(self) -> pygame.math.Vector2:
+        return self._spawn_tile_pos

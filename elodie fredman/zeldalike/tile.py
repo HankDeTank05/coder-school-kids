@@ -9,13 +9,16 @@ class Tile:
         self._is_solid = is_solid
         self._transition_to = transition_to
 
+    def draw(self, screen):
+        pygame.draw.rect(surface=screen, color=self._color, rect=self._rect)
+
 class TileFloor(Tile):
 
     def __init__(self, pos: pygame.math.Vector2, color: pygame.Color):
         super().__init__(pos=pos, color=color, is_solid=False, transition_to=None)
 
     def __repr__(self) -> str:
-        return ' '
+        return '/'
 
 class TileFloorGrass(TileFloor):
 

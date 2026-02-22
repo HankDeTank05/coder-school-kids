@@ -16,7 +16,10 @@ frame_time = 0
 
 # game variables
 p1 = player.Player()
-map_screen = map.MapScreen()
+map_screen = map.MapScreen(
+    spawn_tile_pos=pygame.math.Vector2(2,2)
+)
+p1.spawn_at_tile(tile_pos=map_screen.get_spawn_tile_pos())
 
 while running:
     # poll for events

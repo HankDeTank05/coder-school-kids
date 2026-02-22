@@ -1,11 +1,12 @@
 import pygame
 from common import *
+from gamemath import tiles_to_pixels
 
 class Player:
 
     def __init__(self):
-        self._pos = pygame.math.Vector2(0,0)
-        self._speed = 250
+        self._pos = pygame.math.Vector2(0,0) # this is in px, not tiles
+        self._speed = 250 #pps (pixels per second)
         self._size = pygame.math.Vector2(TILE_WIDTH_PX, TILE_HEIGHT_PX)
 
     def update(self, frame_time, keys, current_map_screen):
@@ -40,7 +41,13 @@ class Player:
             self._pos.y = HEIGHT - 1 - self._size.y 
 
         # TODO: check for collision w/ map screen
+        my_rect = pygame.Rect(self._pos, self._size)
+        for y in range(SCREEN_TILE_HEIGHT):
+            for x in range(SCREEN_TILE_WIDTH):
+                if my_rect.colliderect()
         
-
     def draw(self, screen):
         pygame.draw.rect(screen, (0,255,0), pygame.Rect(self._pos, self._size))
+
+    def spawn_at_tile(self, tile_pos: pygame.math.Vector2):
+        self._pos = tiles_to_pixels(tile_pos)
