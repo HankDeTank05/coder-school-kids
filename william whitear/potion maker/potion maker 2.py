@@ -32,31 +32,33 @@ clock = pygame.time.Clock()
 running = True 
 
 element_text = ["water", "wind", "earth", "fire", "magic"]
-current_element_index = 1
+current_element_index = 0
 
 current_acid = MIN_ACID
 acid_count = 0
 
+potion_screen = True
+
 potion_effects = {
-    ("water", 1): "water breathing",
-    ("water", 2): "ice sheald",
-    ("water", 3): "tidal wave",
+    ("water", 1): "faild potion",
+    ("water", 2): "drowning",
+    ("water", 3): "acid rain",
 
-    ("wind", 1): "Feather Fall",
-    ("wind", 2): "Swift Dash",
-    ("wind", 3): "Hurricane",
+    ("wind", 1): "smoke potion",
+    ("wind", 2): "invis potion",
+    ("wind", 3): "faild potion",
 
-    ("earth", 1): "Stone Skin",
-    ("earth", 2): "Root Bind", 
-    ("earth", 3): "Earthquake",
+    ("earth", 1): "resistance",
+    ("earth", 2): "faild potion", 
+    ("earth", 3): "acid breath",
 
-    ("fire", 1): "Fire Resistance",
-    ("fire", 2): "flame burst",
-    ("fire", 3): "inferno",
+    ("fire", 1): "lava potion",
+    ("fire", 2): "scalding",
+    ("fire", 3): "faild potion",
 
-    ("magic", 1): "mana boost",
-    ("magic", 2): "spell power",
-    ("magic", 3): "arcane overlode"
+    ("magic", 1): "fairy potion",
+    ("magic", 2): "light potion",
+    ("magic", 3): "mana potion"
 }
 
 mouse_pressed_last_frame = False
@@ -84,6 +86,13 @@ def remove_acid():
         acid_count = 3
     
 def potion_scene():
+    if potion_screen:
+     potion_background = pygame.image.load("potion back.png")
+    potion_background = pygame.transform.scale(potion_background,(720, 720))
+
+    screen.blit (potion_background, (0,0) )
+
+
     acid_up_arrow = pygame.image.load("up arrow.png")
     acid_up_arrow = pygame.transform.scale(acid_up_arrow, (160,160))
 
@@ -108,14 +117,18 @@ def potion_scene():
 
     screen.blit(left_arrow,(650, 100))
     screen.blit(right_arrow,(800, 100))
+ 
+    if mouse_just_pressed:
+        if pygame.mouse.get_pos()[0] >= 650 and pygame.mouse.get_pos()[0] <= 810 and pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[1] <= 260:
+            next_element()
+        
+        if pygame.mouse.get_pos()[0] >= 800 and pygame.mouse.get_pos()[0] <= 960 and pygame.mouse.get_pos()[1] >= 100 and pygame.mouse.get_pos()[1] <= 260:
+            prev_element()
 
     element = element_text[current_element_index]
 
     element_image = pygame.image.load(element + ".png")
     element_image = pygame.transform.scale(element_image, (112, 112))
-
-    potion_image = pygame.image.load("empty.png")
-    potion_image = pygame.transform.scale(potion_image, (128,128))
 
     acid_image = pygame.image.load("acid 0.png")
     if acid_count == 1:
@@ -125,6 +138,15 @@ def potion_scene():
     elif acid_count == 3:
         acid_image = pygame.image.load("acid 3.png")
     acid_image = pygame.transform.scale(acid_image, (112,112))
+
+    if acid_count == 0:
+        potion = "empty"
+    else:
+        potion = potion_effects[(element, acid_count)]
+ 
+
+    potion_image = pygame.image.load(potion + ".png")
+    potion_image = pygame.transform.scale(potion_image, (128,128))
 
     screen.blit(acid_image,(228,155))
     screen.blit(potion_image,(1100, 70))
@@ -150,58 +172,6 @@ while running:
     mouse_pressed_last_frame = pygame.mouse.get_pressed()[0]
     pygame.display.flip()
     clock.tick(60)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
