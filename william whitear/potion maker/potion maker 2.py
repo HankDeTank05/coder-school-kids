@@ -146,10 +146,16 @@ def potion_scene():
  
 
     potion_image = pygame.image.load(potion + ".png")
-    potion_image = pygame.transform.scale(potion_image, (128,128))
+    potion_image = pygame.transform.scale(potion_image, (250,250))
+    
 
+    order_paper = pygame.image.load("order paper.png")
+    order_paper = pygame.transform.scale(order_paper, (380,380))
+
+
+    screen.blit(order_paper,(850,300))
     screen.blit(acid_image,(228,155))
-    screen.blit(potion_image,(1100, 70))
+    screen.blit(potion_image,(1000, 50))
     screen.blit(element_image, (750, 125))
     
 
@@ -172,34 +178,6 @@ while running:
     mouse_pressed_last_frame = pygame.mouse.get_pressed()[0]
     pygame.display.flip()
     clock.tick(60)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
