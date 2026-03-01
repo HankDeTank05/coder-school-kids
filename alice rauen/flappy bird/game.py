@@ -1,6 +1,7 @@
 import os
 os.environ['SDL_VIDEO_WINDOW_POS'] = f'{50},{50}'
 import pgzrun
+import random
 
 WIDTH = 1280
 HEIGHT = 720
@@ -23,6 +24,8 @@ pipe_Bottom=Rect(0,HEIGHT-100,PIPE_WIDTH, 100)
 def respawn_pipes():
     global pipe_Bottom, pipe_top 
     pipe_top.topleft = WIDTH,0
+    pipe_top.height=random.randint(25 ,200)
+    pipe_Bottom.height=random.randint(400,500)
     pipe_Bottom.topleft = WIDTH,HEIGHT-pipe_Bottom.size[1]
     
 
@@ -39,6 +42,11 @@ def update():
     if go_up==True:
         go_up=False 
         bird.y-=130
+
+    if bird.y - bird.height//2 <= 0:
+        bird.y = bird.height//2
+    elif bird.y + bird.height//2 >= HEIGHT:
+        bird.y = HEIGHT - bird.height//2
     
     # move the backdrop
     bg_1.x-=1
@@ -61,8 +69,9 @@ def draw():
     screen.clear()
     bg_1.draw() 
     bg_2.draw()
+    
+    bird.draw()
     screen.draw.filled_rect(pipe_top,GREEN)
     screen.draw.filled_rect(pipe_Bottom,GREEN)
-    bird.draw()
 
 pgzrun.go()
