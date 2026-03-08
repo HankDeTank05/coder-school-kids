@@ -16,7 +16,9 @@ class Player:
         self._max_hp = PLAYER_MAX_HEALTH
         self._hp = self._max_hp
 
+        self._dmg_state = DamageState()
         self._cheating_state = NotCheatingState()
+    
 
     # Game functions
 
@@ -104,6 +106,10 @@ class Player:
     def take_damage(self, damage: int):
         self._hp -= damage
 
+##############################
+### CHEATING STATE CLASSES ###
+##############################
+
 class CheatingState:
     
     def __init__(self):
@@ -170,3 +176,48 @@ class PostCheating(CheatingState):
             return NotCheatingState()
         else:
             return self
+
+############################
+### DAMAGE STATE CLASSES ###
+############################
+#Half Health??
+class DamageState:
+    
+
+    def __init__(self):
+        pass
+
+
+class InvincibilityState(DamageState):
+
+    def __init__(self):
+        super().__init__()
+        self._time_left = INVINCIBILITY_TIME
+
+
+    def update(self, frame_time) -> None:
+        self._time_left -= frame_time
+
+    def draw(self, screen) -> None:
+        pass
+
+    def get_next_state(self):
+        if self._time_left <= 0:
+            return VulnerableState()
+        else:
+            return self
+
+class VulnerableState(DamageState):
+
+    def __init__(self):
+        super().__init__()
+
+
+    def update(self, frame_time) -> None:
+        pass
+
+    def draw(self, screen) -> None:
+        pass
+
+    def get_next_state(self) -> DamageState:
+        return self

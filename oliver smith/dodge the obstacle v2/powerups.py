@@ -2,12 +2,19 @@ import pygame
 import random
 from constants import *
 from movingobj import MovingObject
+from enum import Enum
+
+class PupType(Enum):
+    Invincibility = 1
+    HealthBoost = 2
+    SlowDown = 3
 
 
 class Powerup(MovingObject):
 
-    def __init__(self, rect: pygame.Rect, color):
+    def __init__(self, rect: pygame.Rect, color, type: PupType):
         super().__init__(rect, POWERUP_SPEED, color)
+        self._type = type
         self._stop_range_top = 0.4
         self._stop_range_btm = 0.9
         rounded_stop_rangetop = round(self._stop_range_top * HEIGHT, None)
@@ -39,6 +46,11 @@ class Powerup(MovingObject):
     
     def get_stop_time(self) -> float:
         return self._stopped_time
+    
+    def get_rect(self) -> pygame.Rect:
+        return self._rect
+
+
 
 
 class Invincibility(Powerup):
@@ -69,3 +81,11 @@ class PowerupManager:
     def draw(self, screen):
         for power in self._powers:
             power.draw(screen)
+
+    def get_pwrs(self):
+        return self._powers
+    
+    def remove_pwrs(self, pwrs_indices: list[int]):
+        pwrs_indices.sort(reverse=True)
+        for pwr_index in pwrs_indices:
+            self._powers.pop(pwr_index)

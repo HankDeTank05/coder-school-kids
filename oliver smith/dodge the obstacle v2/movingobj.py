@@ -7,7 +7,7 @@ class MovingObject:
     def __init__(self, rect, speed, color):
         self._rect = rect
         self._speed = speed
-        self._colot = color
+        self._color = color
 
     def _set_start_pos(self):
         x = random.randint(0, WIDTH - self._rect.width)
