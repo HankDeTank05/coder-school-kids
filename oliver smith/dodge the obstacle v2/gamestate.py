@@ -69,6 +69,17 @@ class PlayingState(GameState):
                 collided_indices.append(obs_index)
         self._obs_man.remove_obses(collided_indices)
 
+        collided_indices = []
+        pwrs_list = self._puman.get_pwrs()
+        for pwr_index in range(len(pwrs_list)):
+            powerup = pwrs_list[pwr_index]
+            player_rect = self._player.get_rect()
+            pwr_rect = powerup.get_rect()
+            if player_rect.colliderect(pwr_rect):
+                self._player.react_to_pwrup('invincibility')
+                collided_indices.append(pwr_index)
+        self._puman.remove_pwrs(collided_indices)
+
     def draw(self, screen):
         self._player.draw(screen)
         self._obs_man.draw(screen)
