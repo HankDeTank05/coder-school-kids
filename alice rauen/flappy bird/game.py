@@ -15,18 +15,22 @@ bg_1.topleft = 0,0
 bg_2=Actor('bg')
 bg_2.topleft = WIDTH-1,0
 
+go=Actor('game')
+go.topleft=0,0
+show_go=False
+
 GREEN=(0,255,0)
 PIPE_WIDTH = 160
-PIPE_GAP = 300
+PIPE_GAP = 500
 pipe_top=Rect(0,0,PIPE_WIDTH, 10)
 pipe_Bottom=Rect(0,HEIGHT-100,PIPE_WIDTH, 100)
 
 def respawn_pipes():
     global pipe_Bottom, pipe_top 
     pipe_top.topleft = WIDTH,0
-    pipe_top.height=random.randint(25 ,200)
-    pipe_Bottom.height=random.randint(400,500)
-    pipe_Bottom.topleft = WIDTH,HEIGHT-pipe_Bottom.size[1]
+    pipe_top.height=random.randint(25, 200)
+    pipe_Bottom.topleft = WIDTH,pipe_top.height + PIPE_GAP
+    pipe_Bottom.height = HEIGHT - pipe_Bottom.top
     
 
 def on_key_down(key):
@@ -35,7 +39,7 @@ def on_key_down(key):
         go_up=True
 
 def update():
-    global go_up
+    global go_up, show_go
     # move the bird down
     bird.y+=5
 
@@ -63,6 +67,9 @@ def update():
 
     if pipe_top.midright[0]<0 and pipe_Bottom.midright[0]<0:
         respawn_pipes()
+
+    if bird.colliderect(pipe_top) or bird.colliderect(pipe_Bottom):
+        show_go=True
     
 
 def draw():
@@ -73,5 +80,7 @@ def draw():
     bird.draw()
     screen.draw.filled_rect(pipe_top,GREEN)
     screen.draw.filled_rect(pipe_Bottom,GREEN)
+    if show_go:
+        go.draw()
 
 pgzrun.go()
