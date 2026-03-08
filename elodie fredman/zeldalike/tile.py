@@ -12,6 +12,16 @@ class Tile:
     def draw(self, screen):
         pygame.draw.rect(surface=screen, color=self._color, rect=self._rect)
 
+    # accessors:
+
+    @property
+    def rect(self) -> pygame.Rect:
+        return self._rect
+    
+    @property
+    def is_solid(self) -> bool:
+        return self._is_solid
+
 class TileFloor(Tile):
 
     def __init__(self, pos: pygame.math.Vector2, color: pygame.Color):
