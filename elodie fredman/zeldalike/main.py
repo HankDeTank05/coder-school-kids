@@ -45,10 +45,20 @@ while running:
             tile = map_screen.get_tile_at(x, y)
             tile_rect = tile.rect
             if tile.is_solid and p1.rect.colliderect(tile_rect):
-                if tile_rect.centerx < p1.rect.centerx:
-                    p1.rect.left = tile_rect.right
-                elif p1.rect.centerx < tile_rect.centerx:
-                    p1.rect.right = tile_rect.left
+                x_dif = abs(tile_rect.centerx - p1.rect.centerx)
+                y_dif = abs(tile_rect.centery - p1.rect.centery)
+                if x_dif > y_dif:
+                    if tile_rect.centerx < p1.rect.centerx:
+                        p1.rect.left = tile_rect.right
+                    elif p1.rect.centerx < tile_rect.centerx:
+                        p1.rect.right = tile_rect.left
+
+                elif y_dif > x_dif:
+                    if tile_rect.centery < p1.rect.centery:
+                        p1.rect.top = tile_rect.bottom
+                    elif p1.rect.centery < tile_rect.centery:
+                        p1.rect.bottom = tile_rect.top
+
 
     ################
     # part 2: draw #
