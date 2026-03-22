@@ -1,5 +1,6 @@
 import pygame
 import os.path
+import random
 
 # this showes that this is in devlopment
 IN_DEVELOPMENT = True
@@ -22,7 +23,7 @@ HIGHLIGHT_RECT_HIGHT = 60
 pygame.init()
 BACKGROUND = pygame.color.Color(24, 28, 38)
 PANEL = pygame.color.Color(40, 45, 60,)
-TEXT = pygame.color.Color(235, 235, 235)
+TEXT = pygame.color.Color(100, 50, 40)
 HIGHLIGHT = pygame.color.Color(0, 220, 220)
 ACENT = pygame.color.Color(120, 160, 255)
 
@@ -31,13 +32,17 @@ pygame.display.set_caption("potion maker.")
 clock = pygame.time.Clock()
 running = True 
 
+#print(pygame.font.get_fonts())
+#print(pygame.font.match_font("oldenglishtext"))
+font = pygame.font.Font("C:\windows\Fonts\OLDENGL.TTF", 90)
+
 element_text = ["water", "wind", "earth", "fire", "magic"]
 current_element_index = 0
 
 current_acid = MIN_ACID
 acid_count = 0
 
-potion_screen = True
+potion_screen = False
 
 potion_effects = {
     ("water", 1): "faild potion",
@@ -60,6 +65,9 @@ potion_effects = {
     ("magic", 2): "light potion",
     ("magic", 3): "mana potion"
 }
+
+customers = []
+customer_count = 0
 
 mouse_pressed_last_frame = False
 mouse_just_pressed = False
@@ -86,8 +94,8 @@ def remove_acid():
         acid_count = 3
     
 def potion_scene():
-    if potion_screen:
-     potion_background = pygame.image.load("potion back.png")
+
+    potion_background = pygame.image.load("potion back.png")
     potion_background = pygame.transform.scale(potion_background,(720, 720))
 
     screen.blit (potion_background, (0,0) )
@@ -158,7 +166,36 @@ def potion_scene():
     screen.blit(potion_image,(1000, 50))
     screen.blit(element_image, (750, 125))
     
+def shop_seen():
+    global customers,customer_count
+    
+    #customers walk up to table
+    if random.randint(1,100) <= 1:
+        #1% chance
+        customer_count += 1
+        customer = pygame.image.load("wizard.png")
+        customer = pygame.transform.scale(customer, (700,700))
+        customers.append([customer, [0,100]])
 
+    for customer in customers:
+        screen.blit(customer[0], customer[1])
+        #customer[1][0] += 1
+
+    #foreground/table
+    table = pygame.image.load("table 1.png")
+    table = pygame.transform.scale(table, (1280,1280))
+    sign = pygame.image.load("sign.png")
+    sign = pygame.transform.scale(sign,(850,850))
+    bell = pygame.image.load("bell.png") 
+    bell = pygame.transform.scale(bell,(300,300))
+    text = font.render("Waiting customers: " + str(customer_count), True, TEXT)
+
+    screen.blit(table,(0,-400))
+    screen.blit(sign,(350,0))
+    screen.blit(bell,(50,290))
+    screen.blit(text,(350,100))
+    #order appears on paper
+    #order carries over onto potion screen
 
 while running:
     for event in pygame.event.get():
@@ -172,28 +209,14 @@ while running:
         mouse_just_pressed = True
     else: 
         mouse_just_pressed = False
-    potion_scene() 
+    if potion_screen:
+        potion_scene() 
+    else:
+        shop_seen()
+
 
 
     mouse_pressed_last_frame = pygame.mouse.get_pressed()[0]
     pygame.display.flip()
     clock.tick(60)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
