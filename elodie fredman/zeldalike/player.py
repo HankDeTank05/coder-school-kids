@@ -2,6 +2,7 @@ import os
 import pygame
 from common import *
 from gamemath import tiles_to_pixels
+from convenience import load_sprite
 
 class Player(pygame.sprite.Sprite):
 
@@ -10,8 +11,33 @@ class Player(pygame.sprite.Sprite):
             pygame.math.Vector2(0,0), # this is in px, not tiles
             pygame.math.Vector2(TILE_WIDTH_PX, TILE_HEIGHT_PX)
         )
-        self.image = pygame.transform.scale(pygame.image.load(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_down_0.png')), (TILE_WIDTH_PX, TILE_HEIGHT_PX))
-        self._speed = 500 #pps (pixels per second)
+        # 72.png, 74.png, 76.png
+        self._sprites = {
+            'walk down': [
+                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_down_0.png')),
+                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_down_1.png'))
+
+            ],
+            'walk up': [
+                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_up_0.png')),
+                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_up_1.png'))
+
+            ],
+            'walk right': [
+                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_right_0.png')),
+                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_right_1.png')) 
+
+            ],
+            'walk left': [
+                pygame.transform.flip(load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_right_0.png')), True, False),
+                pygame.transform.flip(load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_right_1.png')), True, False)
+
+            ]
+        }
+        self._anim_frame = 0
+        self._anim_frame_time = 0
+        self.image = self._sprites['walk down'][self._anim_frame]
+        self._speed = PLAYER_SPEED 
 
     # game functions
 
@@ -22,12 +48,29 @@ class Player(pygame.sprite.Sprite):
         #calculate movement
         if keys[pygame.K_UP]:
             pos_delta.y -= 1
+            self._anim_frame = 0
+            self._anim_frame_time = 0
+            self.image = self._sprites['walk up'][self._anim_frame]
         if keys[pygame.K_DOWN]:
             pos_delta.y += 1
+            self._anim_frame = 0
+            self._anim_frame_time = 0        
+            self.image = self._sprites['walk down'][self._anim_frame]
         if keys[pygame.K_RIGHT]:
             pos_delta.x += 1
+            self._anim_frame = 0
+            self._anim_frame_time = 0
+            self.image = self._sprites['walk right'][self._anim_frame]
         if keys[pygame.K_LEFT]:
             pos_delta.x -= 1
+            self._anim_frame = 0
+            self._anim_frame_time = 0
+            self.image = self._sprites['walk left'][self._anim_frame]
+
+        self._anim_frame_time += frame_time
+        if self._anim_frame_time > PLAYER_ANIM_SPF:
+            self._anim_frame += 1
+            if self._anim_frame >= 
 
         # fix diagonal movement
         if pos_delta.x != 0 and pos_delta.y != 0:
