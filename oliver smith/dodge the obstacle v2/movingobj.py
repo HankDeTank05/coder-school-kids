@@ -13,3 +13,5 @@ class MovingObject:
         x = random.randint(0, WIDTH - self._rect.width)
         y = -self._rect.height
         self._rect.update(x, y, self._rect.width, self._rect.height)
+
+

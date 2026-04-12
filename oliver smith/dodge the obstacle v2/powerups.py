@@ -57,7 +57,7 @@ class Invincibility(Powerup):
 
     def __init__(self):
         temp_rect = pygame.Rect(0, 0, OBSTACLE_NORMAL_WIDTH, OBSTACLE_NORMAL_HEIGHT)
-        super().__init__(temp_rect, MIDNIGHT_BLUE)
+        super().__init__(temp_rect, MIDNIGHT_BLUE, PupType)
 
 class PowerupManager:
 

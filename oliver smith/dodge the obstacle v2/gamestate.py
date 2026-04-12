@@ -50,7 +50,7 @@ class PlayingState(GameState):
 
     def update(self, frame_time, events, keys):
         self._player.update(frame_time, keys)
-        self._obs_man.update(frame_time)
+        self._obs_man.update(frame_time, self._player)
         self._hud.update(frame_time, self._player.get_hp())
         self._puman.update(frame_time,
                            player_hp=self._player.get_hp(),
@@ -76,7 +76,7 @@ class PlayingState(GameState):
             player_rect = self._player.get_rect()
             pwr_rect = powerup.get_rect()
             if player_rect.colliderect(pwr_rect):
-                self._player.react_to_pwrup('invincibility')
+                self._player.react_to_pwrup('invincibility', self._time)
                 collided_indices.append(pwr_index)
         self._puman.remove_pwrs(collided_indices)
 

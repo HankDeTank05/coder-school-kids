@@ -1,5 +1,6 @@
 # library 
 import pygame
+import time
 
 #project imports
 from constants import *
@@ -16,7 +17,7 @@ class Player:
         self._max_hp = PLAYER_MAX_HEALTH
         self._hp = self._max_hp
 
-        self._dmg_state = DamageState()
+        self._dmg_state = InvincibilityState()
         self._cheating_state = NotCheatingState()
     
 
@@ -65,8 +66,15 @@ class Player:
         if self._rect.bottom > bottom_bound:
             self._rect.bottom = bottom_bound
         
+        #########################
+        # Changes Player States #
+        #########################
+
         self._cheating_state = self._cheating_state.get_next_state(player=self)
         self._cheating_state.update(frame_time)
+
+        self._dmg_state = self._dmg_state.get_next_state(player=self)
+        self._dmg_state.update(frame_time)
 
     def draw(self, screen):
         self._cheating_state.draw(screen)
@@ -103,8 +111,17 @@ class Player:
     def change_speed(self, speed_change: int | float):
         self._speed += speed_change
 
-    def take_damage(self, damage: int):
+    def change_hp(self, damage: int):
         self._hp -= damage
+    
+    def take_damage(self, damage: int):
+        self._dmg_state.take_damage(self, damage)
+
+    #NEEDS WORK
+    def react_to_pwrup(self, pwrup: str, start_timer):
+        print(start_timer)
+        self._dmg_state = self._dmg_state.get_next_state(self, pwrup)
+        #change state to invincibility state
 
 ##############################
 ### CHEATING STATE CLASSES ###
@@ -193,6 +210,7 @@ class InvincibilityState(DamageState):
     def __init__(self):
         super().__init__()
         self._time_left = INVINCIBILITY_TIME
+        
 
 
     def update(self, frame_time) -> None:
@@ -201,11 +219,15 @@ class InvincibilityState(DamageState):
     def draw(self, screen) -> None:
         pass
 
-    def get_next_state(self):
+    def get_next_state(self, player : Player, pwrup = ""):
         if self._time_left <= 0:
             return VulnerableState()
         else:
             return self
+    
+    def take_damage(self, player : Player, damage:int):
+        player.change_hp(0)
+    
 
 class VulnerableState(DamageState):
 
@@ -219,5 +241,11 @@ class VulnerableState(DamageState):
     def draw(self, screen) -> None:
         pass
 
-    def get_next_state(self) -> DamageState:
-        return self
+    def get_next_state(self, player : Player, pwrup = "") -> DamageState:
+        if pwrup == 'invincibility':
+            return InvincibilityState()
+        else:
+            return self
+    
+    def take_damage(self, player : Player, damage:int):
+        player.change_hp(damage)
