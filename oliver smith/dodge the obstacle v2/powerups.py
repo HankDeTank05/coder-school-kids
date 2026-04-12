@@ -1,4 +1,5 @@
 import pygame
+import pygame.gfxdraw
 import random
 from constants import *
 from movingobj import MovingObject
@@ -51,13 +52,36 @@ class Powerup(MovingObject):
         return self._rect
 
 
-
-
 class Invincibility(Powerup):
 
     def __init__(self):
-        temp_rect = pygame.Rect(0, 0, OBSTACLE_NORMAL_WIDTH, OBSTACLE_NORMAL_HEIGHT)
-        super().__init__(temp_rect, MIDNIGHT_BLUE, PupType)
+        temp_rect = pygame.Rect(0, 0, INVINC_POWERUP_WIDTH, INVINC_POWERUP_HEIGHT)
+        super().__init__(temp_rect, MIDNIGHT_BLUE, PupType.Invincibility)
+
+
+class HealthPower(Powerup):
+
+    def __init__(self):
+        temp_rect = pygame.Rect(0,0, HEALTH_POWERUP_SIZE, HEALTH_POWERUP_SIZE)
+        super().__init__(temp_rect, CORAL_RED, PupType.HealthBoost)
+        self._points = [pygame.math.Vector2(WIDTH // 2, HEIGHT // 2)]
+        self._points.append(self._points[-1] + pygame.math.Vector2(4, -6))
+        self._points.append(self._points[-1] + pygame.math.Vector2(5, -2))
+        self._points.append(self._points[-1] + pygame.math.Vector2(5, 2))
+        self._points.append(self._points[-1] + pygame.math.Vector2(1, 6))
+        self._points.append(self._points[-1] + pygame.math.Vector2(-15, 17))
+        self._points.append(self._points[-1] + pygame.math.Vector2(-15, -17))
+        self._points.append(self._points[-1] + pygame.math.Vector2(1, -6))
+        self._points.append(self._points[-1] + pygame.math.Vector2(5, -2))
+        self._points.append(self._points[-1] + pygame.math.Vector2(5, 2))
+        self._points.append(self._points[-1] + pygame.math.Vector2(4, 6))
+
+    def draw(self, screen):
+        # pygame.draw.polygon(screen, self._color, self._points)
+        # pygame.draw.aalines(screen, self._color, True, self._points)
+
+        pygame.gfxdraw.filled_polygon(screen, self._points, self._color)
+        pygame.gfxdraw.aapolygon(screen, self._points, self._color)
 
 class PowerupManager:
 

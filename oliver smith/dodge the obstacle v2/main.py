@@ -6,6 +6,7 @@ import pygame
 # project imports (this is our stuff we created)
 from constants import *
 from gamestate import GameState, StartState
+from powerups import HealthPower
 
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -18,6 +19,8 @@ clock = pygame.time.Clock()
 frame_time = 0
 running = True
 current_state: GameState = StartState()
+
+hpu = HealthPower()
 
 while running:
     # poll for events
@@ -41,6 +44,7 @@ while running:
     screen.fill(WHITE) # fill the screen with a color to wipe away anything from last frame
 
     current_state.draw(screen)
+    hpu.draw(screen)
 
     pygame.display.flip() # flip() the display to put your work on screen
 
