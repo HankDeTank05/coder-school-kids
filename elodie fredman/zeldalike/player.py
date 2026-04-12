@@ -1,5 +1,6 @@
 import os
 import pygame
+from copy import deepcopy
 from common import *
 from gamemath import tiles_to_pixels
 from convenience import load_sprite
@@ -36,7 +37,8 @@ class Player(pygame.sprite.Sprite):
         }
         self._anim_frame = 0
         self._anim_frame_time = 0
-        self.image = self._sprites['walk down'][self._anim_frame]
+        self._anim_name = 'walk down'
+        self.image = self._sprites[self._anim_name][self._anim_frame]
         self._speed = PLAYER_SPEED 
 
     # game functions
@@ -44,33 +46,37 @@ class Player(pygame.sprite.Sprite):
     def update(self, frame_time, keys, current_map_screen):
         # note: delta means change
         pos_delta = pygame.math.Vector2(0,0)
+        
+        #used to detect anim change
+        prev_anim_name = deepcopy(self._anim_name)
 
         #calculate movement
         if keys[pygame.K_UP]:
             pos_delta.y -= 1
-            self._anim_frame = 0
-            self._anim_frame_time = 0
-            self.image = self._sprites['walk up'][self._anim_frame]
+            self._anim_name = 'walk up'
         if keys[pygame.K_DOWN]:
             pos_delta.y += 1
-            self._anim_frame = 0
-            self._anim_frame_time = 0        
-            self.image = self._sprites['walk down'][self._anim_frame]
+            self._anim_name = 'walk down'       
         if keys[pygame.K_RIGHT]:
             pos_delta.x += 1
-            self._anim_frame = 0
-            self._anim_frame_time = 0
-            self.image = self._sprites['walk right'][self._anim_frame]
+            self._anim_name = 'walk right'
         if keys[pygame.K_LEFT]:
             pos_delta.x -= 1
-            self._anim_frame = 0
-            self._anim_frame_time = 0
-            self.image = self._sprites['walk left'][self._anim_frame]
+            self._anim_name = 'walk left'
 
-        self._anim_frame_time += frame_time
-        if self._anim_frame_time > PLAYER_ANIM_SPF:
-            self._anim_frame += 1
-            if self._anim_frame >= 
+        if prev_anim_name != self._anim_name: # if the anim has changed...
+            self._anim_frame = 0              # restart the animation at the first frame...
+            self._anim_frame_time = 0         # and reset the frame timer.
+
+        if pos_delta.length_squared() > 0:                                  # if player is moving...
+            self._anim_frame_time += frame_time                             # ...advance frame timer.
+            if self._anim_frame_time >= PLAYER_ANIM_MAX_FRAME_TIME:         # if it is time to switch to the next frame...
+                self._anim_frame += 1                                       # ...make it the next frame...
+                self._anim_frame_time -= PLAYER_ANIM_MAX_FRAME_TIME         # ...and decrease the timer by the maximum frame time.
+                if self._anim_frame >= len(self._sprites[self._anim_name]): # if frame number is too large...
+                    self._anim_frame = 0                                    # ... reset the animation to the first frame.
+        
+        self.image = self._sprites[self._anim_name][self._anim_frame]
 
         # fix diagonal movement
         if pos_delta.x != 0 and pos_delta.y != 0:
@@ -100,8 +106,9 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = SCREEN_RECT.bottom
                     
     def draw(self, screen):
-        pygame.draw.rect(screen, (0,255,0), self.rect, width=1)
-        screen.blit(self.image, self.rect)
+        #pygame.draw.rect(screen, (0,255,0), self.rect, width=1) # makes rectangle around player
+        screen.blit(self.image, self.rect) # puts sprite on screen
+    
 
     # accessors
 
