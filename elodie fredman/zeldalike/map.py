@@ -3,14 +3,8 @@ from common import *
 from tile import Tile, TileWallDirt, TileFloorGrass
 
 
-class Map:
-    
-    def __init__(self):
-        self._screens: list[list[MapScreen]]
-        for y in range(3):
-            self._screens.append([])
-            for x in range(3):
-                self._screens[y].append(MapScreen())
+
+
 
 class MapScreen:
     _spawn_tile_pos: pygame.math.Vector2
@@ -34,7 +28,7 @@ class MapScreen:
     def update(self, frame_time):
         pass
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface)-> None:
         # draw map tiles
         for y in range(len(self._tiles)): # for every row in the grid
             for x in range(len(self._tiles[y])): #for every tile in the row 
@@ -52,3 +46,30 @@ class MapScreen:
     
     def get_tile_at(self, x: int, y: int) -> Tile:
         return self._tiles[y][x]
+    
+
+class Map:
+    _screens: list[list[MapScreen]]
+    _current_screen: pygame.math.Vector2
+
+    def __init__(self, map_screen_width:int, map_screen_height:int, start_screen_x: int, start_screen_y: int):
+        self._screens: list[list[MapScreen]]
+        for y in range(map_screen_height):
+            self._screens.append([])
+            for x in range(map_screen_width):
+                self._screens[y].append(MapScreen())
+        self._current_screen = pygame.math.Vector2(start_screen_x, start_screen_y)
+        assert(0<=start_screen_x<map_screen_width)
+        assert(0<=start_screen_y<map_screen_height)
+
+    # game functions
+
+    def draw(self, screen: pygame.Surface)-> None:
+        map_screen: MapScreen=self._screens[1][1]
+        map_screen.draw(screen=screen)
+
+    # accessors
+
+    def get_map_screen(self, map_screen_x: int, map_screen_y: int)-> MapScreen:
+        return self._screens[map_screen_y][map_screen_x]
+    
