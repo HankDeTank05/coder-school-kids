@@ -120,7 +120,13 @@ class Player:
     #NEEDS WORK
     def react_to_pwrup(self, pwrup: str, start_timer):
         print(start_timer)
-        self._dmg_state = self._dmg_state.get_next_state(self, pwrup)
+
+        match pwrup:
+            case "invincibility":
+                self._dmg_state = self._dmg_state.get_next_state(self, pwrup)
+            case "health_power":
+                self._hp += HEALTH_BOOST_AMT
+                
         #change state to invincibility state
 
 ##############################

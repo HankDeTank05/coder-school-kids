@@ -76,12 +76,14 @@ class HealthPower(Powerup):
         self._points.append(self._points[-1] + pygame.math.Vector2(5, 2))
         self._points.append(self._points[-1] + pygame.math.Vector2(4, 6))
 
+
     def draw(self, screen):
         # pygame.draw.polygon(screen, self._color, self._points)
         # pygame.draw.aalines(screen, self._color, True, self._points)
 
         pygame.gfxdraw.filled_polygon(screen, self._points, self._color)
         pygame.gfxdraw.aapolygon(screen, self._points, self._color)
+        pygame.display.flip()
 
 class PowerupManager:
 
@@ -98,8 +100,14 @@ class PowerupManager:
                 self._spawn_timer -= POWERUP_SPAWN_DELAY
                 new_power = Invincibility()
                 self._powers.append(new_power)
+            if self._spawn_timer >= HEALTH_BOOST_SPAWN_DELAY:
+                self._spawn_timer -= HEALTH_BOOST_SPAWN_DELAY
+                new_health_power = HealthPower()
+                self._powers.append(new_health_power)
         for power in self._powers:
             power.update(frame_time)
+
+        
 
 
     def draw(self, screen):

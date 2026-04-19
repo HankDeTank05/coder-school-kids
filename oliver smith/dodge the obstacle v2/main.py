@@ -44,7 +44,7 @@ while running:
     screen.fill(WHITE) # fill the screen with a color to wipe away anything from last frame
 
     current_state.draw(screen)
-    hpu.draw(screen)
+    # hpu.draw(screen)
 
     pygame.display.flip() # flip() the display to put your work on screen
 

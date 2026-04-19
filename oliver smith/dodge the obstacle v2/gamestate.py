@@ -77,6 +77,7 @@ class PlayingState(GameState):
             pwr_rect = powerup.get_rect()
             if player_rect.colliderect(pwr_rect):
                 self._player.react_to_pwrup('invincibility', self._time)
+                self._player.react_to_pwrup('health_power', self._time)
                 collided_indices.append(pwr_index)
         self._puman.remove_pwrs(collided_indices)
 
@@ -85,6 +86,8 @@ class PlayingState(GameState):
         self._obs_man.draw(screen)
         self._hud.draw(screen)
         self._puman.draw(screen)
+
+
 
     def get_next_state(self) -> GameState:
         if self._player.get_hp() <= 0:
