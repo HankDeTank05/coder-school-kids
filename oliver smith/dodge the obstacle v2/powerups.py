@@ -113,14 +113,15 @@ class PowerupManager:
             self._spawn_timer += frame_time
             print(self._spawn_timer)
             # TODO: uncomment the following lines
-            # if self._spawn_timer >= POWERUP_SPAWN_DELAY:
-            #     self._spawn_timer -= POWERUP_SPAWN_DELAY
-            #     new_power = Invincibility()
-            #     self._powers.append(new_power)
-            if self._spawn_timer >= HEALTH_BOOST_SPAWN_DELAY:
-                self._spawn_timer -= HEALTH_BOOST_SPAWN_DELAY
-                new_health_power = HealthPower()
-                self._powers.append(new_health_power)
+            if self._spawn_timer >= POWERUP_SPAWN_DELAY:
+                self._spawn_timer -= POWERUP_SPAWN_DELAY
+                pwrup_choice = random.randint(1,2)
+                if pwrup_choice == 1:
+                    new_power = Invincibility()
+                    self._powers.append(new_power)
+                elif pwrup_choice == 2:
+                    new_health_power = HealthPower()
+                    self._powers.append(new_health_power)
         for power in self._powers:
             power.update(frame_time)
 

@@ -18,7 +18,9 @@ class Player:
         self._max_hp = PLAYER_MAX_HEALTH
         self._hp = self._max_hp
 
-        self._dmg_state = InvincibilityState()
+        self._go_invincible: bool = False
+
+        self._dmg_state = VulnerableState()
         self._cheating_state = NotCheatingState()
     
 
@@ -119,12 +121,11 @@ class Player:
         self._dmg_state.take_damage(self, damage)
 
     #NEEDS WORK
-    def react_to_pwrup(self, pwrup_type: PupType, start_timer):
-        print(start_timer)
+    def react_to_pwrup(self, pwrup_type: PupType):
 
         match pwrup_type:
             case PupType.Invincibility:
-                self._dmg_state = self._dmg_state.get_next_state(self, pwrup)
+                self._go_invincible = True
             case PupType.HealthBoost:
                 self._hp += HEALTH_BOOST_AMT
                 
@@ -226,13 +227,13 @@ class InvincibilityState(DamageState):
     def draw(self, screen) -> None:
         pass
 
-    def get_next_state(self, player : Player):
+    def get_next_state(self, player: Player):
         if self._time_left <= 0:
             return VulnerableState()
         else:
             return self
     
-    def take_damage(self, player : Player, damage:int):
+    def take_damage(self, player: Player, damage: int):
         player.change_hp(0)
     
 
@@ -248,11 +249,12 @@ class VulnerableState(DamageState):
     def draw(self, screen) -> None:
         pass
 
-    def get_next_state(self, player : Player) -> DamageState:
-        if pwrup == 'invincibility': # TODO: fix this!
+    def get_next_state(self, player: Player) -> DamageState:
+        if player._go_invincible:
+            player._go_invincible = False
             return InvincibilityState()
         else:
             return self
     
-    def take_damage(self, player : Player, damage:int):
+    def take_damage(self, player: Player, damage:int):
         player.change_hp(damage)

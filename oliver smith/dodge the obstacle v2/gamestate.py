@@ -60,9 +60,9 @@ class PlayingState(GameState):
         # do collision
         collided_indices = []
         obses_list = self._obs_man.get_obses()
+        player_rect = self._player.get_rect()
         for obs_index in range(len(obses_list)):
             obstacle = obses_list[obs_index]
-            player_rect = self._player.get_rect()
             obs_rect = obstacle.get_rect()
             if player_rect.colliderect(obs_rect):
                 self._player.take_damage(obstacle.get_dmg())
@@ -71,12 +71,12 @@ class PlayingState(GameState):
 
         collided_indices = []
         pwrs_list = self._puman.get_pwrs()
+        player_rect = self._player.get_rect()
         for pwr_index in range(len(pwrs_list)):
             powerup = pwrs_list[pwr_index]
-            player_rect = self._player.get_rect()
             pwr_rect = powerup.get_rect()
             if player_rect.colliderect(pwr_rect):
-                self._player.react_to_pwrup('invincibility', self._time)
+                self._player.react_to_pwrup(powerup.get_type())
                 collided_indices.append(pwr_index)
         self._puman.remove_pwrs(collided_indices)
 
