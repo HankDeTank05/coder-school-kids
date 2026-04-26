@@ -77,7 +77,6 @@ class PlayingState(GameState):
             pwr_rect = powerup.get_rect()
             if player_rect.colliderect(pwr_rect):
                 self._player.react_to_pwrup('invincibility', self._time)
-                self._player.react_to_pwrup('health_power', self._time)
                 collided_indices.append(pwr_index)
         self._puman.remove_pwrs(collided_indices)
 

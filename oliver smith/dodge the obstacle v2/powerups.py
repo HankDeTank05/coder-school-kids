@@ -51,6 +51,9 @@ class Powerup(MovingObject):
     def get_rect(self) -> pygame.Rect:
         return self._rect
 
+    def get_type(self) -> PupType:
+        return self._type
+
 
 class Invincibility(Powerup):
 
@@ -58,13 +61,14 @@ class Invincibility(Powerup):
         temp_rect = pygame.Rect(0, 0, INVINC_POWERUP_WIDTH, INVINC_POWERUP_HEIGHT)
         super().__init__(temp_rect, MIDNIGHT_BLUE, PupType.Invincibility)
 
-
 class HealthPower(Powerup):
 
     def __init__(self):
         temp_rect = pygame.Rect(0,0, HEALTH_POWERUP_SIZE, HEALTH_POWERUP_SIZE)
+        temp_rect_old_center = temp_rect.center
         super().__init__(temp_rect, CORAL_RED, PupType.HealthBoost)
-        self._points = [pygame.math.Vector2(WIDTH // 2, HEIGHT // 2)]
+        temp_rect_new_center = self._rect.center
+        self._points = [pygame.math.Vector2(temp_rect_new_center)]
         self._points.append(self._points[-1] + pygame.math.Vector2(4, -6))
         self._points.append(self._points[-1] + pygame.math.Vector2(5, -2))
         self._points.append(self._points[-1] + pygame.math.Vector2(5, 2))
@@ -76,14 +80,26 @@ class HealthPower(Powerup):
         self._points.append(self._points[-1] + pygame.math.Vector2(5, 2))
         self._points.append(self._points[-1] + pygame.math.Vector2(4, 6))
 
+    def update(self, frame_time):
+        old_rect_center = self._rect.center
+        super().update(frame_time)
+        new_rect_center = self._rect.center
+        delta = pygame.math.Vector2(new_rect_center) - pygame.math.Vector2(old_rect_center)
+        for point in self._points:
+            point += delta
+
+
 
     def draw(self, screen):
         # pygame.draw.polygon(screen, self._color, self._points)
         # pygame.draw.aalines(screen, self._color, True, self._points)
-
+        
         pygame.gfxdraw.filled_polygon(screen, self._points, self._color)
         pygame.gfxdraw.aapolygon(screen, self._points, self._color)
         pygame.display.flip()
+
+        # draw bounding box
+        pygame.draw.rect(screen, BLACK, self._rect, width=1)
 
 class PowerupManager:
 
@@ -96,10 +112,11 @@ class PowerupManager:
         if player_hp <= player_max_hp * POWERUP_SPAWN_HEALTH_AMT:
             self._spawn_timer += frame_time
             print(self._spawn_timer)
-            if self._spawn_timer >= POWERUP_SPAWN_DELAY:
-                self._spawn_timer -= POWERUP_SPAWN_DELAY
-                new_power = Invincibility()
-                self._powers.append(new_power)
+            # TODO: uncomment the following lines
+            # if self._spawn_timer >= POWERUP_SPAWN_DELAY:
+            #     self._spawn_timer -= POWERUP_SPAWN_DELAY
+            #     new_power = Invincibility()
+            #     self._powers.append(new_power)
             if self._spawn_timer >= HEALTH_BOOST_SPAWN_DELAY:
                 self._spawn_timer -= HEALTH_BOOST_SPAWN_DELAY
                 new_health_power = HealthPower()

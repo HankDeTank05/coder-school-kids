@@ -4,6 +4,7 @@ import time
 
 #project imports
 from constants import *
+from powerups import PupType
 
 class Player:
 
@@ -118,13 +119,13 @@ class Player:
         self._dmg_state.take_damage(self, damage)
 
     #NEEDS WORK
-    def react_to_pwrup(self, pwrup: str, start_timer):
+    def react_to_pwrup(self, pwrup_type: PupType, start_timer):
         print(start_timer)
 
-        match pwrup:
-            case "invincibility":
+        match pwrup_type:
+            case PupType.Invincibility:
                 self._dmg_state = self._dmg_state.get_next_state(self, pwrup)
-            case "health_power":
+            case PupType.HealthBoost:
                 self._hp += HEALTH_BOOST_AMT
                 
         #change state to invincibility state
@@ -225,7 +226,7 @@ class InvincibilityState(DamageState):
     def draw(self, screen) -> None:
         pass
 
-    def get_next_state(self, player : Player, pwrup = ""):
+    def get_next_state(self, player : Player):
         if self._time_left <= 0:
             return VulnerableState()
         else:
@@ -247,8 +248,8 @@ class VulnerableState(DamageState):
     def draw(self, screen) -> None:
         pass
 
-    def get_next_state(self, player : Player, pwrup = "") -> DamageState:
-        if pwrup == 'invincibility':
+    def get_next_state(self, player : Player) -> DamageState:
+        if pwrup == 'invincibility': # TODO: fix this!
             return InvincibilityState()
         else:
             return self

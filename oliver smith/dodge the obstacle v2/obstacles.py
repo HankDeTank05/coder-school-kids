@@ -75,9 +75,9 @@ class TrackingObstacle(Obstacle):
         player_y_pos = player.get_pos()[1]
         if self._rect.x < player_x_pos and self._rect.y < player_y_pos:
             #move right
-            self._rect.x += 3
+            self._rect.x += 1
         elif self._rect.x > player_x_pos and self._rect.y < player_y_pos:
-            self._rect.x -= 3
+            self._rect.x -= 1
 
         
 
