@@ -42,8 +42,7 @@ while running:
     p1.update(frame_time, keys, current_map_screen=world_map.get_current_screen())
     world_map.get_current_screen().update(frame_time)
 
-    # TODO: check for collision w/ map screen
-    p1.rect
+    # checks for collision between player and map tiles and adjusts player pos if colliding with a tile
     for y in range(SCREEN_TILE_HEIGHT):
         for x in range(SCREEN_TILE_WIDTH):
             tile = world_map.get_current_screen().get_tile_at(x, y)
@@ -62,6 +61,10 @@ while running:
                         p1.rect.top = tile_rect.bottom
                     elif p1.rect.centery < tile_rect.centery:
                         p1.rect.bottom = tile_rect.top
+
+    # TODO: check for collision w/ map screen
+    if p1.rect.colliderect(world_map.get_trans_box(edge=map.Edge.Bottom)):
+        world_map.go_down()
 
 
     ################
