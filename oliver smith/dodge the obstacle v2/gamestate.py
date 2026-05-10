@@ -7,6 +7,7 @@ from gui import Hud, Leaderboard
 from player import Player
 from obstacles import ObstacleManager
 from powerups import PowerupManager
+from vfx import ParticleManager
 
 class GameState:
 
@@ -46,6 +47,7 @@ class PlayingState(GameState):
         self._obs_man = ObstacleManager()
         self._hud = Hud()
         self._puman = PowerupManager()
+        self._partman = ParticleManager()
         self._time = 0
 
     def update(self, frame_time, events, keys):
@@ -55,6 +57,7 @@ class PlayingState(GameState):
         self._puman.update(frame_time,
                            player_hp=self._player.get_hp(),
                            player_max_hp=self._player.get_max_hp())
+        self._partman.update(frame_time)
         self._time += frame_time
 
         # do collision
@@ -67,6 +70,7 @@ class PlayingState(GameState):
             if player_rect.colliderect(obs_rect):
                 self._player.take_damage(obstacle.get_dmg())
                 collided_indices.append(obs_index)
+                self._partman.firework(player_rect.center, ORANGE, 500, 3, 3)
         self._obs_man.remove_obses(collided_indices)
 
         collided_indices = []
@@ -85,6 +89,7 @@ class PlayingState(GameState):
         self._obs_man.draw(screen)
         self._hud.draw(screen)
         self._puman.draw(screen)
+        self._partman.draw(screen)
 
 
 

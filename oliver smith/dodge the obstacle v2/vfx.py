@@ -1,5 +1,6 @@
 import pygame
 import random
+from constants import *
 
 class Particle:
     _pos: pygame.math.Vector2
@@ -31,9 +32,28 @@ class ParticleManager:
     def __init__(self):
         self._parts = []
 
-    def firework(self, pos: pygame.math.Vector2, color: pygame.Color, part_count: int, part_size: int):
+    def update(self, frame_time: float):
+        remove_indices: list[int] = []
+        for part_i in range(len(self._parts)):
+            part: Particle = self._parts[part_i]
+            part.update(frame_time)
+            #  check if the particle was offscreen                                                 or   if it is too old
+            #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvv
+            if part._pos.x < 0 or part._pos.x >= WIDTH or part._pos.y < 0 or part._pos.y >= HEIGHT or part._lasting_time <= 0:
+                remove_indices.append(part_i)
+        # TODO: remove particles from self._parts using indices in remove_indices
+
+
+    def draw(self, screen: pygame.Surface):
+        for part in self._parts:
+            part.draw(screen)
+            
+
+    def firework(self, pos: pygame.math.Vector2, color: pygame.Color, part_count: int, part_size: int, life_time: float):
         for pn in range(part_count):
-            velo = pygame.math.Vector2(0,-1)
+            speed = 40
+            velo = pygame.math.Vector2(0,-speed)
             velo.rotate_ip(random.randint(0, 360))
-            new_part = Particle(pos, velo, part_size, color)
+            velo.scale_to_length(random.randint(1, speed))
+            new_part = Particle(pos, velo, part_size, color, life_time)
             self._parts.append(new_part)
