@@ -23,7 +23,7 @@ class StartState(GameState):
 
     def __init__(self):
         self._begin_game = False
-        self._text = FONT.render("To play press right shift.", True, BLACK)
+        self._text = FONT.render("To play press right shift.", True, COLOR_BLACK)
         self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     
     def update(self, frame_time, events, keys):
@@ -31,7 +31,7 @@ class StartState(GameState):
             self._begin_game = True
 
     def draw(self, screen):
-        screen.fill(GREEN)
+        screen.fill(COLOR_GREEN)
         screen.blit(self._text, self._text_rect)
 
     def get_next_state(self) -> GameState:
@@ -70,7 +70,7 @@ class PlayingState(GameState):
             if player_rect.colliderect(obs_rect):
                 self._player.take_damage(obstacle.get_dmg())
                 collided_indices.append(obs_index)
-                self._partman.firework(player_rect.center, ORANGE, 500, 3, 3)
+                self._partman.burst(player_rect.center, [COLOR_GOLDENROD, COLOR_ORANGE, COLOR_CORAL_RED, COLOR_RED], 500, 3, 3, obstacle._speed, 180, 50)
         self._obs_man.remove_obses(collided_indices)
 
         collided_indices = []
@@ -104,7 +104,7 @@ class GameOverState(GameState):
     def __init__(self, time: float, holding_tab: bool, submitted: bool ):
         self._start_over = False # when this variable is true transitions to startstate
         self._to_lboard = False # when this variable is true you transition to LeaderboardState
-        self._text = FONT.render("To play again press left shift.", True, ORANGE)
+        self._text = FONT.render("To play again press left shift.", True, COLOR_ORANGE)
         self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         self._score = time
         self._holding_tab= holding_tab
@@ -119,7 +119,7 @@ class GameOverState(GameState):
             self._to_lboard = True
        
     def draw(self, screen):
-        screen.fill(BLUE)
+        screen.fill(COLOR_BLUE)
         screen.blit(self._text, self._text_rect)
 
     def get_next_state(self) -> GameState:

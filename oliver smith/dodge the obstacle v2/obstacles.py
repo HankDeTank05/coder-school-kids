@@ -45,28 +45,28 @@ class SmallObstacle(Obstacle):
 
     def __init__(self):
         temp_rect = pygame.Rect(0, 0, OBSTACLE_SMALL_WIDTH, OBSTACLE_SMALL_HEIGHT)
-        super().__init__(temp_rect, OBSTACLE_SPEED_SMALL, OBSTACLE_DMG_SMALL, RED)
+        super().__init__(temp_rect, OBSTACLE_SPEED_SMALL, OBSTACLE_DMG_SMALL, COLOR_RED)
         self._set_start_pos()
 
 class NormalObstacle(Obstacle):
     
     def __init__(self):
         temp_rect = pygame.Rect(0, 0, OBSTACLE_NORMAL_WIDTH, OBSTACLE_NORMAL_HEIGHT)
-        super().__init__(temp_rect, OBSTACLE_SPEED_NORMAL, OBSTACLE_DMG_NORMAL, RED)
+        super().__init__(temp_rect, OBSTACLE_SPEED_NORMAL, OBSTACLE_DMG_NORMAL, COLOR_RED)
         self._set_start_pos()
 
 class BigObstacle(Obstacle):
     
     def __init__(self):
         temp_rect = pygame.Rect(0, 0, OBSTACLE_BIG_WIDTH, OBSTACLE_BIG_HEIGHT)
-        super().__init__(temp_rect, OBSTACLE_SPEED_BIG, OBSTACLE_DMG_BIG, RED)
+        super().__init__(temp_rect, OBSTACLE_SPEED_BIG, OBSTACLE_DMG_BIG, COLOR_RED)
         self._set_start_pos()
 
 class TrackingObstacle(Obstacle):
 
     def __init__(self):
         temp_rect = pygame.Rect(0, 0, OBSTACLE_NORMAL_WIDTH, OBSTACLE_NORMAL_HEIGHT)
-        super().__init__(temp_rect, OBSTACLE_SPEED_NORMAL, OBSTACLE_DMG_BIG, ORANGE)
+        super().__init__(temp_rect, OBSTACLE_SPEED_NORMAL, OBSTACLE_DMG_BIG, COLOR_ORANGE)
         self._set_start_pos()
     
     def update(self, frame_time, player):

@@ -59,14 +59,14 @@ class Invincibility(Powerup):
 
     def __init__(self):
         temp_rect = pygame.Rect(0, 0, INVINC_POWERUP_WIDTH, INVINC_POWERUP_HEIGHT)
-        super().__init__(temp_rect, MIDNIGHT_BLUE, PupType.Invincibility)
+        super().__init__(temp_rect, COLOR_MIDNIGHT_BLUE, PupType.Invincibility)
 
 class HealthPower(Powerup):
 
     def __init__(self):
         temp_rect = pygame.Rect(0,0, HEALTH_POWERUP_SIZE, HEALTH_POWERUP_SIZE)
         temp_rect_old_center = temp_rect.center
-        super().__init__(temp_rect, CORAL_RED, PupType.HealthBoost)
+        super().__init__(temp_rect, COLOR_CORAL_RED, PupType.HealthBoost)
         temp_rect_new_center = self._rect.center
         self._points = [pygame.math.Vector2(temp_rect_new_center)]
         self._points.append(self._points[-1] + pygame.math.Vector2(4, -6))
@@ -99,7 +99,7 @@ class HealthPower(Powerup):
         pygame.display.flip()
 
         # draw bounding box
-        pygame.draw.rect(screen, BLACK, self._rect, width=1)
+        pygame.draw.rect(screen, COLOR_BLACK, self._rect, width=1)
 
 class PowerupManager:
 

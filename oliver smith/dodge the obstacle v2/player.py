@@ -81,7 +81,7 @@ class Player:
 
     def draw(self, screen):
         self._cheating_state.draw(screen)
-        pygame.draw.rect(screen, BLUE, self._rect)
+        pygame.draw.rect(screen, COLOR_BLUE, self._rect)
 
     # accessors
 
@@ -163,7 +163,7 @@ class IsCheatingState(CheatingState):
     def __init__(self):
         super().__init__()
         self._cheat_time = 0
-        self._text = FONT.render("YOU'RE A BAD PERSON ", True, RED)
+        self._text = FONT.render("YOU'RE A BAD PERSON ", True, COLOR_RED)
         self._text_rect = self._text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
 
     def update(self, frame_time):

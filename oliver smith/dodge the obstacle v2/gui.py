@@ -24,10 +24,10 @@ class Hud:
         # draw the background rectangle
         bg_rect = pygame.Rect((0, 0), (HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
         bg_rect.midbottom = pygame.math.Vector2(WIDTH/2, HEIGHT-1)
-        pygame.draw.rect(screen, BLACK, bg_rect)
+        pygame.draw.rect(screen, COLOR_BLACK, bg_rect)
         # draw the current health rectangle
         hp_rect = pygame.Rect(bg_rect.topleft, (self._health_pcent * HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT))
-        pygame.draw.rect(screen, RED, hp_rect)
+        pygame.draw.rect(screen, COLOR_RED, hp_rect)
 
 class Leaderboard:
 
@@ -78,7 +78,7 @@ class Leaderboard:
             #print(pair)
             name = pair[0]
             score = round(pair[1], 3)
-            entry_text = FONT.render(f"{place}. {name} : {score}", True, TEAL)
+            entry_text = FONT.render(f"{place}. {name} : {score}", True, COLOR_TEAL)
             entry_text_rect = entry_text.get_rect(
                 midtop = (WIDTH // 2, place * FONT_SIZE)
             )

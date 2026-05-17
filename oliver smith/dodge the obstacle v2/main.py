@@ -41,7 +41,7 @@ while running:
     # PART 2: DRAW #
     ################
 
-    screen.fill(WHITE) # fill the screen with a color to wipe away anything from last frame
+    screen.fill(COLOR_WHITE) # fill the screen with a color to wipe away anything from last frame
 
     current_state.draw(screen)
     # hpu.draw(screen)
