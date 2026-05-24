@@ -10,6 +10,9 @@ from player import Player
 
 
 class Obstacle(MovingObject):
+    _dmg: float
+    _is_fast: bool
+    _pos_delta: pygame.math.Vector2
 
     # constructor
     def __init__(self, rect: pygame.Rect, speed: float, dmg: float, color):
@@ -21,7 +24,8 @@ class Obstacle(MovingObject):
     # game functions
 
     def update(self, frame_time, player : Player):
-        self._rect.move_ip(0, self._speed * frame_time)
+        self._pos_delta = pygame.math.Vector2(0, self._speed * frame_time)
+        self._rect.move_ip(self._pos_delta.x, self._pos_delta.y)
 
     def draw(self, screen):
         pygame.draw.rect(screen, self._color, self._rect)
@@ -33,6 +37,9 @@ class Obstacle(MovingObject):
 
     def get_dmg(self) -> int:
         return self._dmg
+    
+    def get_pos_delta(self) -> pygame.math.Vector2:
+        return self._pos_delta
 
     # mutators
 
@@ -70,14 +77,15 @@ class TrackingObstacle(Obstacle):
         self._set_start_pos()
     
     def update(self, frame_time, player):
-        self._rect.move_ip(0, OBSTACLE_SPEED_TRACKING * frame_time)
+        self._pos_delta = pygame.math.Vector2(0, OBSTACLE_SPEED_TRACKING * frame_time)
         player_x_pos = player.get_pos()[0]
         player_y_pos = player.get_pos()[1]
         if self._rect.x < player_x_pos and self._rect.y < player_y_pos:
             #move right
-            self._rect.x += 1
+            self._pos_delta.x += 1
         elif self._rect.x > player_x_pos and self._rect.y < player_y_pos:
-            self._rect.x -= 1
+            self._pos_delta.x -= 1
+        self._rect.move_ip(self._pos_delta.x, self._pos_delta.y)
 
         
 

@@ -1,6 +1,7 @@
 import pygame
 import random
 from constants import *
+from copy import deepcopy
 
 class Particle:
     _pos: pygame.math.Vector2
@@ -52,24 +53,33 @@ class ParticleManager:
             part.draw(screen)
             
 
-    def firework(self, pos: pygame.math.Vector2, color: pygame.Color, part_count: int, part_size: int, life_time: float, speed: int):
+    def firework(self, pos: pygame.math.Vector2, colors: list[pygame.Color], part_count: int, part_size: int, life_time: float, speed: int):
         for pn in range(part_count):
             velo = pygame.math.Vector2(0,-speed)
             velo.rotate_ip(random.randint(0, 360))
-            variance = random.randint(1, speed)
-            velo.scale_to_length(variance)
-            # life_time *= variance / speed
-            new_part = Particle(pos, velo, part_size, color, life_time * (variance / speed))
-            self._parts.append(new_part)
+            self._burst_helper(pos, colors, part_size, life_time, speed, 360, velo)
+            # variance = random.randint(1, speed)
+            # velo.scale_to_length(variance)
+            # new_part = Particle(pos, velo, part_size, color, life_time * (variance / speed))
+            # self._parts.append(new_part)
 
     def burst(self, pos: pygame.math.Vector2, colors: list[pygame.Color], part_count: int, part_size: int, life_time: float, speed: int, dir: float, spread: float):
         assert(speed > 0)
         for pn in range(part_count):
             velo = pygame.math.Vector2(0,-speed)
             velo.rotate_ip(dir)
-            velo.rotate_ip(random.randint(-spread // 2, spread // 2))
-            variance = random.uniform(.2 * speed, speed)
-            velo.scale_to_length(variance)
-            color = random.choice(colors)
-            new_part = Particle(pos, velo, part_size, color, life_time * (variance / speed))
-            self._parts.append(new_part)
+            self._burst_helper(pos, colors, part_size, life_time, speed, spread, velo)
+
+    def burst(self, pos: pygame.math.Vector2, colors: list[pygame.Color], part_count: int, part_size: int, life_time: float, speed: int, dirv: pygame.math.Vector2, spread: float):
+        assert(speed > 0)
+        for pn in range(part_count):
+            velo = deepcopy(dirv)
+            self._burst_helper(pos, colors, part_size, life_time, speed, spread, velo)
+
+    def _burst_helper(self, pos: pygame.math.Vector2, colors: list[pygame.Color], part_size: int, life_time: float, speed: int, spread: float, velo: pygame.math.Vector2):
+        velo.rotate_ip(random.randint(-spread // 2, spread // 2))
+        variance = random.uniform(.2 * speed, speed)
+        velo.scale_to_length(variance)
+        color = random.choice(colors)
+        new_part = Particle(pos, velo, part_size, color, life_time * (variance / speed))
+        self._parts.append(new_part)

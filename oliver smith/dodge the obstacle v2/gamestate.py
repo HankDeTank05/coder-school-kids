@@ -70,7 +70,14 @@ class PlayingState(GameState):
             if player_rect.colliderect(obs_rect):
                 self._player.take_damage(obstacle.get_dmg())
                 collided_indices.append(obs_index)
-                self._partman.burst(player_rect.center, [COLOR_GOLDENROD, COLOR_ORANGE, COLOR_CORAL_RED, COLOR_RED], 500, 3, 3, obstacle._speed, 180, 50)
+                overlap = player_rect.clip(obs_rect)
+                from_obs_to_p1 = pygame.math.Vector2(player_rect.center) - pygame.math.Vector2(obs_rect.center)
+                obs_pos_delta = obstacle.get_pos_delta()
+                angle_delta = from_obs_to_p1.angle_to(obs_pos_delta)
+                if angle_delta > 180:
+                    angle_delta -= 180
+                dirv = from_obs_to_p1.rotate(angle_delta / 2)
+                self._partman.burst(overlap.center, [COLOR_ORANGE, COLOR_CORAL_RED, COLOR_RED], 500, 3, 3, obstacle._speed, dirv, 50)
         self._obs_man.remove_obses(collided_indices)
 
         collided_indices = []
