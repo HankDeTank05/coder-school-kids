@@ -25,5 +25,5 @@ PLAYER_ANIM_FPS = 5.00 #fps
 PLAYER_ANIM_MAX_FRAME_TIME = 1 / PLAYER_ANIM_FPS
 
 # map stuff
-SCREEN_TRANS_BOX_SIZE = 5
+SCREEN_TRANS_BOX_SIZE = 1
 # screen transition box size

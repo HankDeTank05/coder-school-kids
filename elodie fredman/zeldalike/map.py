@@ -110,7 +110,7 @@ class Map:
         return self._screens[int(self._start_screen.y)][int(self._start_screen.x)]
     
     def get_current_screen(self) -> MapScreen:
-        return self._screens[int(self._current_screen.x)][int(self._current_screen.y)]
+        return self._screens[int(self._current_screen.y)][int(self._current_screen.x)]
 
     def get_map_screen(self, map_screen_x: int, map_screen_y: int)-> MapScreen:
         return self._screens[map_screen_y][map_screen_x]
@@ -130,5 +130,9 @@ class Map:
 
     # mutators
 
+    def go_up(self) -> None:
+        self._current_screen.y -= 1
+
     def go_down(self) -> None:
         self._current_screen.y += 1
+    

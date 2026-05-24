@@ -63,8 +63,18 @@ while running:
                         p1.rect.bottom = tile_rect.top
 
     # TODO: check for collision w/ map screen
-    if p1.rect.colliderect(world_map.get_trans_box(edge=map.Edge.Bottom)):
+    if p1.rect.colliderect(world_map.get_trans_box(edge=map.Edge.Left)):
+        world_map.go_left()
+        p1.screen_trans_left()
+    if p1.rect.colliderect(world_map.get_trans_box(edge=map.Edge.Right)):
+        world_map.go_right()
+        p1.screen_trans_right()
+    if p1.rect.colliderect(world_map.get_trans_box(edge=map.Edge.Top)):
+        world_map.go_up()
+        p1.screen_trans_up()
+    elif p1.rect.colliderect(world_map.get_trans_box(edge=map.Edge.Bottom)):
         world_map.go_down()
+        p1.screen_trans_down()
 
 
     ################

@@ -6,6 +6,11 @@ from gamemath import tiles_to_pixels
 from convenience import load_sprite
 
 class Player(pygame.sprite.Sprite):
+    _sprites: dict
+    _anim_frame: int
+    _anim_frame_time: float
+    _anim_name: str
+    _speed: int
 
     def __init__(self):
         self.rect = pygame.Rect(
@@ -116,4 +121,9 @@ class Player(pygame.sprite.Sprite):
 
     def spawn_at_tile(self, tile_pos: pygame.math.Vector2):
         self.rect.topleft = tiles_to_pixels(tile_pos)
-    
+
+    def screen_trans_up(self)-> None:
+        self.rect.y = SCREEN_HEIGHT - TILE_HEIGHT_PX - SCREEN_TRANS_BOX_SIZE
+  
+    def screen_trans_down(self) -> None:
+        self.rect.y = 0 + SCREEN_TRANS_BOX_SIZE
