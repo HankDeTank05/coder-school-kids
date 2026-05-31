@@ -3,6 +3,7 @@ import random
 
 WIDTH=300
 HEIGHT=500
+screen_rect=Rect(0,0,WIDTH,HEIGHT)
 
 COLOR_BLUE=(0,0,255)
 COLOR_SKY_BLUE=(135,206,235)
@@ -22,36 +23,49 @@ block_list=[]
 
 OBS_TIME=3
 OBS_MAX_BLOCKS = 9 #number of blocks tall
+OBS_SPEED=1
+OBS_COUNT_MAX=2
 time_since_obs = 0
 obs_list=[]
+started=False
 
 def spawn_obs():
     obs_height = random.randint(1, OBS_MAX_BLOCKS)
     print(obs_height)
-    obs_width = obs_height
-    obs_rect=Rect(270, FLORE_HEIGHT-BLOCK_SIZE*obs_height, BLOCK_SIZE, BLOCK_SIZE*obs_height)
+    obs_width = random.randint(2,15)
+    obs_rect=Rect(270, FLORE_HEIGHT-BLOCK_SIZE*obs_height, BLOCK_SIZE * obs_width, BLOCK_SIZE*obs_height)
     return obs_rect
+
+
+def on_key_down(key):
+    global started
+    if not started and key==keys.SPACE:
+        spawn_obs()
+        started=True
 
 
 def on_mouse_down():
     if bird_rect.y>0:
-        new_rect=Rect(0, FLORE_HEIGHT-BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE)
-        for block in block_list:
-            block.y-=BLOCK_SIZE
         bird_rect.y-=BLOCK_SIZE
+        new_rect=Rect(0, bird_rect.y+BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE)
         block_list.append(new_rect)
-
 
 def update(frame_time):
     global time_since_obs 
-    time_since_obs += frame_time
-    if time_since_obs>=OBS_TIME:
-        time_since_obs-=OBS_TIME
-        obs_list.append(spawn_obs())
+
+    if frame_time == 0:
+        print('go!')
+
+    if len(obs_list) > 0 and not obs_list[0].colliderect(screen):
+        # time_since_obs += frame_time
+        # time_since_obs-=OBS_TIME
+        # obs_list.append(spawn_obs())
+        clock.schedule(spawn_obs, OBS_TIME)
+        obs_list.pop(0)
 
     # move obstacles
     for obs in obs_list:
-        obs.x-=1
+        obs.x-=OBS_SPEED
 
     # check for collision
     remove_indices = []
@@ -68,21 +82,27 @@ def update(frame_time):
     for remove_index in remove_indices:
         block_list.pop(remove_index)
 
-    if len(block_list)>0 and block_list[-1].y <FLORE_HEIGHT-BLOCK_SIZE:
-        block_list[-1].y+=1
+    if len(block_list)>0 and block_list[0].y <FLORE_HEIGHT-BLOCK_SIZE:
+        block_list[0].y+=1
         obs_bellow=False
         for obs in obs_list:
-            if block_list[-1].colliderect(obs):
+            if block_list[0].colliderect(obs):
                 obs_bellow=True
         if obs_bellow:
-            block_list[-1].y-=1
+            block_list[0].y-=1
         else:
-            for block_index in range(len(block_list)-1):
+            for block_index in range(1, len(block_list)):
                 block=block_list[block_index]
                 block.y+=1
             bird_rect.y+=1
     elif len(block_list)==0 and bird_rect.y<FLORE_HEIGHT-BLOCK_SIZE:
         bird_rect.y+=1
+        obs_bellow=False
+        for obs in obs_list:
+            if bird_rect.colliderect(obs):
+                obs_bellow=True
+        if obs_bellow:
+            bird_rect.y-=1
 
 
 
