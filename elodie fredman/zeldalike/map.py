@@ -130,6 +130,12 @@ class Map:
 
     # mutators
 
+    def go_left(self) -> None:
+        self._current_screen.x -= 1
+
+    def go_right(self) -> None:
+        self._current_screen.x += 1
+
     def go_up(self) -> None:
         self._current_screen.y -= 1
 

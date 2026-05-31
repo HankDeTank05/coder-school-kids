@@ -19,10 +19,26 @@ p1 = player.Player()
 # map_screen = map.MapScreen(
 #     spawn_tile_pos=pygame.math.Vector2(2,2)
 # )
-world_map = map.Map(1, 2, 0, 0)
-for i in range(2, 14):
-    world_map.get_map_screen(0,0).set_tile_grass_floor(i, SCREEN_TILE_HEIGHT - 1)
-    world_map.get_map_screen(0,1).set_tile_grass_floor(i, 0)
+world_map = map.Map(3, 3, 1, 1)
+
+# the code modifies the existing (default) map to make openings at the top and bottom to allow for transitions
+for x in range(2, 14):
+    world_map.get_map_screen(0,0).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT - 1)   # 0,0 - B
+    world_map.get_map_screen(0,1).set_tile_grass_floor(x, 0)                        # 0,1 - T
+    world_map.get_map_screen(0,1).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT - 1)   # 0,1 - B
+    world_map.get_map_screen(0,2).set_tile_grass_floor(x, 0)                        # 0,2 - T
+    world_map.get_map_screen(1,0).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT -1)    # 1,0 - B
+    world_map.get_map_screen(1,1).set_tile_grass_floor(x, 0)                        # 1,1 - T
+    world_map.get_map_screen(1,1).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT - 1)   # 1,1 - B
+    world_map.get_map_screen(1,2).set_tile_grass_floor(x, 0)                        # 1,2 - T
+    world_map.get_map_screen(2,0).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT - 1)   # 2,0 - B
+
+# the code modifies the existing (default) map to make openings at the left and right to allow for transitions
+for y in range(2,7):
+    world_map.get_map_screen(0,1).set_tile_grass_floor(SCREEN_TILE_WIDTH - 1, y)
+    world_map.get_map_screen(1,1).set_tile_grass_floor(0, y)
+    world_map.get_map_screen(1,1).set_tile_grass_floor(SCREEN_TILE_WIDTH - 1, y)
+    world_map.get_map_screen(2,1).set_tile_grass_floor(0, y)
 p1.spawn_at_tile(tile_pos=world_map.get_start_screen().get_spawn_tile_pos())
 
 while running:

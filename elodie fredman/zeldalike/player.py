@@ -122,6 +122,12 @@ class Player(pygame.sprite.Sprite):
     def spawn_at_tile(self, tile_pos: pygame.math.Vector2):
         self.rect.topleft = tiles_to_pixels(tile_pos)
 
+    def screen_trans_left(self) -> None:
+        self.rect.x = SCREEN_WIDTH - TILE_WIDTH_PX - SCREEN_TRANS_BOX_SIZE
+
+    def screen_trans_right(self) -> None:
+        self.rect.x = 0 + SCREEN_TRANS_BOX_SIZE
+
     def screen_trans_up(self)-> None:
         self.rect.y = SCREEN_HEIGHT - TILE_HEIGHT_PX - SCREEN_TRANS_BOX_SIZE
   
