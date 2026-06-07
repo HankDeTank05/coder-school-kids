@@ -9,6 +9,7 @@ class Edge(Enum):
     Bottom = 57
     Left = 932
     Right = 35
+    Center = 3276
 
 
 
@@ -142,3 +143,22 @@ class Map:
     def go_down(self) -> None:
         self._current_screen.y += 1
     
+    def create_opening(self, source_x: int, source_y: int, open_dir: Edge) -> None:
+        if open_dir == Edge.Top:
+            for x in range(2, 14):
+                self.get_map_screen(source_x, source_y).set_tile_grass_floor(x, 0)
+                self.get_map_screen(source_x, source_y - 1).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT - 1)
+        elif open_dir == Edge.Bottom:
+            for x in range(2, 14):
+                self.get_map_screen(source_x, source_y).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT - 1)
+                self.get_map_screen(source_x, source_y + 1).set_tile_grass_floor(x, 0)
+        elif open_dir == Edge.Right:
+            for y in range(2, 7):
+                self.get_map_screen(source_x, source_y).set_tile_grass_floor(SCREEN_TILE_WIDTH - 1, y)
+                self.get_map_screen(source_x + 1, source_y).set_tile_grass_floor(0, y)
+        elif open_dir == Edge.Left:
+            for y in range(2, 7):
+                self.get_map_screen(source_x, source_y).set_tile_grass_floor(0, y)
+                self.get_map_screen(source_x - 1, source_y).set_tile_grass_floor(SCREEN_TILE_WIDTH - 1, y)
+        else:
+            assert(False)
