@@ -77,14 +77,14 @@ class TrackingObstacle(Obstacle):
         self._set_start_pos()
     
     def update(self, frame_time, player):
-        self._pos_delta = pygame.math.Vector2(0, OBSTACLE_SPEED_TRACKING * frame_time)
+        self._pos_delta = pygame.math.Vector2(0, OBSTACLE_SPEED_TRACKING_Y * frame_time)
         player_x_pos = player.get_pos()[0]
         player_y_pos = player.get_pos()[1]
         if self._rect.x < player_x_pos and self._rect.y < player_y_pos:
             #move right
-            self._pos_delta.x += 1
+            self._pos_delta.x += OBSTACLE_SPEED_TRACKING_X
         elif self._rect.x > player_x_pos and self._rect.y < player_y_pos:
-            self._pos_delta.x -= 1
+            self._pos_delta.x -= OBSTACLE_SPEED_TRACKING_X
         self._rect.move_ip(self._pos_delta.x, self._pos_delta.y)
 
         

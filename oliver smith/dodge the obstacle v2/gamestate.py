@@ -77,6 +77,8 @@ class PlayingState(GameState):
                 if angle_delta > 180:
                     angle_delta -= 180
                 dirv = from_obs_to_p1.rotate(angle_delta / 2)
+                if dirv.y < 0:
+                    dirv.y *= -1
                 self._partman.burst(overlap.center, [COLOR_ORANGE, COLOR_CORAL_RED, COLOR_RED], 500, 3, 3, obstacle._speed, dirv, 50)
         self._obs_man.remove_obses(collided_indices)
 
@@ -89,7 +91,7 @@ class PlayingState(GameState):
             if player_rect.colliderect(pwr_rect):
                 self._player.react_to_pwrup(powerup.get_type())
                 collided_indices.append(pwr_index)
-                self._partman.magnetic_firework(pwr_rect.center, [COLOR_GREEN], 500, 3, 3, player_rect.center)
+                self._partman.magnetic_firework(pwr_rect.center, [COLOR_GREEN], 500, 3, 250, player_rect.center)
         self._puman.remove_pwrs(collided_indices)
 
     def draw(self, screen):

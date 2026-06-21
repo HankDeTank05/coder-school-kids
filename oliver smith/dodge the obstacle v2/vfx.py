@@ -35,24 +35,60 @@ class LifetimeParticle(Particle):
         self._pos += self._velo * frame_time
         self._lasting_time -= frame_time
 
+class MagPartState:
+    pass
+
 class MagneticParticle(Particle):
+    _state: MagPartState
+    _intial_velo: pygame.math.Vector2
     _target_pos: pygame.math.Vector2
     _total_time: float
 
-    MAX_TIME: float = 5.0
+    MAX_TIME: float = 3.0
 
     def __init__(self, pos: pygame.math.Vector2, velo: pygame.math.Vector2, size: int, color: pygame.Color, target_pos: pygame.math.Vector2):
         super().__init__(pos, velo, size, color)
+        self._state = FirstMoveState()
+        self._intial_velo = velo
         self._target_pos = target_pos
         self._total_time = 0
 
     def update(self, frame_time: float) -> None:
-        vect_to_target = self._target_pos - self._pos
-        self._total_time += frame_time
-        time_percent = self._total_time / MagneticParticle.MAX_TIME
-        magnet_vect = vect_to_target * time_percent
-        self._pos += (self._velo + magnet_vect) * frame_time
-        self._velo += magnet_vect
+        self._state.update(self, frame_time)
+        self._state = self._state.get_next_state(self)
+
+
+class MagPartState:
+
+
+    def update(self, part: MagneticParticle, frame_time: float) -> None:
+        assert(False)
+
+    def get_next_state(self, part: MagneticParticle) -> MagPartState:
+        assert(False)
+
+class FirstMoveState(MagPartState):
+
+
+    def update(self, part: MagneticParticle, frame_time: float) -> None:
+        part._pos += part._velo * frame_time
+        part._total_time += frame_time
+        time_pcent = part._total_time / MagneticParticle.MAX_TIME
+        part._velo = time_pcent * part._intial_velo
+
+
+    def get_next_state(self, part: MagneticParticle) -> MagPartState:
+        if part._total_time >= MagneticParticle.MAX_TIME:
+            return MagnetState()
+        else:
+            return self
+
+
+class MagnetState(MagPartState):
+
+
+    def update(self, part: MagneticParticle, frame_time: float) -> None:
+        pass
 
 class ParticleManager:
     _parts: list[Particle]
