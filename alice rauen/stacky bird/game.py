@@ -26,15 +26,17 @@ OBS_MAX_BLOCKS = 9 #number of blocks tall
 OBS_SPEED=1
 OBS_COUNT_MAX=2
 time_since_obs = 0
-obs_list=[]
+obs_list=[Rect(270, FLORE_HEIGHT-BLOCK_SIZE*3, BLOCK_SIZE * 3, BLOCK_SIZE*3)]
 started=False
 
 def spawn_obs():
+    global obs_list
     obs_height = random.randint(1, OBS_MAX_BLOCKS)
     print(obs_height)
     obs_width = random.randint(2,15)
     obs_rect=Rect(270, FLORE_HEIGHT-BLOCK_SIZE*obs_height, BLOCK_SIZE * obs_width, BLOCK_SIZE*obs_height)
-    return obs_rect
+    obs_list.append(obs_rect)
+    # return obs_rect
 
 
 def on_key_down(key):
@@ -56,7 +58,7 @@ def update(frame_time):
     if frame_time == 0:
         print('go!')
 
-    if len(obs_list) > 0 and not obs_list[0].colliderect(screen):
+    if len(obs_list) > 0 and not obs_list[0].colliderect(screen_rect):
         # time_since_obs += frame_time
         # time_since_obs-=OBS_TIME
         # obs_list.append(spawn_obs())
