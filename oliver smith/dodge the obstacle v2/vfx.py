@@ -42,20 +42,26 @@ class MagneticParticle(Particle):
     _state: MagPartState
     _intial_velo: pygame.math.Vector2
     _target_pos: pygame.math.Vector2
-    _total_time: float
+    _first_time: float
+    _mag_time: float
 
-    MAX_TIME: float = 3.0
+    MAX_TIME_FIRST: float = 3.0
+    MAX_TIME_MAG: float = 3.0
 
     def __init__(self, pos: pygame.math.Vector2, velo: pygame.math.Vector2, size: int, color: pygame.Color, target_pos: pygame.math.Vector2):
         super().__init__(pos, velo, size, color)
         self._state = FirstMoveState()
         self._intial_velo = velo
         self._target_pos = target_pos
-        self._total_time = 0
+        self._first_time = 0
+        self._mag_time = 0
 
     def update(self, frame_time: float) -> None:
         self._state.update(self, frame_time)
         self._state = self._state.get_next_state(self)
+
+    def update_target(self, new_target_pos: pygame.math.Vector2) -> None:
+        self._target_pos = new_target_pos
 
 
 class MagPartState:
@@ -71,14 +77,15 @@ class FirstMoveState(MagPartState):
 
 
     def update(self, part: MagneticParticle, frame_time: float) -> None:
-        part._pos += part._velo * frame_time
-        part._total_time += frame_time
-        time_pcent = part._total_time / MagneticParticle.MAX_TIME
-        part._velo = time_pcent * part._intial_velo
+        part._pos += part._velo * frame_time #move the particle
+        part._first_time += frame_time #increase the timer
+        #making a percent to slow down the particle gradually over time
+        time_pcent_inv = 1 - (part._first_time / MagneticParticle.MAX_TIME_FIRST)
+        part._velo = time_pcent_inv * part._intial_velo
 
 
     def get_next_state(self, part: MagneticParticle) -> MagPartState:
-        if part._total_time >= MagneticParticle.MAX_TIME:
+        if part._first_time >= MagneticParticle.MAX_TIME_FIRST:
             return MagnetState()
         else:
             return self
@@ -88,7 +95,18 @@ class MagnetState(MagPartState):
 
 
     def update(self, part: MagneticParticle, frame_time: float) -> None:
-        pass
+        part._mag_time += frame_time #increase the timer
+        #calculate the velo
+        dist_to_target = part._target_pos - part._pos
+        time_pcent = part._mag_time / MagneticParticle.MAX_TIME_MAG
+        print(f'dist to target: {dist_to_target.magnitude()}\ttime_pcent: {time_pcent}')
+        part._velo = time_pcent * dist_to_target
+        part._pos += part._velo * frame_time #move the particle
+
+
+    def get_next_state(self, part: MagneticParticle) -> MagPartState:
+        return self
+    
 
 class ParticleManager:
     _parts: list[Particle]
@@ -96,14 +114,16 @@ class ParticleManager:
     def __init__(self):
         self._parts = []
 
-    def update(self, frame_time: float):
+    def update(self, frame_time: float, player_pos: pygame.math.Vector2):
         remove_indices: list[int] = []
         for part_i in range(len(self._parts)):
             part: Particle = self._parts[part_i]
             part.update(frame_time)
+            if type(part) is MagneticParticle:
+                part.update_target(player_pos)
             #  check if the particle was offscreen                                                 or   if it is too old
-            #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-            if part._pos.x < 0 or part._pos.x >= WIDTH or part._pos.y < 0 or part._pos.y >= HEIGHT or (type(part) is LifetimeParticle and part._lasting_time <= 0):
+            #  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+            if part._pos.x < 0 or part._pos.x >= WIDTH or part._pos.y < 0 or part._pos.y >= HEIGHT or (type(part) is LifetimeParticle and part._lasting_time <= 0) or (type(part) is MagneticParticle and part._mag_time >= MagneticParticle.MAX_TIME_MAG):
                 remove_indices.append(part_i)
         # TODO: remove particles from self._parts using indices in remove_indices
         remove_indices.sort(reverse=True)

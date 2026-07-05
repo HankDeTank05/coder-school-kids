@@ -111,8 +111,7 @@ class PowerupManager:
     def update(self, frame_time, player_hp, player_max_hp):
         if player_hp <= player_max_hp * POWERUP_SPAWN_HEALTH_AMT:
             self._spawn_timer += frame_time
-            print(self._spawn_timer)
-            # TODO: uncomment the following lines
+            # print(self._spawn_timer)
             if self._spawn_timer >= POWERUP_SPAWN_DELAY:
                 self._spawn_timer -= POWERUP_SPAWN_DELAY
                 pwrup_choice = random.randint(1,2)
