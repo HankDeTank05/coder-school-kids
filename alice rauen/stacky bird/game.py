@@ -10,6 +10,10 @@ COLOR_SKY_BLUE=(135,206,235)
 COLOR_DODGER_BLUE=(30,144,255)
 COLOR_BROWN=(139,69,19)
 COLOR_PURPLE = (155, 142, 199)
+Alice=1
+GRAVITY=Alice
+over=Actor('game over smol and tol')
+over.topleft = (0,50)
 
 # for me
 
@@ -85,7 +89,7 @@ def update(frame_time):
         block_list.pop(remove_index)
 
     if len(block_list)>0 and block_list[0].y <FLORE_HEIGHT-BLOCK_SIZE:
-        block_list[0].y+=1
+        block_list[0].y+=GRAVITY
         obs_bellow=False
         for obs in obs_list:
             if block_list[0].colliderect(obs):
@@ -95,8 +99,8 @@ def update(frame_time):
         else:
             for block_index in range(1, len(block_list)):
                 block=block_list[block_index]
-                block.y+=1
-            bird_rect.y+=1
+                block.y+=GRAVITY
+            bird_rect.y+=GRAVITY
     elif len(block_list)==0 and bird_rect.y<FLORE_HEIGHT-BLOCK_SIZE:
         bird_rect.y+=1
         obs_bellow=False
@@ -106,24 +110,24 @@ def update(frame_time):
         if obs_bellow:
             bird_rect.y-=1
 
-
-
-                                         
-
     # drop the block stack if there's nothing under it
     for block_index in range(len(block_list)):
         pass
 
-
-
 def draw():
+    global block_list
     screen.clear()
     screen.draw.filled_rect(sky_rect,COLOR_SKY_BLUE)
     screen.draw.filled_rect(flore_rect, COLOR_BROWN)
     screen.draw.filled_rect(bird_rect, COLOR_BLUE)
     #screen.draw.filled_rect(spawn_obs(),COLOR_PURPLE)
+    showgameover=False
     for obs in obs_list:
         screen.draw.filled_rect(obs,COLOR_PURPLE)
+        if bird_rect.colliderect(obs):
+            showgameover=True
+    if showgameover:
+        over.draw()
 
     for block in block_list:
         screen.draw.rect(block,COLOR_DODGER_BLUE)
