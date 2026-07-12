@@ -31,7 +31,7 @@ class StartState(GameState):
             self._begin_game = True
 
     def draw(self, screen):
-        screen.fill(COLOR_GREEN)
+        screen.fill(COLOR_CYAN)
         screen.blit(self._text, self._text_rect)
 
     def get_next_state(self) -> GameState:
