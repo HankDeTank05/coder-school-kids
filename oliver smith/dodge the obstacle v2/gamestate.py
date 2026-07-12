@@ -6,7 +6,7 @@ from constants import *
 from gui import Hud, Leaderboard
 from player import Player
 from obstacles import ObstacleManager
-from powerups import PowerupManager
+from powerups import PowerupManager, PupType
 from vfx import ParticleManager
 
 class GameState:
@@ -51,6 +51,15 @@ class PlayingState(GameState):
         self._time = 0
 
     def update(self, frame_time, events, keys):
+        # read for hotkeys
+        if keys[PWRUP_HOTKEY_INVINCIBILITY]:
+            self._puman.spawn_pwrup(PupType.Invincibility)
+        if keys[PWRUP_HOTKEY_HEALTH]:
+            self._puman.spawn_pwrup(PupType.HealthBoost)
+        if keys[PWRUP_HOTKEY_RANDOM]:
+            self._puman.spawn_pwrup()
+
+        # update all the things
         self._player.update(frame_time, keys)
         self._obs_man.update(frame_time, self._player)
         self._hud.update(frame_time, self._player.get_hp())

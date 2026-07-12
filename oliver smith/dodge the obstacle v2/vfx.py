@@ -99,9 +99,9 @@ class MagnetState(MagPartState):
         #calculate the velo
         dist_to_target = part._target_pos - part._pos
         time_pcent = part._mag_time / MagneticParticle.MAX_TIME_MAG
-        print(f'dist to target: {dist_to_target.magnitude()}\ttime_pcent: {time_pcent}')
+        #print(f'dist to target: {dist_to_target.magnitude()}\ttime_pcent: {time_pcent}')
         part._velo = time_pcent * dist_to_target
-        part._pos += part._velo * frame_time #move the particle
+        part._pos += part._velo * frame_time * 3#move the particle
 
 
     def get_next_state(self, part: MagneticParticle) -> MagPartState:

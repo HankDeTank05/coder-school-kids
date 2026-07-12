@@ -114,13 +114,7 @@ class PowerupManager:
             # print(self._spawn_timer)
             if self._spawn_timer >= POWERUP_SPAWN_DELAY:
                 self._spawn_timer -= POWERUP_SPAWN_DELAY
-                pwrup_choice = random.randint(1,2)
-                if pwrup_choice == 1:
-                    new_power = Invincibility()
-                    self._powers.append(new_power)
-                elif pwrup_choice == 2:
-                    new_health_power = HealthPower()
-                    self._powers.append(new_health_power)
+                self.spawn_pwrup()
         for power in self._powers:
             power.update(frame_time)
 
@@ -138,3 +132,23 @@ class PowerupManager:
         pwrs_indices.sort(reverse=True)
         for pwr_index in pwrs_indices:
             self._powers.pop(pwr_index)
+
+    def spawn_pwrup(self, specified_pwrup: PupType = None)-> None :
+        if specified_pwrup is None:
+            pwrup_choice = random.randint(1,2)
+            if pwrup_choice == 1:
+                new_power = Invincibility()
+            elif pwrup_choice == 2:
+                new_power = HealthPower()
+            else:
+                assert(False)
+            self._powers.append(new_power)
+            
+        else:
+            if specified_pwrup == PupType.Invincibility:
+                new_power = Invincibility()
+            elif specified_pwrup == PupType.HealthBoost:
+                new_power = HealthPower()
+            else:
+                assert(False)
+            self._powers.append(new_power)
