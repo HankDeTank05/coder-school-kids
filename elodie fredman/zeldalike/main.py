@@ -33,6 +33,9 @@ world_map.create_opening(2,1, map.Edge.Bottom)
 world_map.create_opening(0,0, map.Edge.Right)
 world_map.create_opening(0,1, map.Edge.Right)
 world_map.create_opening(1,1, map.Edge.Right)
+world_map.create_opening(0,2, map.Edge.Right)
+world_map.create_opening(1,2, map.Edge.Right)
+world_map.create_opening(2,0, map.Edge.Left)
 p1.spawn_at_tile(tile_pos=world_map.get_start_screen().get_spawn_tile_pos())
 
 while running:
@@ -72,7 +75,7 @@ while running:
                     elif p1.rect.centery < tile_rect.centery:
                         p1.rect.bottom = tile_rect.top
 
-    # TODO: check for collision w/ map screen
+    # check for collision w/ map screen
     if p1.rect.colliderect(world_map.get_trans_box(edge=map.Edge.Left)):
         world_map.go_left()
         p1.screen_trans_left()

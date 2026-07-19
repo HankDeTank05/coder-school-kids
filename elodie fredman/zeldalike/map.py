@@ -1,7 +1,7 @@
 import pygame
 from common import *
-from tile import Tile, TileWallDirt, TileFloorGrass
-from settings import *
+from debug import *
+from tile import Tile, TileWallDirt, TileFloorGrass, TileDoor
 from enum import Enum
 
 class Edge(Enum):
@@ -10,8 +10,6 @@ class Edge(Enum):
     Left = 932
     Right = 35
     Center = 3276
-
-
 
 class MapScreen:
     _spawn_tile_pos: pygame.math.Vector2
@@ -64,6 +62,10 @@ class MapScreen:
     def set_tile_dirt_wall(self, x: int, y: int) -> None:
         pass
 
+    def set_tile_door(self, x: int, y: int, transition_to: 'Map') -> None:
+        self._tiles[y][x] = TileDoor(pygame.math.Vector2(TILE_WIDTH_PX * x, TILE_HEIGHT_PX * y), transition_to)
+
+
 class Map:
     _screens: list[list[MapScreen]]
     _current_screen: pygame.math.Vector2
@@ -99,10 +101,11 @@ class Map:
         # assert(False)
         # map_screen: MapScreen=self._screens[1][1]
         # map_screen.draw(screen=screen)
-        pygame.draw.rect(screen, COLOR_RED, self._go_down_box, width=1)
-        pygame.draw.rect(screen, COLOR_RED, self._go_up_box, width=1)
-        pygame.draw.rect(screen, COLOR_RED, self._go_right_box, width=1)
-        pygame.draw.rect(screen, COLOR_RED, self._go_left_box, width=1)
+        if SHOW_SCREEN_TRANS_BOX:
+            pygame.draw.rect(screen, COLOR_RED, self._go_down_box, width=1)
+            pygame.draw.rect(screen, COLOR_RED, self._go_up_box, width=1)
+            pygame.draw.rect(screen, COLOR_RED, self._go_right_box, width=1)
+            pygame.draw.rect(screen, COLOR_RED, self._go_left_box, width=1)
         
 
     # accessors

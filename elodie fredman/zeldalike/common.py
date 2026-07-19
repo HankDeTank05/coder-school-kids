@@ -15,6 +15,7 @@ COLOR_BLACK = pygame.Color(0,0,0)
 COLOR_BROWN = pygame.Color(101,67,33)
 COLOR_GREEN = pygame.Color(34,139,34)
 COLOR_RED = pygame.Color(255, 0, 0)
+COLOR_BLUE = pygame.Color(25,25,112)
 
 TILE_WALL_COLOR = COLOR_BROWN
 TILE_FLOOR_COLOR = COLOR_GREEN
@@ -27,3 +28,4 @@ PLAYER_ANIM_MAX_FRAME_TIME = 1 / PLAYER_ANIM_FPS
 # map stuff
 SCREEN_TRANS_BOX_SIZE = 1
 # screen transition box size
+
