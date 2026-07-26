@@ -67,3 +67,10 @@ class TileDoor(Tile):
 
     def __repr__(self) -> str:
         return 'D'
+    
+    # accessors
+
+    @property
+    def transition_to(self) -> Map:
+        return self._transition_to
+    
