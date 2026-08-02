@@ -13,7 +13,7 @@ class PupType(Enum):
 
 class Powerup(MovingObject):
 
-    def __init__(self, rect: pygame.Rect, color, type: PupType):
+    def __init__(self, rect: pygame.Rect, color: pygame.Color, type: PupType):
         super().__init__(rect, POWERUP_SPEED, color)
         self._type = type
         self._stop_range_top = 0.4
@@ -24,7 +24,7 @@ class Powerup(MovingObject):
             rounded_stop_rangetop,
             rounded_stop_rangebtm
         )
-        self._stopped_time = 25
+        self._stopped_time = 25 
         self._current_stop_time = 0
         self._set_start_pos()
         
@@ -68,17 +68,17 @@ class HealthPower(Powerup):
         temp_rect_old_center = temp_rect.center
         super().__init__(temp_rect, COLOR_CORAL_RED, PupType.HealthBoost)
         temp_rect_new_center = self._rect.center
-        self._points = [pygame.math.Vector2(temp_rect_new_center)]
-        self._points.append(self._points[-1] + pygame.math.Vector2(4, -6))
-        self._points.append(self._points[-1] + pygame.math.Vector2(5, -2))
-        self._points.append(self._points[-1] + pygame.math.Vector2(5, 2))
-        self._points.append(self._points[-1] + pygame.math.Vector2(1, 6))
-        self._points.append(self._points[-1] + pygame.math.Vector2(-15, 17))
-        self._points.append(self._points[-1] + pygame.math.Vector2(-15, -17))
-        self._points.append(self._points[-1] + pygame.math.Vector2(1, -6))
-        self._points.append(self._points[-1] + pygame.math.Vector2(5, -2))
-        self._points.append(self._points[-1] + pygame.math.Vector2(5, 2))
-        self._points.append(self._points[-1] + pygame.math.Vector2(4, 6))
+        self._points = [pygame.math.Vector2(temp_rect_new_center),
+                        temp_rect_new_center + pygame.math.Vector2(4, -6),
+                        temp_rect_new_center + pygame.math.Vector2(9, -8),
+                        temp_rect_new_center + pygame.math.Vector2(14, -6),
+                        temp_rect_new_center + pygame.math.Vector2(15, 0),
+                        temp_rect_new_center + pygame.math.Vector2(0, 17),
+                        temp_rect_new_center + pygame.math.Vector2(-15, 0),
+                        temp_rect_new_center + pygame.math.Vector2(-14, -6),
+                        temp_rect_new_center + pygame.math.Vector2(-9, -8),
+                        temp_rect_new_center + pygame.math.Vector2(-5, -6),
+                        temp_rect_new_center + pygame.math.Vector2(-1, 0)]
 
     def update(self, frame_time):
         old_rect_center = self._rect.center
@@ -95,10 +95,37 @@ class HealthPower(Powerup):
         # pygame.draw.aalines(screen, self._color, True, self._points)
         
         pygame.gfxdraw.filled_polygon(screen, self._points, self._color)
-        pygame.gfxdraw.aapolygon(screen, self._points, self._color)
+        # pygame.gfxdraw.aapolygon(screen, self._points, self._color)
         pygame.display.flip()
 
         # draw bounding box
+        pygame.draw.rect(screen, COLOR_BLACK, self._rect, width=1)
+
+class SlowDownPower(Powerup):
+
+
+    def __init__(self):
+        temp_rect = pygame.Rect(0,0, SLOW_DOWN_SIZE, SLOW_DOWN_SIZE)
+        super().__init__(temp_rect, COLOR_YELLOW, PupType.SlowDown)
+        self._circle_center = self._rect.center
+        self._circle_radius = self._rect.width / 2
+        self._points = [self._rect.midtop, self._rect.center,
+                        pygame.math.Vector2(self._circle_center) + pygame.math.Vector2(self._circle_radius / 2, 0)]
+
+
+    def update(self, frame_time):
+        old_rect_center = self._rect.center
+        super().update(frame_time)
+        new_rect_center = self._rect.center
+        delta = pygame.math.Vector2(new_rect_center) - pygame.math.Vector2(old_rect_center)
+        for point in self._points:
+            point += delta
+        self._circle_center += delta
+
+
+    def draw(self, screen):
+        pygame.draw.circle(screen, COLOR_YELLOW, self._circle_center, self._circle_radius)
+        pygame.draw.lines(screen, COLOR_RED, False, self._points, 3)
         pygame.draw.rect(screen, COLOR_BLACK, self._rect, width=1)
 
 class PowerupManager:
@@ -135,11 +162,13 @@ class PowerupManager:
 
     def spawn_pwrup(self, specified_pwrup: PupType = None)-> None :
         if specified_pwrup is None:
-            pwrup_choice = random.randint(1,2)
+            pwrup_choice = random.randint(1,3)
             if pwrup_choice == 1:
                 new_power = Invincibility()
             elif pwrup_choice == 2:
                 new_power = HealthPower()
+            elif pwrup_choice == 3:
+                new_power = SlowDownPower()
             else:
                 assert(False)
             self._powers.append(new_power)
@@ -149,6 +178,8 @@ class PowerupManager:
                 new_power = Invincibility()
             elif specified_pwrup == PupType.HealthBoost:
                 new_power = HealthPower()
+            elif specified_pwrup == PupType.SlowDown:
+                new_power = SlowDownPower()
             else:
                 assert(False)
             self._powers.append(new_power)

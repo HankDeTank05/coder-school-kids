@@ -56,6 +56,8 @@ class PlayingState(GameState):
             self._puman.spawn_pwrup(PupType.Invincibility)
         if keys[PWRUP_HOTKEY_HEALTH]:
             self._puman.spawn_pwrup(PupType.HealthBoost)
+        if keys[PWRUP_HOTKEY_SLOW_DOWN]:
+            self._puman.spawn_pwrup(PupType.SlowDown)   
         if keys[PWRUP_HOTKEY_RANDOM]:
             self._puman.spawn_pwrup()
 
