@@ -5,6 +5,8 @@ import time
 #project imports
 from constants import *
 from powerups import PupType
+obsSpeed = 1.0
+slowTimer=time.time()
 
 class Player:
 
@@ -28,6 +30,7 @@ class Player:
 
     def update(self, frame_time, keys):
 
+        global obsSpeed
         ###################
         # move the player #
         ###################
@@ -68,7 +71,10 @@ class Player:
         # If player is partialy or totaly off screen on the bottom
         if self._rect.bottom > bottom_bound:
             self._rect.bottom = bottom_bound
-        
+
+        if obsSpeed==.5 and time.time()> slowTimer+7:
+            obsSpeed=1
+
         #########################
         # Changes Player States #
         #########################
@@ -122,12 +128,15 @@ class Player:
 
     #NEEDS WORK
     def react_to_pwrup(self, pwrup_type: PupType):
-
+        global obsSpeed, slowTimer
         match pwrup_type:
             case PupType.Invincibility:
                 self._go_invincible = True
             case PupType.HealthBoost:
                 self._hp += HEALTH_BOOST_AMT
+            case PupType.SlowDown:
+                obsSpeed=.5
+                slowTimer=time.time()
                 
         #change state to invincibility state
 

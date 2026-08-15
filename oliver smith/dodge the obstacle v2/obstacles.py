@@ -6,8 +6,7 @@ import pygame
 #project
 from constants import *
 from movingobj import MovingObject
-from player import Player
-
+from player import Player, obsSpeed
 
 class Obstacle(MovingObject):
     _dmg: float
@@ -24,8 +23,11 @@ class Obstacle(MovingObject):
     # game functions
 
     def update(self, frame_time, player : Player):
+        global obsSpeed
         self._pos_delta = pygame.math.Vector2(0, self._speed * frame_time)
-        self._rect.move_ip(self._pos_delta.x, self._pos_delta.y)
+        from player import obsSpeed
+        self._rect.move_ip(self._pos_delta.x*obsSpeed, self._pos_delta.y*obsSpeed)
+        # print(obsSpeed)
 
     def draw(self, screen):
         pygame.draw.rect(screen, self._color, self._rect)

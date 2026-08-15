@@ -110,7 +110,8 @@ class SlowDownPower(Powerup):
         self._circle_center = self._rect.center
         self._circle_radius = self._rect.width / 2
         self._points = [self._rect.midtop, self._rect.center,
-                        pygame.math.Vector2(self._circle_center) + pygame.math.Vector2(self._circle_radius / 2, 0)]
+                        (self._rect.center[0]+self._circle_radius,self._rect.center[1])]
+        #                pygame.math.Vector2(self._circle_center) + pygame.math.Vector2(self._circle_radius / 2, 0)]
 
 
     def update(self, frame_time):
@@ -120,12 +121,14 @@ class SlowDownPower(Powerup):
         delta = pygame.math.Vector2(new_rect_center) - pygame.math.Vector2(old_rect_center)
         for point in self._points:
             point += delta
+        # print(self._points)
         self._circle_center += delta
 
 
     def draw(self, screen):
         pygame.draw.circle(screen, COLOR_YELLOW, self._circle_center, self._circle_radius)
-        pygame.draw.lines(screen, COLOR_RED, False, self._points, 3)
+        pygame.draw.lines(screen, COLOR_RED, False, [self._rect.midtop, self._rect.center,
+                        (self._rect.center[0]+self._circle_radius,self._rect.center[1])], 3)
         pygame.draw.rect(screen, COLOR_BLACK, self._rect, width=1)
 
 class PowerupManager:

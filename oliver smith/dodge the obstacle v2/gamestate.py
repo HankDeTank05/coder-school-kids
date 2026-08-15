@@ -102,7 +102,7 @@ class PlayingState(GameState):
             if player_rect.colliderect(pwr_rect):
                 self._player.react_to_pwrup(powerup.get_type())
                 collided_indices.append(pwr_index)
-                self._partman.magnetic_firework(pwr_rect.center, [COLOR_GREEN], 500, 3, 250, player_rect.center)
+                self._partman.magnetic_firework(pwr_rect.center, [COLOR_GREEN], 250, 3, 250, player_rect.center)
         self._puman.remove_pwrs(collided_indices)
 
     def draw(self, screen):
