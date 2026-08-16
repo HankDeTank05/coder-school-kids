@@ -11,6 +11,7 @@ class Player(pygame.sprite.Sprite):
     _anim_frame_time: float
     _anim_name: str
     _speed: int
+    _current_screen: pygame.math.Vector2 
 
     def __init__(self):
         self.rect = pygame.Rect(
@@ -45,10 +46,10 @@ class Player(pygame.sprite.Sprite):
         self._anim_name = 'walk down'
         self.image = self._sprites[self._anim_name][self._anim_frame]
         self._speed = PLAYER_SPEED 
-
+        self._current_screen = pygame.math.Vector2(0,0)
     # game functions
 
-    def update(self, frame_time, keys, current_map_screen):
+    def update(self, frame_time, keys):
         # note: delta means change
         pos_delta = pygame.math.Vector2(0,0)
         
@@ -116,6 +117,8 @@ class Player(pygame.sprite.Sprite):
     
 
     # accessors
+    def get_current_screen(self) -> pygame.math.Vector2:
+        return self._current_screen
 
     # mutators
 
@@ -123,13 +126,17 @@ class Player(pygame.sprite.Sprite):
         self.rect.topleft = tiles_to_pixels(tile_pos)
 
     def screen_trans_left(self) -> None:
+        self._current_screen.x -= 1
         self.rect.x = SCREEN_WIDTH - TILE_WIDTH_PX - SCREEN_TRANS_BOX_SIZE
 
     def screen_trans_right(self) -> None:
+        self._current_screen.x += 1
         self.rect.x = 0 + SCREEN_TRANS_BOX_SIZE
 
     def screen_trans_up(self)-> None:
+        self._current_screen.y -= 1
         self.rect.y = SCREEN_HEIGHT - TILE_HEIGHT_PX - SCREEN_TRANS_BOX_SIZE
   
     def screen_trans_down(self) -> None:
+        self._current_screen.y += 1
         self.rect.y = 0 + SCREEN_TRANS_BOX_SIZE

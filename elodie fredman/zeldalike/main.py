@@ -42,8 +42,8 @@ dungeon_map = map.Map(2, 1, 0, 0)
 dungeon_map.create_opening(0,0, map.Edge.Right)
 
 # world map doors
-world_map.get_map_screen(1,1).set_tile_door(12,4, dungeon_map)
-dungeon_map.get_map_screen(1,0).set_tile_door(12,4, world_map)
+world_map.get_map_screen_xy(1,1).set_tile_door(12,4, dungeon_map)
+dungeon_map.get_map_screen_xy(1,0).set_tile_door(12,4, world_map)
 
 # current map 
 current_map = world_map
@@ -76,13 +76,13 @@ while running:
     # part 1: update #
     ##################
     keys = pygame.key.get_pressed()
-    p1.update(frame_time, keys, current_map_screen=world_map.get_current_screen())
-    world_map.get_current_screen().update(frame_time)
+    p1.update(frame_time, keys)
+    world_map.get_map_screen_v2(map_screen_coords=p1.get_current_screen()).update(frame_time)
 
     # checks for collision between player and map tiles 
     for y in range(SCREEN_TILE_HEIGHT):
         for x in range(SCREEN_TILE_WIDTH):
-            current_tile = current_map.get_current_screen().get_tile_at(x, y)
+            current_tile = current_map.get_map_screen_v2(p1.get_current_screen()).get_tile_at(x, y)
             tile_rect = current_tile.rect
             # if the player collides with the current tile...
             if p1.rect.colliderect(tile_rect):
@@ -105,20 +105,17 @@ while running:
                 #... and the tile is a door...
                 elif type(current_tile) is tile.TileDoor:
                     #... then switch the player map to the dungeon.
-                    current_map =current_tile.transition_to
+                    current_map = current_tile.transition_to
+                    
 
     # check for collision w/ map screen edge to tranistion screens
     if p1.rect.colliderect(current_map.get_trans_box(edge=map.Edge.Left)):
-        current_map.go_left()
         p1.screen_trans_left()
     if p1.rect.colliderect(current_map.get_trans_box(edge=map.Edge.Right)):
-        current_map.go_right()
         p1.screen_trans_right()
     if p1.rect.colliderect(current_map.get_trans_box(edge=map.Edge.Top)):
-        current_map.go_up()
         p1.screen_trans_up()
     elif p1.rect.colliderect(current_map.get_trans_box(edge=map.Edge.Bottom)):
-        current_map.go_down()
         p1.screen_trans_down()
 
 
@@ -126,7 +123,7 @@ while running:
     # part 2: draw #
     ################
     #map_screen.draw(screen)
-    current_map.get_current_screen().draw(screen)
+    current_map.get_map_screen_v2(p1.get_current_screen()).draw(screen)
     current_map.draw(screen)
     p1.draw(screen)
 

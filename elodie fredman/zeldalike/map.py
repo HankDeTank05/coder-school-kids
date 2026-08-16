@@ -68,7 +68,6 @@ class MapScreen:
 
 class Map:
     _screens: list[list[MapScreen]]
-    _current_screen: pygame.math.Vector2
     _start_screen: pygame.math.Vector2
     _go_down_box: pygame.Rect
     _go_up_box: pygame.Rect
@@ -85,7 +84,6 @@ class Map:
                 self._screens[y].append(MapScreen())
         assert(0<=start_screen_x<map_screen_width)
         assert(0<=start_screen_y<map_screen_height)
-        self._current_screen = pygame.math.Vector2(start_screen_x, start_screen_y)
         self._start_screen = pygame.math.Vector2(start_screen_x, start_screen_y)
         self._go_down_box = pygame.Rect(0, SCREEN_HEIGHT - SCREEN_TRANS_BOX_SIZE, SCREEN_WIDTH, SCREEN_TRANS_BOX_SIZE)
         self._go_up_box = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_TRANS_BOX_SIZE)
@@ -111,13 +109,13 @@ class Map:
     # accessors
 
     def get_start_screen(self) -> MapScreen:
-        return self._screens[int(self._start_screen.y)][int(self._start_screen.x)]
-    
-    def get_current_screen(self) -> MapScreen:
-        return self._screens[int(self._current_screen.y)][int(self._current_screen.x)]
+        return self._screens[int(self._start_screen.y)][int(self._start_screen.x)]   
 
-    def get_map_screen(self, map_screen_x: int, map_screen_y: int)-> MapScreen:
+    def get_map_screen_xy(self, map_screen_x: int, map_screen_y: int)-> MapScreen:
         return self._screens[map_screen_y][map_screen_x]
+
+    def get_map_screen_v2(self, map_screen_coords: pygame.math.Vector2) -> MapScreen:
+        return self._screens[int(map_screen_coords.y)][int(map_screen_coords.x)]
     
     def get_trans_box(self, edge: Edge) -> pygame.Rect:
 
@@ -133,35 +131,23 @@ class Map:
             assert(False)
 
     # mutators
-
-    def go_left(self) -> None:
-        self._current_screen.x -= 1
-
-    def go_right(self) -> None:
-        self._current_screen.x += 1
-
-    def go_up(self) -> None:
-        self._current_screen.y -= 1
-
-    def go_down(self) -> None:
-        self._current_screen.y += 1
     
     def create_opening(self, source_x: int, source_y: int, open_dir: Edge) -> None:
         if open_dir == Edge.Top:
             for x in range(2, 14):
-                self.get_map_screen(source_x, source_y).set_tile_grass_floor(x, 0)
-                self.get_map_screen(source_x, source_y - 1).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT - 1)
+                self.get_map_screen_xy(source_x, source_y).set_tile_grass_floor(x, 0)
+                self.get_map_screen_xy(source_x, source_y - 1).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT - 1)
         elif open_dir == Edge.Bottom:
             for x in range(2, 14):
-                self.get_map_screen(source_x, source_y).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT - 1)
-                self.get_map_screen(source_x, source_y + 1).set_tile_grass_floor(x, 0)
+                self.get_map_screen_xy(source_x, source_y).set_tile_grass_floor(x, SCREEN_TILE_HEIGHT - 1)
+                self.get_map_screen_xy(source_x, source_y + 1).set_tile_grass_floor(x, 0)
         elif open_dir == Edge.Right:
             for y in range(2, 7):
-                self.get_map_screen(source_x, source_y).set_tile_grass_floor(SCREEN_TILE_WIDTH - 1, y)
-                self.get_map_screen(source_x + 1, source_y).set_tile_grass_floor(0, y)
+                self.get_map_screen_xy(source_x, source_y).set_tile_grass_floor(SCREEN_TILE_WIDTH - 1, y)
+                self.get_map_screen_xy(source_x + 1, source_y).set_tile_grass_floor(0, y)
         elif open_dir == Edge.Left:
             for y in range(2, 7):
-                self.get_map_screen(source_x, source_y).set_tile_grass_floor(0, y)
-                self.get_map_screen(source_x - 1, source_y).set_tile_grass_floor(SCREEN_TILE_WIDTH - 1, y)
+                self.get_map_screen_xy(source_x, source_y).set_tile_grass_floor(0, y)
+                self.get_map_screen_xy(source_x - 1, source_y).set_tile_grass_floor(SCREEN_TILE_WIDTH - 1, y)
         else:
             assert(False)
