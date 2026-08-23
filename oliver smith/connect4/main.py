@@ -15,7 +15,10 @@ running = True
 clock = pygame.time.Clock()
 frame_time = 0
 
-board = Board(COLUMN_COUNT, ROW_COUNT, X_CIRCLE_SPACING, Y_CIRCLE_SPACING)
+m1_prev = False
+m1_curr = False
+
+board = Board(COLUMN_COUNT, ROW_COUNT)
 
 while running:
     events = pygame.event.get()
@@ -25,8 +28,16 @@ while running:
 
     # part 1 - update
 
-    board.update(frame_time)
-        
+    # 1.1 - process input
+    mx, my = pygame.mouse.get_pos()
+    m1_curr = pygame.mouse.get_pressed()[0]
+
+    # 1.2 - actual update
+    board.update(frame_time, mx, my, m1_prev == True and m1_curr == False)
+
+    # 1.3 - prep for next frame
+    m1_prev = m1_curr
+
 
     # part 2 - draw
 
