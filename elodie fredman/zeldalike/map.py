@@ -1,4 +1,5 @@
 import pygame
+from copy import deepcopy
 from common import *
 from debug import *
 from tile import Tile, TileWallDirt, TileFloorGrass, TileDoor
@@ -62,8 +63,8 @@ class MapScreen:
     def set_tile_dirt_wall(self, x: int, y: int) -> None:
         pass
 
-    def set_tile_door(self, x: int, y: int, transition_to: 'Map') -> None:
-        self._tiles[y][x] = TileDoor(pygame.math.Vector2(TILE_WIDTH_PX * x, TILE_HEIGHT_PX * y), transition_to)
+    def set_tile_door(self, x: int, y: int, transition_to_map: 'Map', transition_to_tile: pygame.math.Vector2) -> None:
+        self._tiles[y][x] = TileDoor(pygame.math.Vector2(TILE_WIDTH_PX * x, TILE_HEIGHT_PX * y), transition_to_map, transition_to_tile)
 
 
 class Map:
@@ -109,7 +110,10 @@ class Map:
     # accessors
 
     def get_start_screen(self) -> MapScreen:
-        return self._screens[int(self._start_screen.y)][int(self._start_screen.x)]   
+        return self._screens[int(self._start_screen.y)][int(self._start_screen.x)]  
+
+    def get_start_screen_coords(self) -> pygame.math.Vector2:
+        return deepcopy(self._start_screen)
 
     def get_map_screen_xy(self, map_screen_x: int, map_screen_y: int)-> MapScreen:
         return self._screens[map_screen_y][map_screen_x]

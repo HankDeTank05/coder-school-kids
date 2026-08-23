@@ -42,8 +42,8 @@ dungeon_map = map.Map(2, 1, 0, 0)
 dungeon_map.create_opening(0,0, map.Edge.Right)
 
 # world map doors
-world_map.get_map_screen_xy(1,1).set_tile_door(12,4, dungeon_map)
-dungeon_map.get_map_screen_xy(1,0).set_tile_door(12,4, world_map)
+world_map.get_map_screen_xy(1,1).set_tile_door(12,4, dungeon_map, pygame.math.Vector2(10,5))
+dungeon_map.get_map_screen_xy(1,0).set_tile_door(12,4, world_map, pygame.math.Vector2(10,4))
 
 # current map 
 current_map = world_map
@@ -105,7 +105,9 @@ while running:
                 #... and the tile is a door...
                 elif type(current_tile) is tile.TileDoor:
                     #... then switch the player map to the dungeon.
-                    current_map = current_tile.transition_to
+                    current_map = current_tile.transition_to_map
+                    p1.set_current_screen(current_screen=current_map.get_start_screen_coords())
+                    p1.spawn_at_tile(current_tile.transition_to_tile)
                     
 
     # check for collision w/ map screen edge to tranistion screens
