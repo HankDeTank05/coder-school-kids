@@ -17,5 +17,9 @@ FOOD_COLORS = [
     pygame.Color('lime'),
     pygame.Color('olive'),
     pygame.Color('orange'),
-    pygame.Color('tomato')
+    pygame.Color('tomato'),
+    pygame.Color('mediumpurple'),
+    pygame.Color('gold')
 ]
+
+STARTING_FOOD_COUNT = 500

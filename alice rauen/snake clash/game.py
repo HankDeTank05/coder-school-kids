@@ -19,6 +19,7 @@ seg_size = 48 # size of the square
 
 speed=6
 seg_list=[]
+mouth_rect=None
 
 moves=[]
 
@@ -30,7 +31,7 @@ for i in range(segments):
     moves.append(pygame.math.Vector2(0,0))
     colors.append(head_color.lerp(tail_color, i/segments))
 
-def update_snake():
+def update_snake() -> None:
     # move the snake
     keys=pygame.key.get_pressed()
     new_move=pygame.math.Vector2(0,0)
@@ -65,7 +66,8 @@ def update_snake():
 
         # check for collision with food    
 
-def draw_snake():
+def draw_snake() -> None:
+    global mouth_rect
     # draw the segments
     for i in range(len(seg_list)-1, -1, -1):
         # pygame.draw.rect(screen, colors[i], player[i])
@@ -75,7 +77,7 @@ def draw_snake():
     face_center = pygame.math.Vector2(seg_list[0].center)
     pygame.draw.circle(screen, SNAKE_FACE_COLOR, face_center+pygame.math.Vector2(12,-12),5)
     pygame.draw.circle(screen, SNAKE_FACE_COLOR, face_center+pygame.math.Vector2(-12,-12),5)
-    pygame.draw.arc(screen, SNAKE_FACE_COLOR, seg_list[0].scale_by(0.65),225*(3.14/180),315*(3.14/180),width=2)
+    mouth_rect=pygame.draw.arc(screen, SNAKE_FACE_COLOR, seg_list[0].scale_by(0.65),225*(3.14/180),315*(3.14/180),width=2)
 
 # FOOD STUFF
 
@@ -89,7 +91,11 @@ def spawn_food():
     y=random.randint(food_size,HEIGHT-1-food_size)
     food.append(pygame.math.Vector2(x,y))
     food_colors.append(random.choice(FOOD_COLORS))
-    food_rects.append
+    food_rect=pygame.Rect(
+        x-food_size, y-food_size, #top left corner
+        food_size*2, food_size*2 #width and height
+    )
+    food_rects.append(food_rect)
 
 def spawn_foods(count):
     for f in range(count):
@@ -105,7 +111,15 @@ def draw_food():
         pygame.draw.circle(screen, food_color ,food_pos, food_size)
 
 
-spawn_foods(500)
+def collision()->None:
+    food_index=mouth_rect.collidelist(food_rects)
+    if food_index !=-1:
+        food.pop(food_index)
+        food_rects.pop(food_index)
+        food_colors.pop(food_index)
+
+
+spawn_foods(STARTING_FOOD_COUNT)
 
 while running:
     # poll for events
@@ -117,6 +131,9 @@ while running:
     # UPDATE THE GAME
 
     update_snake()
+
+    if mouth_rect is not None:
+        collision()
 
     # DRAW THE GAME
 
