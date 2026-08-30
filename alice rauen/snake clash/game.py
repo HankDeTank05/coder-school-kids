@@ -1,4 +1,5 @@
 # Example file showing a basic pygame "game loop"
+from copy import deepcopy
 import random
 
 import pygame
@@ -88,7 +89,7 @@ food_size=10 # radius of the circle
 
 def spawn_food():
     x=random.randint(food_size,WIDTH-1-food_size)
-    y=random.randint(food_size,HEIGHT-1-food_size)
+    y=random.randint(food_size+13,HEIGHT-1-food_size)
     food.append(pygame.math.Vector2(x,y))
     food_colors.append(random.choice(FOOD_COLORS))
     food_rect=pygame.Rect(
@@ -112,11 +113,26 @@ def draw_food():
 
 
 def collision()->None:
+    # it checks if it eats any of the food
     food_index=mouth_rect.collidelist(food_rects)
-    if food_index !=-1:
-        food.pop(food_index)
-        food_rects.pop(food_index)
-        food_colors.pop(food_index)
+    if food_index != -1: # -1 means we ate no food
+        # if we DID eat food...
+        # make the food react to being eaten (get rid of the piece that was eaten)
+        food.pop(food_index) # ...remove the eaten food from the list
+        food_rects.pop(food_index) # ...remove the corresponding rectangle
+        eaten_color=food_colors.pop(food_index) # ...remove the corresponding color
+        # make the snake react to eating the food (add a segment to the snake)
+        new_seg = deepcopy(seg_list[-1])
+        last_move = deepcopy(moves[-1])
+        last_move *= -speed
+        new_seg.move_ip(last_move.x, last_move.y)
+        seg_list.append(new_seg)
+        moves.append(pygame.math.Vector2(0,0))
+        for i in range(len(colors)):
+            colors[i] = head_color.lerp(tail_color, i/len(colors))
+        colors.append(tail_color)
+        # colors.append(eaten_color)
+
 
 
 spawn_foods(STARTING_FOOD_COUNT)

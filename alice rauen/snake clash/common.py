@@ -22,4 +22,4 @@ FOOD_COLORS = [
     pygame.Color('gold')
 ]
 
-STARTING_FOOD_COUNT = 500
+STARTING_FOOD_COUNT = 5000
