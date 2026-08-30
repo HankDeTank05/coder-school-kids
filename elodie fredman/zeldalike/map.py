@@ -83,8 +83,8 @@ class Map:
             self._screens.append([])
             for x in range(map_screen_width):
                 self._screens[y].append(MapScreen())
-        assert(0<=start_screen_x<map_screen_width)
-        assert(0<=start_screen_y<map_screen_height)
+        assert(0 <= start_screen_x < map_screen_width)
+        assert(0 <= start_screen_y < map_screen_height)
         self._start_screen = pygame.math.Vector2(start_screen_x, start_screen_y)
         self._go_down_box = pygame.Rect(0, SCREEN_HEIGHT - SCREEN_TRANS_BOX_SIZE, SCREEN_WIDTH, SCREEN_TRANS_BOX_SIZE)
         self._go_up_box = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_TRANS_BOX_SIZE)

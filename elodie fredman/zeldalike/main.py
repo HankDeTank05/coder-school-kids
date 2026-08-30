@@ -43,7 +43,7 @@ dungeon_map.create_opening(0,0, map.Edge.Right)
 
 # world map doors
 world_map.get_map_screen_xy(1,1).set_tile_door(12,4, dungeon_map, pygame.math.Vector2(10,5))
-dungeon_map.get_map_screen_xy(1,0).set_tile_door(12,4, world_map, pygame.math.Vector2(10,4))
+dungeon_map.get_map_screen_xy(1,0).set_tile_door(12,4, world_map, pygame.math.Vector2(10,7))
 
 # current map 
 current_map = world_map
@@ -60,6 +60,7 @@ collide with entrance / exit
 # player
 p1 = player.Player()
 p1.spawn_at_tile(tile_pos=world_map.get_start_screen().get_spawn_tile_pos())
+p1.set_current_screen(current_map.get_start_screen_coords())
 
 
 while running:
@@ -107,6 +108,7 @@ while running:
                     #... then switch the player map to the dungeon.
                     current_map = current_tile.transition_to_map
                     p1.set_current_screen(current_screen=current_map.get_start_screen_coords())
+                    print(current_tile.transition_to_tile)
                     p1.spawn_at_tile(current_tile.transition_to_tile)
                     
 
