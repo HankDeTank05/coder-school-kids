@@ -1,5 +1,8 @@
 import pygame
 
+WIDTH=1280
+HEIGHT=720
+
 BACKGROUND_COLOR = pygame.Color('skyblue')
 
 SNAKE_HEAD_COLOR = pygame.Color('orchid4')
