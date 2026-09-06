@@ -3,4 +3,5 @@ from common import *
 
 
 def load_sprite(path) -> pygame.Surface:
-    return pygame.transform.scale(pygame.image.load(path), (TILE_WIDTH_PX, TILE_HEIGHT_PX))
+    img_surf = pygame.image.load(path)
+    return pygame.transform.scale(img_surf, (img_surf.get_width()*SCALE_FACTOR, img_surf.get_height()*SCALE_FACTOR))
