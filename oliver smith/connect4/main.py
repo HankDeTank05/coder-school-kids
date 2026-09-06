@@ -18,7 +18,7 @@ frame_time = 0
 m1_prev = False
 m1_curr = False
 
-board = Board(COLUMN_COUNT, ROW_COUNT, player_count=10)
+board = Board(COLUMN_COUNT, ROW_COUNT, player_count=9)
 
 while running:
     events = pygame.event.get()

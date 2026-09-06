@@ -28,7 +28,6 @@ class Board:
             COLOR_MIDNIGHT_BLUE,
             COLOR_GOLDENROD,
             COLOR_CORAL_RED,
-            COLOR_TEAL,
             COLOR_ORANGE,
             COLOR_CYAN,
             COLOR_BLACK
@@ -91,13 +90,37 @@ class Board:
             (CIRCLE_RADIUS + Y_EDGE_SPACING) + grid_pos.y * (CIRCLE_RADIUS * 2 + Y_CIRCLE_SPACING),
         )
 
-    def place_chip(self, chip_grid_x: int, chip_grid_y: int):
-        assert(0 <= chip_grid_x < self._column_ct)
-        assert(0 <= chip_grid_y < self._row_ct)
-        self._chips[chip_grid_y][chip_grid_x] = self._current_turn
+    def place_chip(self, placed_grid_x: int, placed_grid_y: int):
+        assert(0 <= placed_grid_x < self._column_ct)
+        assert(0 <= placed_grid_y < self._row_ct)
+        '''
+        if a piece has been placed at (x,y)...
+        then increase the y coord until...
+            the piece hits the bottom row coord on the board (ROW_COUNT - 1)
+                                    current_grid_y == self._row_ct - 1
+        '''
+        current_grid_x = placed_grid_x
+        current_grid_y = placed_grid_y
+        while current_grid_y < self._row_ct - 1 and self._chips[current_grid_y + 1][current_grid_x] is None:
+            current_grid_y += 1
+        self._chips[current_grid_y][current_grid_x] = self._current_turn
+        # self._chips[placed_grid_y][placed_grid_x] = self._current_turn
         self._turn_rotation()
 
     def _turn_rotation(self)-> None:
         self._current_turn += 1
         if self._current_turn >= self._player_ct:
             self._current_turn = 0
+
+    def check_for_win(self) -> bool:
+        pass
+
+    def _check_horizontal_win(self) -> bool:
+        pass
+
+    def _check_vertical_win(self) -> bool:
+        pass
+
+    # TODO: check for \backslash\ wins
+
+    # TODO: check for /fwdslash/ wins
