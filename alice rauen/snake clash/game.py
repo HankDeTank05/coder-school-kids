@@ -16,8 +16,24 @@ running = True
 
 # SNAKE STUFF
 
-snakepigs=Snake()
-
+snakepigs=Snake(
+    head_color = pygame.Color('orchid4'),
+    tail_color=pygame.Color('slateblue1'),
+    face_color=pygame.Color('orchid'),
+    up_ctrl=pygame.K_UP,
+    down_ctrl=pygame.K_DOWN,
+    left_ctrl=pygame.K_LEFT,
+    right_ctrl=pygame.K_RIGHT
+)
+snakesheep=Snake(
+    head_color=pygame.Color('red'),
+    tail_color=pygame.Color('salmon'),
+    face_color=pygame.Color('coral'),
+    up_ctrl=pygame.K_w,
+    down_ctrl=pygame.K_s,
+    left_ctrl=pygame.K_a,
+    right_ctrl=pygame.K_d
+)
 
 # FOOD STUFF
 
@@ -51,7 +67,7 @@ def draw_food():
         pygame.draw.circle(screen, food_color ,food_pos, food_size)
 
 
-def collision()->None:
+def collision(mouth_rect)->None:
     # it checks if it eats any of the food
     food_index=mouth_rect.collidelist(food_rects)
     if food_index != -1: # -1 means we ate no food
@@ -61,6 +77,7 @@ def collision()->None:
         food_rects.pop(food_index) # ...remove the corresponding rectangle
         eaten_color=food_colors.pop(food_index) # ...remove the corresponding color
         # make the snake react to eating the food (add a segment to the snake)
+        '''
         new_seg = deepcopy(seg_list[-1])
         last_move = deepcopy(moves[-1])
         last_move *= -speed
@@ -71,10 +88,12 @@ def collision()->None:
             colors[i] = head_color.lerp(tail_color, i/len(colors))
         colors.append(tail_color)
         # colors.append(eaten_color)
+        '''
 
 
 
 spawn_foods(STARTING_FOOD_COUNT)
+
 
 while running:
     # poll for events
@@ -85,11 +104,14 @@ while running:
 
     # UPDATE THE GAME
 
-    # update_snake()
-    snakepigs.update()
+    keys = pygame.key.get_pressed()
+    snakepigs.update(keys)
+    snakesheep.update(keys)
 
-    # if mouth_rect is not None:
-    #     collision()
+    if snakepigs.hitbox is not None:
+        collision(snakepigs.hitbox)
+    if snakesheep.hitbox is not None:
+        collision(snakesheep.hitbox)
 
     # DRAW THE GAME
 
@@ -98,6 +120,7 @@ while running:
 
     # draw_snake(screen)
     snakepigs.draw(screen)
+    snakesheep.draw(screen)
     draw_food()
 
 
