@@ -15,7 +15,8 @@ running = True
 spr = MySprite(
     path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_up_1.png'),
     offset=pygame.math.Vector2(0,-12 * SCALE_FACTOR),
-    hitbox=pygame.Rect(0,0,16*SCALE_FACTOR,16*SCALE_FACTOR)
+    hitbox=pygame.Rect(0,0,16*SCALE_FACTOR,16*SCALE_FACTOR),
+    hurtbox=pygame.Rect(0, -12*SCALE_FACTOR, 16*SCALE_FACTOR, 11*SCALE_FACTOR)
 )
 test_pos = pygame.math.Vector2(245,167)
 
@@ -26,11 +27,26 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    # UPDATE
+    
+    pos_delta = pygame.math.Vector2(0, 0)
+    keys = pygame.key.get_pressed()
+    #calculate movement
+    if keys[pygame.K_UP]:
+        pos_delta.y -= 1
+    if keys[pygame.K_DOWN]:
+        pos_delta.y += 1      
+    if keys[pygame.K_LEFT]:
+        pos_delta.x -= 1
+    if keys[pygame.K_RIGHT]:
+        pos_delta.x += 1
+    spr._move_by(pos_delta * 5)
 
-    # RENDER YOUR GAME HERE
 
-    spr.draw(screen=screen, draw_pos=test_pos)
-    pygame.draw.circle(screen, 'gray', test_pos, 2)
+    # DRAW
+
+    screen.fill('black')
+    spr.draw(screen=screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()

@@ -65,7 +65,7 @@ class TileDoor(Tile):
 
     def __init__(self, pos: pygame.math.Vector2, transition_to_map: Map, transition_to_tile: pygame.math.Vector2):
         assert(transition_to_map is not None)
-        super().__init__(pos=pos, color=COLOR_BLUE, is_solid=False, transition_to_map=transition_to_map, transition_to_tile=transition_to_tile)
+        super().__init__(pos=pos, color=COLOR_DARK_BLUE, is_solid=False, transition_to_map=transition_to_map, transition_to_tile=transition_to_tile)
 
     def __repr__(self) -> str:
         return 'D'

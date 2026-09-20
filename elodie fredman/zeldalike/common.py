@@ -16,7 +16,8 @@ COLOR_BLACK = pygame.Color(0,0,0)
 COLOR_BROWN = pygame.Color(101,67,33)
 COLOR_GREEN = pygame.Color(34,139,34)
 COLOR_RED = pygame.Color(255, 0, 0)
-COLOR_BLUE = pygame.Color(25,25,112)
+COLOR_DARK_BLUE = pygame.Color(25,25,112)
+COLOR_BLUE = pygame.Color(0,0,255)
 
 TILE_WALL_COLOR = COLOR_BROWN
 TILE_FLOOR_COLOR = COLOR_GREEN
