@@ -8,16 +8,22 @@ for y in range(board_size):
     for x in range(board_size):
         board[y].append(random.choice(['x', 'o', None]))
 
-is_win = random.choice([0, 1]) == 1
-if is_win:
-    hv = random.choice(['h','v'])
-    i = random.randint(0, board_size - 1)
-    if hv == 'h':
-        for x in range(board_size):
-            board[i][x] = 'w'
-    elif hv == 'v':
-        for y in range(board_size):
-            board[y][i] = 'w'
+hvs = random.choice(['h','v', 'bs', 'fs', None])
+i = random.randint(0, board_size - 1)
+if hvs is None:
+    pass
+elif hvs == 'h':
+    for x in range(board_size):
+        board[i][x] = 'w'
+elif hvs == 'v':
+    for y in range(board_size):
+        board[y][i] = 'w'
+elif hvs == 'bs':
+    for bi in range(board_size):
+        board[bi][bi] = 'w'
+elif hvs == 'fs':
+    for bi in range(board_size):
+        board[bi][board_size-bi] = 'w'
 
 for y in range(len(board)):
     print('[', end='\t')
@@ -40,16 +46,20 @@ def h_win() -> bool:
     return False
 
 # check for a win with only 3 in a row
-def h_win3() -> bool:
+def h_win_n(n=3) -> bool:
     for y in range(len(board)):
-        for x in range(len(board[y]) - board_size):
+        # check for a win in row #y
+        for x in range(len(board[y]) - n + 1):
+            # Don't check for win if there is no marker
             if board[y][x] is not None:
-                marker = board[y][x]
+                marker = board[y][x] # checking which team placed chip at x,y
                 win = True
-                for xm in range(1,3):
+                # check if the there are n-1 consecutive of the same marker to the right
+                for xm in range(1,n):
                     if board[y][x + xm] != marker:
                         win = False
                         break
+                # if there is a win stop checking and tell the system someone won
                 if win:
                     return win
     return False
@@ -68,14 +78,40 @@ def v_win() -> bool:
             return win
     return False
 
+def v_win_n(n=3) -> bool:
+    for x in range(len(board[0])):
+        # check for a win in column #x
+        for y in range(len(board) - n + 1):
+            # dont check for win if there is no marker
+            if board[y][x] is not None:
+                marker = board[y][x]
+                win = True
+                # check if the there are n-1 consecutive of the same marker below
+                for ym in range(1,n):
+                    if board[y + ym][x] != marker:
+                        win = False
+                        break
+                # if there is a win stop checking and tell the system someone won
+                if win:
+                    return win
+    return False
+
 def bs_win() -> bool:
-    pass
+    for i in range(len(board) - 1):
+        if  board[i][i] != board[i+1][i+1]:
+            return False
+    return True
 
 def fs_win() -> bool:
-    pass
+    for i in range(len(board) - 1):
+        if board[i][3-i] != board[i+1][3 - (i+1)]:
+            return False
+    return True
+            
 
-print(f'horizontal win? {h_win()}')
-print(f'horizontal win of 3? {h_win3()}')
-print(f'vertical win? {v_win()}')
-# print(f'backslash win? {bs_win()}')
-# print(f'forwardslash win? {fs_win()}')
+# print(f'horizontal win? {h_win()}')
+print(f'horizontal win of n=3? {h_win_n()}')
+# print(f'vertical win? {v_win()}')
+print(f'vertical win of n=3? {v_win_n()}')
+print(f'backslash win? {bs_win()}')
+print(f'forwardslash win? {fs_win()}')
