@@ -1,5 +1,9 @@
 import pygame
 
+
+pygame.font.init()
+TEXT_FONT = pygame.font.Font(size=32)
+
 WIDTH=1280
 HEIGHT=720
 
@@ -25,4 +29,4 @@ FOOD_COLORS = [
     pygame.Color('gold')
 ]
 
-STARTING_FOOD_COUNT = 5000
+STARTING_FOOD_COUNT = 500

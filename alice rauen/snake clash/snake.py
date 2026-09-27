@@ -84,6 +84,10 @@ class Segment:
     def pos(self):
         return self._pos
 
+    @property
+    def r(self):
+        return self._r
+
     def move(self, movement: pygame.math.Vector2):
         self._pos += movement
         # make sure it stays onscreen
@@ -104,6 +108,9 @@ class Snake:
     _speed: int
     _seg_size: int
     _seg_list: list[Segment]
+    _color_list: list[pygame.Color]
+    _next_color_i: int
+    _color_i_delta: int
     _move_list: list[pygame.math.Vector2]
     _hitbox: pygame.Rect | None
     _controls: dict[str, int]
@@ -111,16 +118,25 @@ class Snake:
     _tail_color: pygame.Color
     _face_color: pygame.Color
 
-    def __init__(self, head_color, tail_color, face_color, up_ctrl, down_ctrl, left_ctrl, right_ctrl):
+    def __init__(self, head_color, tail_color, face_color, up_ctrl, down_ctrl, left_ctrl, right_ctrl, starting_length = 20):
         self._speed=6
         self._seg_size=48
         self._seg_list=[]
+        self._color_list = []
+        self._next_color_i = 0
+        self._color_i_delta = 1
         self._head_color=head_color
         self._tail_color=tail_color
         self._face_color=face_color
-        for i in range(22):
-            new_seg=Segment(pygame.math.Vector2(15, 15), self._head_color.lerp(self._tail_color, i/segments),self._seg_size // 2)
+        for i in range(starting_length):
+            # add the color to the list
+            self._color_list.append(self._head_color.lerp(self._tail_color, i/starting_length))
+            # create the segment with the newly created color
+            new_seg=Segment(pygame.math.Vector2(15, 15), self._color_list[self._next_color_i],self._seg_size // 2)
+            # add the segment to the segment list
             self._seg_list.append(new_seg)
+            # increment the next color index
+            self._next_color_i += 1
         self._move_list=[]
         self._hitbox = None
         self._controls = {
@@ -167,3 +183,28 @@ class Snake:
         pygame.draw.circle(screen, self._face_color, face_center+pygame.math.Vector2(12,-12),5)
         pygame.draw.circle(screen, self._face_color, face_center+pygame.math.Vector2(-12,-12),5)
         self._hitbox=pygame.draw.arc(screen, self._face_color, face_rect.scale_by(0.65), 225*(3.14/180), 315*(3.14/180), width=2)
+        text_surf=TEXT_FONT.render(str(len(self._seg_list)), False, 'black')
+        text_rect=text_surf.get_rect()
+        text_rect.midbottom=face_rect.midtop
+        screen.blit(text_surf,text_rect)
+
+    def add_seg(self):
+        if self._next_color_i >= len(self._color_list) or self._next_color_i < 0:
+            self._color_i_delta *= -1
+            self._next_color_i += 2 * self._color_i_delta
+        tail_pos = self._seg_list[-1].pos
+        if len(self._move_list) > 0:
+            last_move = self._move_list[-1]
+        else:
+            last_move = pygame.math.Vector2(0, 0)
+        new_seg=Segment(tail_pos + -last_move * self._speed, self._color_list[self._next_color_i], self._seg_size // 2)
+        self._seg_list.append(new_seg)
+        self._move_list.append(pygame.math.Vector2(0, 0))
+        self._next_color_i += self._color_i_delta
+
+def seg_collide(seg1,seg2):
+    dist=seg2.pos-seg1.pos
+    if dist.length() <seg1.r+seg2.r:
+        return True
+    else: 
+        return False

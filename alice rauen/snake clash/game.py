@@ -89,6 +89,9 @@ def collision(mouth_rect)->None:
         colors.append(tail_color)
         # colors.append(eaten_color)
         '''
+        return True
+    else:
+        return False
 
 
 
@@ -109,9 +112,11 @@ while running:
     snakesheep.update(keys)
 
     if snakepigs.hitbox is not None:
-        collision(snakepigs.hitbox)
+        if collision(snakepigs.hitbox):
+            snakepigs.add_seg()
     if snakesheep.hitbox is not None:
-        collision(snakesheep.hitbox)
+        if collision(snakesheep.hitbox):
+            snakesheep.add_seg()
 
     # DRAW THE GAME
 
