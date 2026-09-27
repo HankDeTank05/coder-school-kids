@@ -1,8 +1,8 @@
 # Example file showing a basic pygame "game loop"
 import pygame
 import os
-from mysprite import MySprite
 from common import *
+from sprite_data import load_my_sprite
 
 # pygame setup
 pygame.init()
@@ -12,12 +12,7 @@ running = True
 
 
 # load stuff to see here
-spr = MySprite(
-    path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_up_1.png'),
-    offset=pygame.math.Vector2(0,-12 * SCALE_FACTOR),
-    hitbox=pygame.Rect(0,0,16*SCALE_FACTOR,16*SCALE_FACTOR),
-    hurtbox=pygame.Rect(0, -12*SCALE_FACTOR, 16*SCALE_FACTOR, 11*SCALE_FACTOR)
-)
+spr = load_my_sprite('walk right 1')
 test_pos = pygame.math.Vector2(245,167)
 
 while running:
