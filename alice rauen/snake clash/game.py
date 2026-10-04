@@ -17,6 +17,8 @@ running = True
 # SNAKE STUFF
 
 snakepigs=Snake(
+    start_x = 100,
+    start_y = 100,
     head_color = pygame.Color('orchid4'),
     tail_color=pygame.Color('slateblue1'),
     face_color=pygame.Color('orchid'),
@@ -26,6 +28,8 @@ snakepigs=Snake(
     right_ctrl=pygame.K_RIGHT
 )
 snakesheep=Snake(
+    start_x = 200,
+    start_y = 100,
     head_color=pygame.Color('red'),
     tail_color=pygame.Color('salmon'),
     face_color=pygame.Color('coral'),
@@ -40,11 +44,14 @@ snakesheep=Snake(
 food=[]
 food_colors=[]
 food_rects=[]
-food_size=10 # radius of the circle
-
-def spawn_food():
-    x=random.randint(food_size,WIDTH-1-food_size)
-    y=random.randint(food_size+13,HEIGHT-1-food_size)
+food_size=10 # radius of the circles
+def spawn_food(x_pos=None, y_pos=None):
+    if x_pos is None or y_pos is None:
+        x=random.randint(food_size,WIDTH-1-food_size)
+        y=random.randint(food_size+13,HEIGHT-1-food_size)
+    else:
+        x = x_pos
+        y = y_pos
     food.append(pygame.math.Vector2(x,y))
     food_colors.append(random.choice(FOOD_COLORS))
     food_rect=pygame.Rect(
@@ -67,7 +74,7 @@ def draw_food():
         pygame.draw.circle(screen, food_color ,food_pos, food_size)
 
 
-def collision(mouth_rect)->None:
+def collision_with_food(mouth_rect)->None:
     # it checks if it eats any of the food
     food_index=mouth_rect.collidelist(food_rects)
     if food_index != -1: # -1 means we ate no food
@@ -95,7 +102,7 @@ def collision(mouth_rect)->None:
 
 
 
-spawn_foods(STARTING_FOOD_COUNT)
+spawn_foods(random.randint(STARTING_FOOD_COUNT_MIN, STARTING_FOOD_COUNT_MAX))
 
 
 while running:
@@ -112,11 +119,39 @@ while running:
     snakesheep.update(keys)
 
     if snakepigs.hitbox is not None:
-        if collision(snakepigs.hitbox):
+        if collision_with_food(snakepigs.hitbox):
             snakepigs.add_seg()
+        eat_collision = snakepigs.hitbox.collidelist(snakesheep.hurtboxes)
+        if eat_collision > 0:
+            food_spots = snakesheep.remove_segs(eat_collision)
+            # for pos in food_spots:
+            #     spawn_food(x_pos=pos[0], y_pos=pos[1])
+
+            # spawn_foods(len(food_spots))
+
+            for i in range(len(food_spots)):
+                if i % 2 == 0:
+                    spawn_food()
+                else:
+                    spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
+            
+    
     if snakesheep.hitbox is not None:
-        if collision(snakesheep.hitbox):
+        if collision_with_food(snakesheep.hitbox):
             snakesheep.add_seg()
+        eat_collision = snakesheep.hitbox.collidelist(snakepigs.hurtboxes)
+        if eat_collision > 0:
+            food_spots = snakepigs.remove_segs(eat_collision)
+            # for pos in food_spots:
+            #     spawn_food(x_pos=pos[0], y_pos=pos[1])
+
+            # spawn_foods(len(food_spots))
+
+            for i in range(len(food_spots)):
+                if i % 2 == 0:
+                    spawn_food()
+                else:
+                    spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
 
     # DRAW THE GAME
 

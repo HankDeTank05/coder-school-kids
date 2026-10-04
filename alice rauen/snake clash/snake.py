@@ -88,6 +88,12 @@ class Segment:
     def r(self):
         return self._r
 
+    @property
+    def rect(self):
+        rr = pygame.math.Vector2(self.r,self.r)
+        return pygame.Rect(self.pos - rr,
+                           rr*2)
+
     def move(self, movement: pygame.math.Vector2):
         self._pos += movement
         # make sure it stays onscreen
@@ -118,7 +124,7 @@ class Snake:
     _tail_color: pygame.Color
     _face_color: pygame.Color
 
-    def __init__(self, head_color, tail_color, face_color, up_ctrl, down_ctrl, left_ctrl, right_ctrl, starting_length = 20):
+    def __init__(self, start_x, start_y, head_color, tail_color, face_color, up_ctrl, down_ctrl, left_ctrl, right_ctrl, starting_length = 20):
         self._speed=6
         self._seg_size=48
         self._seg_list=[]
@@ -132,7 +138,7 @@ class Snake:
             # add the color to the list
             self._color_list.append(self._head_color.lerp(self._tail_color, i/starting_length))
             # create the segment with the newly created color
-            new_seg=Segment(pygame.math.Vector2(15, 15), self._color_list[self._next_color_i],self._seg_size // 2)
+            new_seg=Segment(pygame.math.Vector2(start_x, start_y), self._color_list[self._next_color_i],self._seg_size // 2)
             # add the segment to the segment list
             self._seg_list.append(new_seg)
             # increment the next color index
@@ -149,6 +155,13 @@ class Snake:
     @property
     def hitbox(self):
         return self._hitbox
+
+    @property
+    def hurtboxes(self):
+        h_boxes=[]
+        for seg in self._seg_list:
+            h_boxes.append(seg.rect)
+        return h_boxes
 
     def update(self, keys):
         new_move=pygame.math.Vector2(0,0)
@@ -201,6 +214,16 @@ class Snake:
         self._seg_list.append(new_seg)
         self._move_list.append(pygame.math.Vector2(0, 0))
         self._next_color_i += self._color_i_delta
+
+    def remove_segs(self, seg_index):
+        assert(0 <= seg_index < len(self._seg_list))
+        removed_segs = self._seg_list[seg_index:]
+        self._seg_list = self._seg_list[:seg_index]
+        self._move_list = self._move_list[:seg_index]
+        food_spots = []
+        for seg in removed_segs:
+            food_spots.append(seg.pos)
+        return food_spots
 
 def seg_collide(seg1,seg2):
     dist=seg2.pos-seg1.pos
