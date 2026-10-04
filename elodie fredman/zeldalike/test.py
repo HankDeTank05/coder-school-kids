@@ -12,7 +12,7 @@ running = True
 
 
 # load stuff to see here
-spr = load_my_sprite('walk right 1')
+spr = load_my_sprite('sword left 3')
 test_pos = pygame.math.Vector2(245,167)
 
 while running:
@@ -40,7 +40,7 @@ while running:
 
     # DRAW
 
-    screen.fill('black')
+    screen.fill('white')
     spr.draw(screen=screen)
 
     # flip() the display to put your work on screen

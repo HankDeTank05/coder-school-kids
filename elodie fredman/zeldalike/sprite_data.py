@@ -32,96 +32,92 @@ my_sprite_data: dict[str, MySprite] = {
     ),
     'walk left 0': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_right_0.png'),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
+        hurtbox=pygame.Rect(1.25*SCALE_FACTOR, 0*SCALE_FACTOR, 15*SCALE_FACTOR, 16*SCALE_FACTOR),
         flip_h=True
     ),
     'walk left 1': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_right_1.png'),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
+        hurtbox=pygame.Rect(3*SCALE_FACTOR, 1.75*SCALE_FACTOR, 13*SCALE_FACTOR, 15*SCALE_FACTOR),
         flip_h=True
     ),
     'sword up 0': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_up_0.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
         hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
     ),
     'sword up 1': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_up_1.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
+        hitbox=pygame.Rect(5*SCALE_FACTOR, 0*SCALE_FACTOR, 3*SCALE_FACTOR, 11*SCALE_FACTOR),
+        hurtbox=pygame.Rect(0*SCALE_FACTOR, 12*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
     ),
     'sword up 2': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_up_2.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
+        hitbox=pygame.Rect(5*SCALE_FACTOR, 0*SCALE_FACTOR, 3*SCALE_FACTOR, 11*SCALE_FACTOR),
+        hurtbox=pygame.Rect(2*SCALE_FACTOR, 11*SCALE_FACTOR, 12*SCALE_FACTOR, 16*SCALE_FACTOR)
     ),
     'sword up 3': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_up_3.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
+        hitbox=pygame.Rect(5*SCALE_FACTOR, 0*SCALE_FACTOR, 3*SCALE_FACTOR, 3*SCALE_FACTOR),
+        hurtbox=pygame.Rect(2*SCALE_FACTOR, 3*SCALE_FACTOR, 12*SCALE_FACTOR, 16*SCALE_FACTOR)
     ),
     'sword down 0': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_down_0.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
+        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 15*SCALE_FACTOR)
     ),
     'sword down 1': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_down_1.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
+        hitbox=pygame.Rect(7*SCALE_FACTOR, 16*SCALE_FACTOR, 3.25*SCALE_FACTOR, 11*SCALE_FACTOR),
         hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
     ),
     'sword down 2': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_down_2.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
+        hitbox=pygame.Rect(7*SCALE_FACTOR, 16*SCALE_FACTOR, 3.25*SCALE_FACTOR, 7*SCALE_FACTOR),
+        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 15*SCALE_FACTOR, 16*SCALE_FACTOR)
     ),
     'sword down 3': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_down_3.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
+        hitbox=pygame.Rect(7*SCALE_FACTOR, 14*SCALE_FACTOR, 3.25*SCALE_FACTOR, 5*SCALE_FACTOR),
+        hurtbox=pygame.Rect(2*SCALE_FACTOR, 0*SCALE_FACTOR, 13*SCALE_FACTOR, 14*SCALE_FACTOR)
     ),
     'sword right 0': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_0.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
+        hurtbox=pygame.Rect(0*SCALE_FACTOR, 1*SCALE_FACTOR, 15.5*SCALE_FACTOR, 15*SCALE_FACTOR)
     ),
     'sword right 1': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_1.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
+        hitbox=pygame.Rect(16*SCALE_FACTOR, 8*SCALE_FACTOR, 11*SCALE_FACTOR, 3*SCALE_FACTOR),
+        hurtbox=pygame.Rect(0*SCALE_FACTOR, 1*SCALE_FACTOR, 16*SCALE_FACTOR, 15*SCALE_FACTOR)
     ),
     'sword right 2': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_2.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
+        hitbox=pygame.Rect(14*SCALE_FACTOR, 8*SCALE_FACTOR, 9*SCALE_FACTOR, 3*SCALE_FACTOR),
+        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 14*SCALE_FACTOR, 16*SCALE_FACTOR)
     ),
     'sword right 3': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_3.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR)
+        hitbox=pygame.Rect(15*SCALE_FACTOR, 8*SCALE_FACTOR, 4*SCALE_FACTOR, 3*SCALE_FACTOR),
+        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 15*SCALE_FACTOR, 16*SCALE_FACTOR)
     ),
     'sword left 0': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_0.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
+        hurtbox=pygame.Rect(1*SCALE_FACTOR, 1*SCALE_FACTOR, 15*SCALE_FACTOR, 15*SCALE_FACTOR),
         flip_h=True
     ),
     'sword left 1': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_1.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
+        hitbox=pygame.Rect(0*SCALE_FACTOR, 8*SCALE_FACTOR, 11*SCALE_FACTOR, 3*SCALE_FACTOR),
+        hurtbox=pygame.Rect(11*SCALE_FACTOR, 1*SCALE_FACTOR, 16*SCALE_FACTOR, 15*SCALE_FACTOR),
         flip_h=True
     ),
     'sword left 2': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_2.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
+        hitbox=pygame.Rect(0*SCALE_FACTOR, 8*SCALE_FACTOR, 9*SCALE_FACTOR, 3*SCALE_FACTOR),
+        hurtbox=pygame.Rect(9*SCALE_FACTOR, 1*SCALE_FACTOR, 14*SCALE_FACTOR, 15*SCALE_FACTOR),
         flip_h=True
     ),
     'sword left 3': MySprite(
         path=os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_3.png'),
-        hitbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
-        hurtbox=pygame.Rect(0*SCALE_FACTOR, 0*SCALE_FACTOR, 16*SCALE_FACTOR, 16*SCALE_FACTOR),
+        hitbox=pygame.Rect(0*SCALE_FACTOR, 8*SCALE_FACTOR, 5*SCALE_FACTOR, 3*SCALE_FACTOR),
+        hurtbox=pygame.Rect(5*SCALE_FACTOR, 0*SCALE_FACTOR, 14*SCALE_FACTOR, 16*SCALE_FACTOR),
         flip_h=True
     ),
 }
