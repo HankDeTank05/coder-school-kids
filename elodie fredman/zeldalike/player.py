@@ -6,7 +6,7 @@ from gamemath import tiles_to_pixels
 from convenience import load_sprite
 
 class Player(pygame.sprite.Sprite):
-    _sprites: dict
+    _sprites: dict[str, list[pygame.Surface]]
     _anim_frame: int
     _anim_frame_time: float
     _anim_name: str
@@ -67,13 +67,14 @@ class Player(pygame.sprite.Sprite):
         self.image = self._sprites[self._anim_name][self._anim_frame]
         self._speed = PLAYER_SPEED 
         self._current_screen = pygame.math.Vector2(0,0)
-    # game functions
+    
+    # gameobject functions
 
-    def update(self, frame_time, keys):
+    def update(self, frame_time: float, keys):
         # note: delta means change
         pos_delta = pygame.math.Vector2(0,0)
         
-        #used to detect anim change
+        # used to detect anim change
         prev_anim_name = deepcopy(self._anim_name)
 
         #calculate movement
@@ -108,35 +109,27 @@ class Player(pygame.sprite.Sprite):
         if pos_delta.x != 0 and pos_delta.y != 0:
             pos_delta = pos_delta.normalize()
         
-        #move player 
-        # self._pos += pos_delta * self._speed * frame_time
+        # move player
         self.rect.move_ip(pos_delta * self._speed * frame_time)
 
         # stay on screen
-        # if self._pos.x < 0:
-        #     self._pos.x = 0
-        # elif self._pos.x > WIDTH - 1 - self._size.x:
-        #     self._pos.x = WIDTH - 1 - self._size.x
         if self.rect.left < SCREEN_RECT.left:
             self.rect.left = SCREEN_RECT.left
         elif self.rect.right > SCREEN_RECT.right:
             self.rect.right = SCREEN_RECT.right
         
-        # if self._pos.y < 0:
-        #     self._pos.y = 0
-        # elif self._pos.y > SCREEN_HEIGHT - 1 - self._size.y:
-        #     self._pos.y = SCREEN_HEIGHT - 1 - self._size.y 
         if self.rect.top < SCREEN_RECT.top:
             self.rect.top = SCREEN_RECT.top
         elif self.rect.bottom > SCREEN_RECT.bottom:
             self.rect.bottom = SCREEN_RECT.bottom
                     
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface):
         #pygame.draw.rect(screen, (0,255,0), self.rect, width=1) # makes rectangle around player
         screen.blit(self.image, self.rect) # puts sprite on screen
     
 
     # accessors
+
     def get_current_screen(self) -> pygame.math.Vector2:
         return self._current_screen
 
@@ -144,7 +137,6 @@ class Player(pygame.sprite.Sprite):
 
     def spawn_at_tile(self, tile_pos: pygame.math.Vector2):
         self.rect.topleft = tiles_to_pixels(tile_pos)
-
 
     def screen_trans_left(self) -> None:
         self._current_screen.x -= 1

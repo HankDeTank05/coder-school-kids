@@ -5,12 +5,16 @@ from convenience import load_sprite
 class MySprite(pygame.sprite.Sprite):
     _position: pygame.math.Vector2
     _draw_offset: pygame.math.Vector2
-    _hitbox: pygame.Rect
-    _hurtbox: pygame.Rect
+    _hitbox: pygame.Rect | None
+    _hurtbox: pygame.Rect | None
 
 
-    def __init__(self, path, offset: pygame.math.Vector2 = pygame.math.Vector2(0,0), hitbox: pygame.Rect | None = None, hurtbox: pygame.Rect | None = None,
-                 flip_h: bool = False, flip_v: bool = False):
+    def __init__(self, path,
+                 offset: pygame.math.Vector2 = pygame.math.Vector2(0,0),
+                 hitbox: pygame.Rect | None = None,
+                 hurtbox: pygame.Rect | None = None,
+                 flip_h: bool = False,
+                 flip_v: bool = False):
         self.image = pygame.transform.flip(surface=load_sprite(path=path), flip_x=flip_h, flip_y=flip_v)
         self.rect = self.image.get_rect()
 
@@ -50,3 +54,4 @@ class MySprite(pygame.sprite.Sprite):
 
 
     
+new_mysprite = MySprite(os.path.join('folder1', 'folder1.1'))

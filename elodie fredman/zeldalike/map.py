@@ -100,6 +100,7 @@ class Map:
         # assert(False)
         # map_screen: MapScreen=self._screens[1][1]
         # map_screen.draw(screen=screen)
+        # TODO: make this draw a map screen
         if SHOW_SCREEN_TRANS_BOX:
             pygame.draw.rect(screen, COLOR_RED, self._go_down_box, width=1)
             pygame.draw.rect(screen, COLOR_RED, self._go_up_box, width=1)
