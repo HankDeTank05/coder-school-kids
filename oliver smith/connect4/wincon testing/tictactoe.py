@@ -23,7 +23,9 @@ elif hvs == 'bs':
         board[bi][bi] = 'w'
 elif hvs == 'fs':
     for bi in range(board_size):
+        
         board[bi][board_size-bi] = 'w'
+
 
 for y in range(len(board)):
     print('[', end='\t')
@@ -98,9 +100,14 @@ def v_win_n(n=3) -> bool:
 
 def bs_win() -> bool:
     for i in range(len(board) - 1):
-        if  board[i][i] != board[i+1][i+1]:
+        if board[i][i] != board[i+1][i+1]:
             return False
     return True
+
+# def bs_win_n(n=3) -> bool:
+#     for i in range (len(board) - 1):
+#         if board[i][i] != board[i + 1][i + 1]:
+            
 
 def fs_win() -> bool:
     for i in range(len(board) - 1):
