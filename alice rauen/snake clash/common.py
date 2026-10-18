@@ -6,6 +6,7 @@ TEXT_FONT = pygame.font.Font(size=32)
 
 WIDTH=1280
 HEIGHT=720
+SCREEN_RECT=pygame.Rect(0, 0, WIDTH, HEIGHT)
 
 BACKGROUND_COLOR = pygame.Color('skyblue')
 
