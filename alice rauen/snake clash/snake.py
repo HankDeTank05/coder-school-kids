@@ -1,3 +1,4 @@
+import random
 import pygame
 from common import *
 
@@ -94,21 +95,22 @@ class Segment:
         return pygame.Rect(self.pos - rr,
                            rr*2)
 
-    def move(self, movement: pygame.math.Vector2):
+    def move(self, movement: pygame.math.Vector2, stay_onscreen):
         self._pos += movement
-        # make sure it stays onscreen
-        if self.pos.y<self._r: 
-            self.pos.y=self._r
-        elif self.pos.y>=HEIGHT-self._r:
-            self.pos.y=HEIGHT-self._r-1
-        if self.pos.x<self._r: 
-            self.pos.x=self._r
-        elif self.pos.x>=WIDTH-self._r:
-            self.pos.x=WIDTH-self._r-1
+        if stay_onscreen==True:
+            # the somewhere code 
+            # make sure it stays onscreen
+            if self.pos.y<self._r: 
+                self.pos.y=self._r
+            elif self.pos.y>=HEIGHT-self._r:
+                self.pos.y=HEIGHT-self._r-1
+            if self.pos.x<self._r: 
+                self.pos.x=self._r
+            elif self.pos.x>=WIDTH-self._r:
+                self.pos.x=WIDTH-self._r-1
 
     def draw(self,screen,radius):
         pygame.draw.circle(screen,self._color,self._pos,self._r)
-
 
 class Snake:
     _speed: int
@@ -119,12 +121,11 @@ class Snake:
     _color_i_delta: int
     _move_list: list[pygame.math.Vector2]
     _hitbox: pygame.Rect | None
-    _controls: dict[str, int]
     _head_color: pygame.Color
     _tail_color: pygame.Color
     _face_color: pygame.Color
 
-    def __init__(self, start_x, start_y, head_color, tail_color, face_color, up_ctrl, down_ctrl, left_ctrl, right_ctrl, starting_length = 20):
+    def __init__(self, start_x, start_y, head_color, tail_color, face_color, starting_length = 20):
         self._speed=6
         self._seg_size=48
         self._seg_list=[]
@@ -145,12 +146,6 @@ class Snake:
             self._next_color_i += 1
         self._move_list=[]
         self._hitbox = None
-        self._controls = {
-            'up': up_ctrl,
-            'down': down_ctrl,
-            'left': left_ctrl,
-            'right': right_ctrl
-        }
 
     @property
     def hitbox(self):
@@ -163,26 +158,9 @@ class Snake:
             h_boxes.append(seg.rect)
         return h_boxes
 
-    def update(self, keys):
-        new_move=pygame.math.Vector2(0,0)
-        if keys[self._controls['up']]:
-            new_move.y-=speed
-        if keys[self._controls['down']]:
-            new_move.y+=speed
-        if keys[self._controls['left']]:
-            new_move.x-=speed
-        if keys[self._controls['right']]:
-            new_move.x+=speed
-
-        if new_move.length_squared()>0:
-            new_move.normalize_ip()
-
-            self._move_list.insert(0, new_move)
-            if len(self._move_list) > len(self._seg_list):
-                self._move_list.pop()
-            
-            for i in range(len(self._move_list)):
-                self._seg_list[i].move(self._move_list[i]*self._speed)
+    @property
+    def tail(self):
+        return self._seg_list[-1]
 
     def draw (self,screen):
         # drawing the segments
@@ -225,9 +203,85 @@ class Snake:
             food_spots.append(seg.pos)
         return food_spots
 
-def seg_collide(seg1,seg2):
-    dist=seg2.pos-seg1.pos
-    if dist.length() <seg1.r+seg2.r:
+
+class SnakePlayer(Snake):
+    _controls: dict[str, int]
+
+    def __init__(self, start_x, start_y, head_color, tail_color, face_color, up_ctrl, down_ctrl, left_ctrl, right_ctrl, starting_length = 20):
+        super().__init__(start_x=start_x, start_y=start_y,
+                         head_color=head_color, tail_color=tail_color, face_color=face_color,
+                         starting_length=starting_length)
+        self._controls = {
+            'up': up_ctrl,
+            'down': down_ctrl,
+            'left': left_ctrl,
+            'right': right_ctrl
+        }
+
+    def update(self, keys):
+        new_move=pygame.math.Vector2(0,0)
+        if keys[self._controls['up']]:
+            new_move.y-=speed
+        if keys[self._controls['down']]:
+            new_move.y+=speed
+        if keys[self._controls['left']]:
+            new_move.x-=speed
+        if keys[self._controls['right']]:
+            new_move.x+=speed
+
+        if new_move.length_squared()>0:
+            new_move.normalize_ip()
+
+            self._move_list.insert(0, new_move)
+            if len(self._move_list) > len(self._seg_list):
+                self._move_list.pop()
+            
+            for i in range(len(self._move_list)):
+                self._seg_list[i].move(self._move_list[i]*self._speed, stay_onscreen=True)
+
+class SnakeCpu(Snake):
+    _move_dir: pygame.math.Vector2
+
+    def __init__(self):
+        side=random.randint(0, 3)
+        if side==0: # left side
+            start_x=0
+            start_y=random.randint(0,HEIGHT-1)
+            self._move_dir=pygame.math.Vector2(1,0)
+        elif side==1: # right side
+            start_x=WIDTH-1
+            start_y=random.randint(0,HEIGHT-1)
+            self._move_dir=pygame.math.Vector2(-1,0)
+        elif side==2: # bottom edge
+            start_x=random.randint(0,WIDTH-1)
+            start_y=HEIGHT-1
+            self._move_dir=pygame.math.Vector2(0,-1)
+        elif side==3: # top edge
+            start_x=random.randint(0,WIDTH-1)
+            start_y=0
+            self._move_dir=pygame.math.Vector2(0,1)
+        rando_head_color=pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+        rando_tail_color=pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+        rando_face_color=pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
+        super().__init__(start_x=start_x, start_y=start_y,
+                         head_color=rando_head_color, tail_color=rando_tail_color, face_color=rando_face_color,
+                         starting_length=10)
+
+    def update(self):
+        assert(self._move_dir.length_squared()>0)
+
+        self._move_list.insert(0,self._move_dir)
+        if len(self._move_list) > len(self._seg_list):
+            self._move_list.pop()
+            
+        for i in range(len(self._move_list)):
+            self._seg_list[i].move(self._move_list[i]*self._speed, stay_onscreen=False)
+
+        
+
+def seg_collide(seg1, seg2):
+    dist = seg2.pos - seg1.pos
+    if dist.length() < seg1.r + seg2.r:
         return True
     else: 
         return False

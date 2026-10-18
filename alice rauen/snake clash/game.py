@@ -6,7 +6,7 @@ import pygame
 
 from common import *
 
-from snake import Snake
+from snake import SnakePlayer, SnakeCpu
 
 # pygame setup
 pygame.init()
@@ -16,7 +16,7 @@ running = True
 
 # SNAKE STUFF
 
-snakepigs=Snake(
+snakepigs=SnakePlayer(
     start_x = 100,
     start_y = 100,
     head_color = pygame.Color('orchid4'),
@@ -27,7 +27,7 @@ snakepigs=Snake(
     left_ctrl=pygame.K_LEFT,
     right_ctrl=pygame.K_RIGHT
 )
-snakesheep=Snake(
+snakesheep=SnakePlayer(
     start_x = 200,
     start_y = 100,
     head_color=pygame.Color('red'),
@@ -38,6 +38,7 @@ snakesheep=Snake(
     left_ctrl=pygame.K_a,
     right_ctrl=pygame.K_d
 )
+snakecpu=SnakeCpu()
 
 # FOOD STUFF
 
@@ -113,10 +114,13 @@ while running:
             running = False
 
     # UPDATE THE GAME
-
+    #HENRY MADE THE SNAKE NOT MOVE!!!
     keys = pygame.key.get_pressed()
     snakepigs.update(keys)
     snakesheep.update(keys)
+    snakecpu.update()
+    if SCREEN_RECT.collidepoint(snakecpu.tail.pos.x,snakecpu.tail.pos.y)==False:
+        snakecpu=SnakeCpu()
 
     if snakepigs.hitbox is not None:
         if collision_with_food(snakepigs.hitbox):
@@ -161,6 +165,7 @@ while running:
     # draw_snake(screen)
     snakepigs.draw(screen)
     snakesheep.draw(screen)
+    snakecpu.draw(screen)
     draw_food()
 
 

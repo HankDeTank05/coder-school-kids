@@ -6,7 +6,7 @@ import pygame
 
 from common import *
 
-from snake import Snake
+from snake import SnakePlayer
 
 # pygame setup
 pygame.init()
