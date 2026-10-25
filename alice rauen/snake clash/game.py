@@ -38,7 +38,10 @@ snakesheep=SnakePlayer(
     left_ctrl=pygame.K_a,
     right_ctrl=pygame.K_d
 )
-snakecpu=SnakeCpu()
+max_cpus = 5
+snakecpus=[]
+for i in range(max_cpus):
+    snakecpus.append(SnakeCpu())
 
 # FOOD STUFF
 
@@ -84,23 +87,21 @@ def collision_with_food(mouth_rect)->None:
         food.pop(food_index) # ...remove the eaten food from the list
         food_rects.pop(food_index) # ...remove the corresponding rectangle
         eaten_color=food_colors.pop(food_index) # ...remove the corresponding color
-        # make the snake react to eating the food (add a segment to the snake)
-        '''
-        new_seg = deepcopy(seg_list[-1])
-        last_move = deepcopy(moves[-1])
-        last_move *= -speed
-        new_seg.move_ip(last_move.x, last_move.y)
-        seg_list.append(new_seg)
-        moves.append(pygame.math.Vector2(0,0))
-        for i in range(len(colors)):
-            colors[i] = head_color.lerp(tail_color, i/len(colors))
-        colors.append(tail_color)
-        # colors.append(eaten_color)
-        '''
         return True
     else:
         return False
 
+def collision_with_snake(this_snake, other_snake):
+    eat_collision = this_snake.hitbox.collidelist(other_snake.hurtboxes)
+    if eat_collision>0:
+        food_spots=other_snake.remove_segs(eat_collision)
+        # redistribute each segment as a piece of food
+        for i in range(len(food_spots)):
+            if i % 2 == 0:
+                spawn_food() # half of them go to a random position onscreen
+            else:
+                # half of them go in the place where the segment used to be
+                spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
 
 
 spawn_foods(random.randint(STARTING_FOOD_COUNT_MIN, STARTING_FOOD_COUNT_MAX))
@@ -118,44 +119,42 @@ while running:
     keys = pygame.key.get_pressed()
     snakepigs.update(keys)
     snakesheep.update(keys)
-    snakecpu.update()
-    if SCREEN_RECT.collidepoint(snakecpu.tail.pos.x,snakecpu.tail.pos.y)==False:
-        snakecpu=SnakeCpu()
+    for i in range(max_cpus):
+        snakecpus[i].update()
+        # if the snake goes offscreen...
+        head_onscreen=SCREEN_RECT.collidepoint(snakecpus[i].head.pos.x,snakecpus[i].head.pos.y)
+        tail_onscreen=SCREEN_RECT.collidepoint(snakecpus[i].tail.pos.x,snakecpus[i].tail.pos.y)
+        if not head_onscreen and not tail_onscreen:
+            snakecpus[i]=SnakeCpu() # ...replace it with a new snake
 
     if snakepigs.hitbox is not None:
+        # check if they ate any food
         if collision_with_food(snakepigs.hitbox):
             snakepigs.add_seg()
-        eat_collision = snakepigs.hitbox.collidelist(snakesheep.hurtboxes)
-        if eat_collision > 0:
-            food_spots = snakesheep.remove_segs(eat_collision)
-            # for pos in food_spots:
-            #     spawn_food(x_pos=pos[0], y_pos=pos[1])
-
-            # spawn_foods(len(food_spots))
-
-            for i in range(len(food_spots)):
-                if i % 2 == 0:
-                    spawn_food()
-                else:
-                    spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
+        # check if they ate the other player
+        collision_with_snake(snakepigs,snakesheep)
+        # check for interactions with cpu snakes
+        for cpu in snakecpus:
+            collision_with_snake(snakepigs,cpu)
+            if cpu.hitbox is not None:
+                collision_with_snake(cpu,snakepigs)
             
-    
     if snakesheep.hitbox is not None:
+        # check if they ate any food
         if collision_with_food(snakesheep.hitbox):
             snakesheep.add_seg()
-        eat_collision = snakesheep.hitbox.collidelist(snakepigs.hurtboxes)
-        if eat_collision > 0:
-            food_spots = snakepigs.remove_segs(eat_collision)
-            # for pos in food_spots:
-            #     spawn_food(x_pos=pos[0], y_pos=pos[1])
+        # check if they ate the other player
+        collision_with_snake(snakesheep,snakepigs)
+        # check for interactions with cpu snakes
+        for cpu in snakecpus:
+            collision_with_snake(snakesheep,cpu)
+            if cpu.hitbox is not None:
+                collision_with_snake(cpu,snakesheep)
 
-            # spawn_foods(len(food_spots))
-
-            for i in range(len(food_spots)):
-                if i % 2 == 0:
-                    spawn_food()
-                else:
-                    spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
+    for cpu in snakecpus:
+        if cpu.hitbox is not None:
+            if collision_with_food(cpu.hitbox):
+                cpu.add_seg()
 
     # DRAW THE GAME
 
@@ -165,7 +164,8 @@ while running:
     # draw_snake(screen)
     snakepigs.draw(screen)
     snakesheep.draw(screen)
-    snakecpu.draw(screen)
+    for i in range(max_cpus):
+        snakecpus[i].draw(screen)
     draw_food()
 
 

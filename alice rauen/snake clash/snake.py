@@ -120,7 +120,7 @@ class Snake:
     _next_color_i: int
     _color_i_delta: int
     _move_list: list[pygame.math.Vector2]
-    _hitbox: pygame.Rect | None
+    # _hitbox: pygame.Rect | None
     _head_color: pygame.Color
     _tail_color: pygame.Color
     _face_color: pygame.Color
@@ -145,11 +145,11 @@ class Snake:
             # increment the next color index
             self._next_color_i += 1
         self._move_list=[]
-        self._hitbox = None
+        # self._hitbox = None
 
     @property
     def hitbox(self):
-        return self._hitbox
+        return self._seg_list[0].rect
 
     @property
     def hurtboxes(self):
@@ -157,6 +157,10 @@ class Snake:
         for seg in self._seg_list:
             h_boxes.append(seg.rect)
         return h_boxes
+
+    @property
+    def head(self):
+        return self._seg_list[0]
 
     @property
     def tail(self):
@@ -173,7 +177,8 @@ class Snake:
         face_rect = pygame.Rect(face_center.x - self._seg_size // 2, face_center.y - self._seg_size // 2, self._seg_size, self._seg_size)
         pygame.draw.circle(screen, self._face_color, face_center+pygame.math.Vector2(12,-12),5)
         pygame.draw.circle(screen, self._face_color, face_center+pygame.math.Vector2(-12,-12),5)
-        self._hitbox=pygame.draw.arc(screen, self._face_color, face_rect.scale_by(0.65), 225*(3.14/180), 315*(3.14/180), width=2)
+        # self._hitbox=pygame.draw.arc(screen, self._face_color, face_rect.scale_by(0.65), 225*(3.14/180), 315*(3.14/180), width=2)
+        pygame.draw.arc(screen, self._face_color, face_rect.scale_by(0.65), 225*(3.14/180), 315*(3.14/180), width=2)
         text_surf=TEXT_FONT.render(str(len(self._seg_list)), False, 'black')
         text_rect=text_surf.get_rect()
         text_rect.midbottom=face_rect.midtop
@@ -265,7 +270,7 @@ class SnakeCpu(Snake):
         rando_face_color=pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
         super().__init__(start_x=start_x, start_y=start_y,
                          head_color=rando_head_color, tail_color=rando_tail_color, face_color=rando_face_color,
-                         starting_length=10)
+                         starting_length=CPU_SNAKE_STARTING_LENGTH)
 
     def update(self):
         assert(self._move_dir.length_squared()>0)
