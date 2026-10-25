@@ -123,6 +123,6 @@ my_sprite_data: dict[str, MySprite] = {
 }
 
 def load_my_sprite(key: str) -> MySprite:
-    assert(key in my_sprite_data.keys())
+    assert(key in my_sprite_data.keys()) # if this assert gets triggered, your key doesn't exist in my_sprite_data
     return my_sprite_data[key]
 

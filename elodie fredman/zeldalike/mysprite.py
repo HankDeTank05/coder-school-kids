@@ -1,9 +1,9 @@
 import pygame
 from common import *
 from convenience import load_sprite
+from copy import deepcopy
 
 class MySprite(pygame.sprite.Sprite):
-    _position: pygame.math.Vector2
     _draw_offset: pygame.math.Vector2
     _hitbox: pygame.Rect | None
     _hurtbox: pygame.Rect | None
@@ -18,10 +18,9 @@ class MySprite(pygame.sprite.Sprite):
         self.image = pygame.transform.flip(surface=load_sprite(path=path), flip_x=flip_h, flip_y=flip_v)
         self.rect = self.image.get_rect()
 
-        self._position = pygame.math.Vector2(0, 0)
         self._draw_offset = offset
 
-        self.rect.topleft = self._position + self._draw_offset
+        self.rect.topleft = pygame.math.Vector2(0,0) + self._draw_offset
 
         self._hitbox = hitbox
         self._hurtbox = hurtbox
@@ -39,19 +38,16 @@ class MySprite(pygame.sprite.Sprite):
             pygame.draw.rect(screen, COLOR_BLUE, self._hurtbox, width = 1)
 
         # draws the corner position before applying offset
-        pygame.draw.circle(screen, 'gray', self._position, 5)
+        pygame.draw.circle(screen, 'gray', self.rect.topleft - self._draw_offset, 5)
 
-    def _move_by(self, delta: pygame.math.Vector2):
-        self._position += delta
-        self.rect.topleft = self._position + self._draw_offset
-       
+    def move_to(self, to_pos: pygame.math.Vector2):
+        old_pos = deepcopy(self.rect.topleft)
+        self.rect.topleft = to_pos + self._draw_offset
+        delta = pygame.math.Vector2(self.rect.topleft) - pygame.math.Vector2(old_pos)
+
         if self._hitbox is not None:
             self._hitbox.move_ip(delta)
 
         if self._hurtbox is not None:
             self._hurtbox.move_ip(delta)
 
-
-
-    
-new_mysprite = MySprite(os.path.join('folder1', 'folder1.1'))

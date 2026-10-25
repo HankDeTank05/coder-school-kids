@@ -35,7 +35,8 @@ while running:
         pos_delta.x -= 1
     if keys[pygame.K_RIGHT]:
         pos_delta.x += 1
-    spr._move_by(pos_delta * 5)
+    test_pos += pos_delta * 5
+    spr.move_to(test_pos)
 
 
     # DRAW

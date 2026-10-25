@@ -4,6 +4,7 @@ from copy import deepcopy
 from common import *
 from gamemath import tiles_to_pixels
 from convenience import load_sprite
+from sprite_data import load_my_sprite
 
 class Player(pygame.sprite.Sprite):
     _sprites: dict[str, list[pygame.Surface]]
@@ -21,44 +22,44 @@ class Player(pygame.sprite.Sprite):
         # 72.png, 74.png, 76.png
         self._sprites = {
             'walk up': [
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_up_0.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_up_1.png'))
+                load_my_sprite('walk up 0'),
+                load_my_sprite('walk up 1')
             ],
             'walk down': [
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_down_0.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_down_1.png'))
+                load_my_sprite('walk down 0'),
+                load_my_sprite('walk down 1')
             ],
             'walk left': [
-                pygame.transform.flip(load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_right_0.png')), True, False),
-                pygame.transform.flip(load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_right_1.png')), True, False)
+                load_my_sprite('walk left 0'),
+                load_my_sprite('walk left 1')
             ],
             'walk right': [
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_right_0.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'walk_right_1.png')) 
+                load_my_sprite('walk right 0'),
+                load_my_sprite('walk right 1')
             ],
             'sword up': [
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_up_0.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_up_1.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_up_2.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_up_3.png'))
-            ],
+                load_my_sprite('sword up 0'),
+                load_my_sprite('sword up 1'), 
+                load_my_sprite('sword up 2'),
+                load_my_sprite('sword up 3')
+                ],
             'sword down': [
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_down_0.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_down_1.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_down_2.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_down_3.png'))
+                load_my_sprite('sword down 0'),
+                load_my_sprite('sword down 1'), 
+                load_my_sprite('sword down 2'),
+                load_my_sprite('sword down 3')
             ],
             'sword left': [
-                pygame.transform.flip(load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_0.png')), True, False),
-                pygame.transform.flip(load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_1.png')), True, False),
-                pygame.transform.flip(load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_2.png')), True, False),
-                pygame.transform.flip(load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_3.png')), True, False)
+                load_my_sprite('sword left 0'),
+                load_my_sprite('sword left 1'), 
+                load_my_sprite('sword left 2'),
+                load_my_sprite('sword left 3')
             ],
             'sword right': [
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_0.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_1.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_2.png')),
-                load_sprite(os.path.join('elodie fredman', 'zeldalike', 'assets', 'sprites', 'link', 'sword_right_3.png'))
+                load_my_sprite('sword right 0'),
+                load_my_sprite('sword right 1'), 
+                load_my_sprite('sword right 2'),
+                load_my_sprite('sword right 3')
             ]
         }
         self._anim_frame = 0
