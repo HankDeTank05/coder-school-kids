@@ -1,14 +1,16 @@
 import random
 
 board = []
-board_size = 4
+board_size = 5
 
 for y in range(board_size):
     board.append([])
     for x in range(board_size):
-        board[y].append(random.choice(['x', 'o', None]))
+        # board[y].append(random.choice(['x', 'o', None]))
+        board[y].append(None)
 
-hvs = random.choice(['h','v', 'bs', 'fs', None])
+# hvs = random.choice(['h','v', 'bs', 'fs', None])
+hvs = 'bs'
 i = random.randint(0, board_size - 1)
 if hvs is None:
     pass
@@ -19,12 +21,16 @@ elif hvs == 'v':
     for y in range(board_size):
         board[y][i] = 'w'
 elif hvs == 'bs':
-    for bi in range(board_size):
-        board[bi][bi] = 'w'
+    length = random.randint(2, board_size)
+    max_sx = board_size - length
+    max_sy = board_size - length
+    sx = random.randint(0, max_sx)
+    sy = random.randint(0, max_sy)
+    for di in range(length):
+        board[sy + di][sx + di] = 'w'
 elif hvs == 'fs':
     for bi in range(board_size):
-        
-        board[bi][board_size-bi] = 'w'
+        board[bi][board_size-bi-1] = 'w'
 
 
 for y in range(len(board)):
@@ -104,21 +110,49 @@ def bs_win() -> bool:
             return False
     return True
 
-# def bs_win_n(n=3) -> bool:
-#     for i in range (len(board) - 1):
-#         if board[i][i] != board[i + 1][i + 1]:
-            
+def bs_win_n(n=3) -> bool:
+    # pick a start-x and start-y only from possible top-left-most marker spots
+    for sy in range(len(board) - n + 1):
+        for sx in range(len(board[sy]) - n + 1):
+            if board[sy][sx] is None:
+                continue # don't even attempt to check diagonally adjacent spaces, because there's no marker there
+            consecutive = 1 # keep track of how many consecutive markers there are
+            for di in range(1,n):
+                if board[sy][sx] != board[sy + di][sx + di]:
+                    break # if one marker in the diagonal isn't the same, don't bother checking the rest
+                else:
+                    consecutive += 1 # a consecutive marker was found, so increase the consecutive counter
+            if consecutive >= n:
+                return True # if the consecutive counter is equal to the specified win length (aka, n) then stop checking and report a win
+    return False
 
 def fs_win() -> bool:
     for i in range(len(board) - 1):
-        if board[i][3-i] != board[i+1][3 - (i+1)]:
+        if board[i][board_size-1-i] != board[i+1][(board_size-1-i)+1]:
             return False
     return True
             
+def fs_win_n(n=3) -> bool:
+    # pick a start-x and start-y only from possible top-right-most marker spots
+    for sy in range(len(board) - n + 1):
+        for sx in range(n - 1, len(board[sy])):
+            if board[sy][sx] is None:
+                continue # don't even attempt to check diagonally adjacent spaces, because there's no marker there
+            consecutive = 1 # keep track of how many consecutive markers there are
+            for di in range(1,n):
+                if board[sy][sx] != board[sy + di][sx - di]:
+                    break # if one marker in the diagonal isn't the same, don't bother checking the rest
+                else:
+                    consecutive += # a consecutive marker was found, so increase the consecutive counter
+            if consecutive >= n:
+                return True # if the consecutive counter is equal to the specified win length (aka, n) then stop checking and report a win
+    return False
+
 
 # print(f'horizontal win? {h_win()}')
-print(f'horizontal win of n=3? {h_win_n()}')
+print(f'horizontal win of n=3? {h_win_n(n=3)}')
 # print(f'vertical win? {v_win()}')
-print(f'vertical win of n=3? {v_win_n()}')
-print(f'backslash win? {bs_win()}')
+print(f'vertical win of n=3? {v_win_n(n=3)}')
+# print(f'backslash win? {bs_win()}')
+print(f'backslash win of n=3? {bs_win_n(n=3)}')
 print(f'forwardslash win? {fs_win()}')
