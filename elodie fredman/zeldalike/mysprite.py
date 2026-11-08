@@ -15,6 +15,7 @@ class MySprite(pygame.sprite.Sprite):
                  hurtbox: pygame.Rect | None = None,
                  flip_h: bool = False,
                  flip_v: bool = False):
+        super().__init__()
         self.image = pygame.transform.flip(surface=load_sprite(path=path), flip_x=flip_h, flip_y=flip_v)
         self.rect = self.image.get_rect()
 

@@ -5,9 +5,10 @@ from common import *
 from gamemath import tiles_to_pixels
 from convenience import load_sprite
 from sprite_data import load_my_sprite
+from mysprite import MySprite
 
 class Player(pygame.sprite.Sprite):
-    _sprites: dict[str, list[pygame.Surface]]
+    _sprites: dict[str, list[MySprite]]
     _anim_frame: int
     _anim_frame_time: float
     _anim_name: str
