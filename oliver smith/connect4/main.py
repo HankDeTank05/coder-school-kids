@@ -18,7 +18,7 @@ frame_time = 0
 m1_prev = False
 m1_curr = False
 
-board = Board(COLUMN_COUNT, ROW_COUNT, player_count=9)
+board = Board(COL_COUNT, ROW_COUNT, player_count=PLAYER_COUNT)
 
 while running:
     events = pygame.event.get()
@@ -34,6 +34,9 @@ while running:
 
     # 1.2 - actual update
     board.update(frame_time, mx, my, m1_prev == True and m1_curr == False)
+    print(f'h-win detected? {board._check_horizontal_win()}')
+    print(f'v-win detected? {board._check_vertical_win()}')
+    print(f'bs-win detected? {board._check_bslash_win()}')
 
     # 1.3 - prep for next frame
     m1_prev = m1_curr

@@ -83,8 +83,8 @@ class Board:
                     rect_line_width = 3
                 pygame.draw.rect(screen, COLOR_RED, self._mouse_zones[row][col], width=rect_line_width)
 
-    '''Given the x,y grid pos returns x,y pixel coords of center of grid space'''
     def grid_to_px(self, grid_pos: pygame.math.Vector2) -> pygame.math.Vector2:
+        '''Given the x,y grid pos returns x,y pixel coords of center of grid space'''
         return pygame.math.Vector2(
             (CIRCLE_RADIUS + X_EDGE_SPACING) + grid_pos.x * (CIRCLE_RADIUS * 2 + X_CIRCLE_SPACING),
             (CIRCLE_RADIUS + Y_EDGE_SPACING) + grid_pos.y * (CIRCLE_RADIUS * 2 + Y_CIRCLE_SPACING),
@@ -115,10 +115,61 @@ class Board:
     def check_for_win(self) -> bool:
         pass
 
-    def _check_horizontal_win(self) -> bool:
-        pass
+    def _check_horizontal_win(self) -> int | None:
+        '''checks for a horizontal win. returns either None, or the number of the team a win has been detected for'''
+        for y in range(len(self._chips)):
+            # check for a win in row #y
+            for x in range(len(self._chips[y]) - MIN_WIN_LENGTH + 1):
+                # don't check for win if there is no marker
+                if self._chips[y][x] is not None:
+                    chip = self._chips[y][x] # checking which team placed chip at x,y
+                    win = True
+                    # check if there are MIN_WIN_LENGTH-1 consecutive of the same chip to the right
+                    for dx in range(1, MIN_WIN_LENGTH):
+                        if self._chips[y][x + dx] != chip:
+                            win = False
+                            break
+                    # if there is a win, stop checking and tell the system someone won
+                    if win:
+                        return chip
+        return None
 
-    def _check_vertical_win(self) -> bool:
+    def _check_vertical_win(self) -> int | None:
+        for x in range(len(self._chips[0])):
+            # check for a win in column #x
+            for y in range(len(self._chips) - MIN_WIN_LENGTH + 1):
+                # don't check for win if there is no chip
+                if self._chips[y][x] is not None:
+                    chip = self._chips[y][x]
+                    win = True
+                    # check if there are MIN_WIN_LENGTH-1 consecutive of the same marker below
+                    for dy in range(1, MIN_WIN_LENGTH):
+                        if self._chips[y + dy][x] != chip:
+                            win = False
+                            break
+                    # if there is a win, stop checking and tell the system someone won
+                    if win:
+                        return chip
+        return None
+
+    def _check_bslash_win(self) -> bool:
+        # pick a start-x and start-y only from possible top-left-most chip spots
+        for sy in range(len(self._chips) - MIN_WIN_LENGTH + 1):
+            for sx in range(len(self._chips[sy]) - MIN_WIN_LENGTH + 1):
+                if self._chips[sy][sx] is None:
+                    continue # don't even attempt to check diagonally adjacent spaces, because there's no marker there
+                chip = self._chips[sy][sx]
+                consecutive = 1 # keep track of how many consecutive chips there are
+                for di in range(1, MIN_WIN_LENGTH):
+                    if self._chips[sy][sx] != self._chips[sy + di][sx + di]:
+                        break # if one chip in the diagonal isn't the same, don't bother checking the rest
+                    else:
+                        consecutive += 1 # a consecutive chip was found, so increase the consecutive counter
+                if consecutive >= MIN_WIN_LENGTH:
+                    return chip # if the consecutive counter is equal to the specified win length (aka, MIN_WIN_LENGTH) then stop checking and report a win
+        return None
+
+    def _check_fslash_win(self) -> bool:
         pass
 
     # TODO: check for \backslash\ wins

@@ -10,7 +10,7 @@ for y in range(board_size):
         board[y].append(None)
 
 # hvs = random.choice(['h','v', 'bs', 'fs', None])
-hvs = 'bs'
+hvs = 'fs'
 i = random.randint(0, board_size - 1)
 if hvs is None:
     pass
@@ -29,8 +29,15 @@ elif hvs == 'bs':
     for di in range(length):
         board[sy + di][sx + di] = 'w'
 elif hvs == 'fs':
-    for bi in range(board_size):
-        board[bi][board_size-bi-1] = 'w'
+    length = random.randint(2, board_size)
+    min_sx = length - 1
+    max_sy = board_size - length
+    sx = random.randint(min_sx, board_size - 1)
+    sy = random.randint(0, max_sy)
+    for di in range(length):
+        board[sy + di][sx - di] = 'w'
+    # for bi in range(board_size):
+    #     board[bi][board_size-bi-1] = 'w'
 
 
 for y in range(len(board)):
@@ -143,7 +150,7 @@ def fs_win_n(n=3) -> bool:
                 if board[sy][sx] != board[sy + di][sx - di]:
                     break # if one marker in the diagonal isn't the same, don't bother checking the rest
                 else:
-                    consecutive += # a consecutive marker was found, so increase the consecutive counter
+                    consecutive += 1 # a consecutive marker was found, so increase the consecutive counter
             if consecutive >= n:
                 return True # if the consecutive counter is equal to the specified win length (aka, n) then stop checking and report a win
     return False
@@ -155,4 +162,5 @@ print(f'horizontal win of n=3? {h_win_n(n=3)}')
 print(f'vertical win of n=3? {v_win_n(n=3)}')
 # print(f'backslash win? {bs_win()}')
 print(f'backslash win of n=3? {bs_win_n(n=3)}')
-print(f'forwardslash win? {fs_win()}')
+# print(f'forwardslash win? {fs_win()}')
+print(f'forward slash win of n=3? {fs_win_n(n=3)}')
