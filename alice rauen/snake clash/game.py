@@ -38,7 +38,7 @@ snakesheep=SnakePlayer(
     left_ctrl=pygame.K_a,
     right_ctrl=pygame.K_d
 )
-max_cpus = 5
+max_cpus = 1
 snakecpus=[]
 for i in range(max_cpus):
     snakecpus.append(SnakeCpu())
@@ -103,6 +103,21 @@ def collision_with_snake(this_snake, other_snake):
                 # half of them go in the place where the segment used to be
                 spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
 
+def collision_with_cpu(player_snake, cpu_snake):
+    eat_collision = player_snake.hitbox.collidelist(cpu_snake.hurtboxes)
+    if eat_collision>=0:
+        food_spots = cpu_snake.remove_segs(eat_collision)
+        # redistribute each segment as a piece of food
+        for i in range(len(food_spots)):
+            if i%2==0:
+                spawn_food() # half of them go to a random position onscreen
+            else:
+                # half of them go in the place where the segment used to be
+                spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
+        if eat_collision == 0:
+            cpu_index = snakecpus.index(cpu_snake)
+            snakecpus[cpu_index] = SnakeCpu()
+
 
 spawn_foods(random.randint(STARTING_FOOD_COUNT_MIN, STARTING_FOOD_COUNT_MAX))
 
@@ -135,7 +150,7 @@ while running:
         collision_with_snake(snakepigs,snakesheep)
         # check for interactions with cpu snakes
         for cpu in snakecpus:
-            collision_with_snake(snakepigs,cpu)
+            collision_with_cpu(snakepigs,cpu)
             if cpu.hitbox is not None:
                 collision_with_snake(cpu,snakepigs)
             
@@ -147,7 +162,7 @@ while running:
         collision_with_snake(snakesheep,snakepigs)
         # check for interactions with cpu snakes
         for cpu in snakecpus:
-            collision_with_snake(snakesheep,cpu)
+            collision_with_cpu(snakesheep,cpu)
             if cpu.hitbox is not None:
                 collision_with_snake(cpu,snakesheep)
 
@@ -167,6 +182,38 @@ while running:
     for i in range(max_cpus):
         snakecpus[i].draw(screen)
     draw_food()
+
+    # draw the progress bars
+    sp_len = snakepigs.size
+    # sp_len = 100
+    sp_percent=sp_len/LENGTH_TO_WIN
+    pygame.draw.rect(screen,'black',pygame.Rect(
+        WIDTH-PROGRESS_BAR_WIDTH,
+        0,
+        PROGRESS_BAR_WIDTH,
+        HEIGHT
+    ))
+    pygame.draw.rect(screen,snakepigs.head_color,pygame.Rect(
+        WIDTH-PROGRESS_BAR_WIDTH,
+        HEIGHT-HEIGHT*sp_percent,
+        PROGRESS_BAR_WIDTH,
+        HEIGHT*sp_percent
+    ))
+
+    ss_len = snakesheep.size
+    ss_percent = ss_len/LENGTH_TO_WIN
+    pygame.draw.rect(screen,'black',pygame.Rect(
+        0,
+        0,
+        PROGRESS_BAR_WIDTH,
+        HEIGHT
+    ))
+    pygame.draw.rect(screen, snakesheep.head_color,pygame.Rect(
+        0,
+        HEIGHT-HEIGHT*ss_percent,
+        PROGRESS_BAR_WIDTH,
+        HEIGHT*ss_percent
+    ))
 
 
     # flip() the display to put your work on screen

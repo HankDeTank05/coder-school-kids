@@ -148,8 +148,15 @@ class Snake:
         # self._hitbox = None
 
     @property
+    def size(self):
+        return len(self._seg_list)
+
+    @property
     def hitbox(self):
-        return self._seg_list[0].rect
+        if len(self._seg_list)>0:
+            return self._seg_list[0].rect
+        else:
+            return None
 
     @property
     def hurtboxes(self):
@@ -165,6 +172,10 @@ class Snake:
     @property
     def tail(self):
         return self._seg_list[-1]
+
+    @property
+    def head_color(self):
+        return self._head_color
 
     def draw (self,screen):
         # drawing the segments
