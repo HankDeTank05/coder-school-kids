@@ -5,6 +5,8 @@ import pygame
 WIDTH = 1200
 HEIGHT = 960
 FPS = 60
+pygame.font.init()
+FONT = pygame.font.Font(size=50)
 
 
 #color

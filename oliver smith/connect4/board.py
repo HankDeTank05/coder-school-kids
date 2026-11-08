@@ -7,8 +7,10 @@ class Board:
     _row_ct: int # how many rows there are on the board
     _chips: list[list[None | int]]
     _colors: list[pygame.Color]
+    _color_names: list[str]
     _player_ct: int
     _current_turn: int
+    _win_value: int | None
 
 
     def __init__(self, column_count: int, row_count: int, player_count: int):
@@ -25,12 +27,23 @@ class Board:
             COLOR_RED,
             COLOR_YELLOW,
             COLOR_GREEN,
-            COLOR_MIDNIGHT_BLUE,
+            COLOR_BLUE,
             COLOR_GOLDENROD,
             COLOR_CORAL_RED,
             COLOR_ORANGE,
             COLOR_CYAN,
             COLOR_BLACK
+        ]
+        self._color_names = [
+            'Red',
+            'Yellow',
+            'Green',
+            'Blue',
+            'Gold',
+            'Coral',
+            'Orange',
+            'Cyan',
+            'Black'
         ]
 
         self._player_ct = player_count
@@ -51,21 +64,25 @@ class Board:
         self._clicked_zone = pygame.math.Vector2(-1, -1)
 
     def update(self, frame_time, mx: int, my: int, m1_released: bool):
+        self._win_value = self.check_for_win()
         self._hover_zone = pygame.math.Vector2(-1, -1)
         self._clicked_zone = pygame.math.Vector2(-1, -1)
+        if self._win_value is None:
 
-        for row in range(self._row_ct):
-            for col in range(self._column_ct):
-                # if hovering over current mouse zone...
-                if self._mouse_zones[row][col].collidepoint(mx, my):
-                    # ...set the hover zone to the current click zone
-                    self._hover_zone = pygame.math.Vector2(col, row)
-                    # if left click was released ...
-                    if m1_released:
-                        # ...set the clicked zone as current mouse zone...
-                        self._clicked_zone = pygame.math.Vector2(col, row)
-                        #...and put a chip there
-                        self.place_chip(col, row)
+            for row in range(self._row_ct):
+                for col in range(self._column_ct):
+                    # if hovering over current mouse zone...
+                    if self._mouse_zones[row][col].collidepoint(mx, my):
+                        # ...set the hover zone to the current click zone
+                        self._hover_zone = pygame.math.Vector2(col, row)
+                        # if left click was released ...
+                        if m1_released:
+                            # ...set the clicked zone as current mouse zone...
+                            self._clicked_zone = pygame.math.Vector2(col, row)
+                            #...and put a chip there
+                            self.place_chip(col, row)
+        else:
+            pass
 
     def draw(self, screen):
         for row in range(self._row_ct):
@@ -82,6 +99,12 @@ class Board:
                 if col == self._hover_zone.x and row == self._hover_zone.y:
                     rect_line_width = 3
                 pygame.draw.rect(screen, COLOR_RED, self._mouse_zones[row][col], width=rect_line_width)
+        if self._win_value is not None:
+            text_surf = FONT.render(f'{self._color_names[self._win_value]} team wins'.upper(), False, COLOR_BLACK)
+            text_rect = text_surf.get_rect()
+            text_rect.center = (WIDTH // 2, HEIGHT // 2)
+            pygame.draw.rect(screen, COLOR_WHITE, text_rect)
+            screen.blit(text_surf, text_rect)
 
     def grid_to_px(self, grid_pos: pygame.math.Vector2) -> pygame.math.Vector2:
         '''Given the x,y grid pos returns x,y pixel coords of center of grid space'''
@@ -112,8 +135,19 @@ class Board:
         if self._current_turn >= self._player_ct:
             self._current_turn = 0
 
-    def check_for_win(self) -> bool:
-        pass
+    def check_for_win(self) -> int | None:
+        win_value = self._check_horizontal_win()
+        if win_value is not None:
+            return win_value
+        win_value = self._check_vertical_win()
+        if win_value is not None:
+            return win_value
+        win_value = self._check_bslash_win()
+        if win_value is not None:
+            return win_value
+        win_value = self._check_fslash_win()
+        return win_value
+        
 
     def _check_horizontal_win(self) -> int | None:
         '''checks for a horizontal win. returns either None, or the number of the team a win has been detected for'''
@@ -135,6 +169,7 @@ class Board:
         return None
 
     def _check_vertical_win(self) -> int | None:
+        '''checks for a vertical win. returns either None, or the number of the team a win has been detected for'''
         for x in range(len(self._chips[0])):
             # check for a win in column #x
             for y in range(len(self._chips) - MIN_WIN_LENGTH + 1):
@@ -152,7 +187,8 @@ class Board:
                         return chip
         return None
 
-    def _check_bslash_win(self) -> bool:
+    def _check_bslash_win(self) -> int | None:
+        '''checks for a diagonal backslash win. returns either None, or the number of the team a win has been detected for'''
         # pick a start-x and start-y only from possible top-left-most chip spots
         for sy in range(len(self._chips) - MIN_WIN_LENGTH + 1):
             for sx in range(len(self._chips[sy]) - MIN_WIN_LENGTH + 1):
@@ -169,8 +205,23 @@ class Board:
                     return chip # if the consecutive counter is equal to the specified win length (aka, MIN_WIN_LENGTH) then stop checking and report a win
         return None
 
-    def _check_fslash_win(self) -> bool:
-        pass
+    def _check_fslash_win(self) -> int | None:
+        '''checks for a diagonal forward-slash win. returns either None, or the number of the team a win has been detected for'''
+        # pick a start-x and start-y only from possible top-right-most marker spots
+        for sy in range(len(self._chips) - MIN_WIN_LENGTH + 1):
+            for sx in range(MIN_WIN_LENGTH - 1,len(self._chips[sy])):
+                if self._chips[sy][sx] is None:
+                    continue # don't even attempt to check diagonally adjacent spaces, because there's no marker there
+                chip = self._chips[sy][sx]
+                consecutive = 1 # keep track of how many consecutive markers there are
+                for di in range(1,MIN_WIN_LENGTH):
+                    if self._chips[sy][sx] != self._chips[sy + di][sx - di]:
+                        break # if one marker in the diagonal isn't the same, don't bother checking the rest
+                    else:
+                        consecutive += 1 # a consecutive marker was found, so increase the consecutive counter
+                if consecutive >= MIN_WIN_LENGTH:
+                    return chip # if the consecutive counter is equal to the specified win length (aka, MIN_WIN_LENGTH) then stop checking and report a win
+        return None
 
     # TODO: check for \backslash\ wins
 
