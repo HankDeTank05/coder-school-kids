@@ -6,21 +6,21 @@ from gamemath import tiles_to_pixels
 from convenience import load_sprite
 from sprite_data import load_my_sprite
 from mysprite import MySprite
+from gameobject import GameObject
 
-class Player(pygame.sprite.Sprite):
+class Player(GameObject):
     _sprites: dict[str, list[MySprite]]
     _anim_frame: int
     _anim_frame_time: float
     _anim_name: str
     _speed: int
-    _current_screen: pygame.math.Vector2 
+    _current_screen: pygame.math.Vector2
 
     def __init__(self):
-        self.rect = pygame.Rect(
-            pygame.math.Vector2(0,0), # this is in px, not tiles
-            pygame.math.Vector2(TILE_WIDTH_PX, TILE_HEIGHT_PX)
-        )
-        # 72.png, 74.png, 76.png
+        # self.rect = pygame.Rect(
+        #     pygame.math.Vector2(0,0), # this is in px, not tiles
+        #     pygame.math.Vector2(TILE_WIDTH_PX, TILE_HEIGHT_PX)
+        # )
         self._sprites = {
             'walk up': [
                 load_my_sprite('walk up 0'),
@@ -66,7 +66,7 @@ class Player(pygame.sprite.Sprite):
         self._anim_frame = 0
         self._anim_frame_time = 0
         self._anim_name = 'walk down'
-        self.image = self._sprites[self._anim_name][self._anim_frame]
+        self._image = self._sprites[self._anim_name][self._anim_frame]
         self._speed = PLAYER_SPEED 
         self._current_screen = pygame.math.Vector2(0,0)
     
@@ -105,7 +105,7 @@ class Player(pygame.sprite.Sprite):
                 if self._anim_frame >= len(self._sprites[self._anim_name]): # if frame number is too large...
                     self._anim_frame = 0                                    # ... reset the animation to the first frame.
         
-        self.image = self._sprites[self._anim_name][self._anim_frame]
+        self._image = self._sprites[self._anim_name][self._anim_frame]
 
         # fix diagonal movement
         if pos_delta.x != 0 and pos_delta.y != 0:
@@ -126,8 +126,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = SCREEN_RECT.bottom
                     
     def draw(self, screen: pygame.Surface):
-        #pygame.draw.rect(screen, (0,255,0), self.rect, width=1) # makes rectangle around player
-        screen.blit(self.image, self.rect) # puts sprite on screen
+        # pygame.draw.rect(screen, (0,255,0), self.rect, width=1) # makes rectangle around player
+        screen.blit(self._image, ) # puts sprite on screen
     
 
     # accessors
@@ -138,7 +138,8 @@ class Player(pygame.sprite.Sprite):
     # mutators
 
     def spawn_at_tile(self, tile_pos: pygame.math.Vector2):
-        self.rect.topleft = tiles_to_pixels(tile_pos)
+        # self.rect.topleft = tiles_to_pixels(tile_pos)
+        self._image.move_to(tiles_to_pixels(tile_pos=tile_pos))
 
     def screen_trans_left(self) -> None:
         self._current_screen.x -= 1

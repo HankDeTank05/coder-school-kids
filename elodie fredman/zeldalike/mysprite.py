@@ -21,14 +21,14 @@ class MySprite(pygame.sprite.Sprite):
 
         self._draw_offset = offset
 
-        self.rect.topleft = pygame.math.Vector2(0,0) + self._draw_offset
+        self.rect.topleft = pygame.math.Vector2(0,0)
 
         self._hitbox = hitbox
         self._hurtbox = hurtbox
 
-    def draw(self, screen) -> None:
+    def draw(self, screen: pygame.Surface, draw_pos: pygame.math.Vector2) -> None:
         # draws the sprite
-        screen.blit(self.image, self.rect)
+        screen.blit(self.image, draw_pos + self._draw_offset)
 
         # draws the hitbox
         if self._hitbox is not None:
@@ -41,7 +41,7 @@ class MySprite(pygame.sprite.Sprite):
         # draws the corner position before applying offset
         pygame.draw.circle(screen, 'gray', self.rect.topleft - self._draw_offset, 5)
 
-    def move_to(self, to_pos: pygame.math.Vector2):
+    def move_to(self, to_pos: pygame.math.Vector2) -> None:
         old_pos = deepcopy(self.rect.topleft)
         self.rect.topleft = to_pos + self._draw_offset
         delta = pygame.math.Vector2(self.rect.topleft) - pygame.math.Vector2(old_pos)
@@ -51,4 +51,10 @@ class MySprite(pygame.sprite.Sprite):
 
         if self._hurtbox is not None:
             self._hurtbox.move_ip(delta)
+
+    def set_x(self, new_x: float) -> None:
+        pass
+
+    def set_y(self, new_y: float) -> None:
+        pass
 

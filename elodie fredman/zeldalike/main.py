@@ -122,6 +122,8 @@ while running:
     elif p1.rect.colliderect(current_map.get_trans_box(edge=map.Edge.Bottom)):
         p1.screen_trans_down()
 
+    new_vect = p1.pos
+
 
     ################
     # part 2: draw #
