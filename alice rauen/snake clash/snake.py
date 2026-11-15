@@ -125,8 +125,8 @@ class Snake:
     _tail_color: pygame.Color
     _face_color: pygame.Color
 
-    def __init__(self, start_x, start_y, head_color, tail_color, face_color, starting_length = 20):
-        self._speed=6
+    def __init__(self, start_x, start_y, head_color, tail_color, face_color, speed, starting_length = 20):
+        self._speed=speed
         self._seg_size=48
         self._seg_list=[]
         self._color_list = []
@@ -226,6 +226,7 @@ class SnakePlayer(Snake):
     def __init__(self, start_x, start_y, head_color, tail_color, face_color, up_ctrl, down_ctrl, left_ctrl, right_ctrl, starting_length = 20):
         super().__init__(start_x=start_x, start_y=start_y,
                          head_color=head_color, tail_color=tail_color, face_color=face_color,
+                         speed=PLAYER_SNAKE_SPEED,
                          starting_length=starting_length)
         self._controls = {
             'up': up_ctrl,
@@ -281,6 +282,7 @@ class SnakeCpu(Snake):
         rando_face_color=pygame.Color(random.randint(0,255),random.randint(0,255),random.randint(0,255))
         super().__init__(start_x=start_x, start_y=start_y,
                          head_color=rando_head_color, tail_color=rando_tail_color, face_color=rando_face_color,
+                         speed=CPU_SNAKE_SPEED,
                          starting_length=CPU_SNAKE_STARTING_LENGTH)
 
     def update(self):

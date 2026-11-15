@@ -8,217 +8,223 @@ from common import *
 
 from snake import SnakePlayer, SnakeCpu
 
-# pygame setup
-pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-clock = pygame.time.Clock()
-running = True
+def run(len_to_win):
+    # pygame setup
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    clock = pygame.time.Clock()
+    running = True
 
-# SNAKE STUFF
+    # SNAKE STUFF
 
-snakepigs=SnakePlayer(
-    start_x = 100,
-    start_y = 100,
-    head_color = pygame.Color('orchid4'),
-    tail_color=pygame.Color('slateblue1'),
-    face_color=pygame.Color('orchid'),
-    up_ctrl=pygame.K_UP,
-    down_ctrl=pygame.K_DOWN,
-    left_ctrl=pygame.K_LEFT,
-    right_ctrl=pygame.K_RIGHT
-)
-snakesheep=SnakePlayer(
-    start_x = 200,
-    start_y = 100,
-    head_color=pygame.Color('red'),
-    tail_color=pygame.Color('salmon'),
-    face_color=pygame.Color('coral'),
-    up_ctrl=pygame.K_w,
-    down_ctrl=pygame.K_s,
-    left_ctrl=pygame.K_a,
-    right_ctrl=pygame.K_d
-)
-max_cpus = 1
-snakecpus=[]
-for i in range(max_cpus):
-    snakecpus.append(SnakeCpu())
-
-# FOOD STUFF
-
-food=[]
-food_colors=[]
-food_rects=[]
-food_size=10 # radius of the circles
-def spawn_food(x_pos=None, y_pos=None):
-    if x_pos is None or y_pos is None:
-        x=random.randint(food_size,WIDTH-1-food_size)
-        y=random.randint(food_size+13,HEIGHT-1-food_size)
-    else:
-        x = x_pos
-        y = y_pos
-    food.append(pygame.math.Vector2(x,y))
-    food_colors.append(random.choice(FOOD_COLORS))
-    food_rect=pygame.Rect(
-        x-food_size, y-food_size, #top left corner
-        food_size*2, food_size*2 #width and height
+    snakepigs=SnakePlayer(
+        start_x = 100,
+        start_y = 100,
+        head_color = pygame.Color('orchid4'),
+        tail_color=pygame.Color('slateblue1'),
+        face_color=pygame.Color('orchid'),
+        up_ctrl=pygame.K_UP,
+        down_ctrl=pygame.K_DOWN,
+        left_ctrl=pygame.K_LEFT,
+        right_ctrl=pygame.K_RIGHT
     )
-    food_rects.append(food_rect)
-
-def spawn_foods(count):
-    for f in range(count):
-        spawn_food()
-
-def update_foods():
-    pass
-
-def draw_food():
-    for i in range(len(food_colors)):
-        food_pos = food[i]
-        food_color = food_colors[i]
-        pygame.draw.circle(screen, food_color ,food_pos, food_size)
-
-
-def collision_with_food(mouth_rect)->None:
-    # it checks if it eats any of the food
-    food_index=mouth_rect.collidelist(food_rects)
-    if food_index != -1: # -1 means we ate no food
-        # if we DID eat food...
-        # make the food react to being eaten (get rid of the piece that was eaten)
-        food.pop(food_index) # ...remove the eaten food from the list
-        food_rects.pop(food_index) # ...remove the corresponding rectangle
-        eaten_color=food_colors.pop(food_index) # ...remove the corresponding color
-        return True
-    else:
-        return False
-
-def collision_with_snake(this_snake, other_snake):
-    eat_collision = this_snake.hitbox.collidelist(other_snake.hurtboxes)
-    if eat_collision>0:
-        food_spots=other_snake.remove_segs(eat_collision)
-        # redistribute each segment as a piece of food
-        for i in range(len(food_spots)):
-            if i % 2 == 0:
-                spawn_food() # half of them go to a random position onscreen
-            else:
-                # half of them go in the place where the segment used to be
-                spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
-
-def collision_with_cpu(player_snake, cpu_snake):
-    eat_collision = player_snake.hitbox.collidelist(cpu_snake.hurtboxes)
-    if eat_collision>=0:
-        food_spots = cpu_snake.remove_segs(eat_collision)
-        # redistribute each segment as a piece of food
-        for i in range(len(food_spots)):
-            if i%2==0:
-                spawn_food() # half of them go to a random position onscreen
-            else:
-                # half of them go in the place where the segment used to be
-                spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
-        if eat_collision == 0:
-            cpu_index = snakecpus.index(cpu_snake)
-            snakecpus[cpu_index] = SnakeCpu()
-
-
-spawn_foods(random.randint(STARTING_FOOD_COUNT_MIN, STARTING_FOOD_COUNT_MAX))
-
-
-while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # UPDATE THE GAME
-    #HENRY MADE THE SNAKE NOT MOVE!!!
-    keys = pygame.key.get_pressed()
-    snakepigs.update(keys)
-    snakesheep.update(keys)
+    snakesheep=SnakePlayer(
+        start_x = 200,
+        start_y = 100,
+        head_color=pygame.Color('red'),
+        tail_color=pygame.Color('salmon'),
+        face_color=pygame.Color('coral'),
+        up_ctrl=pygame.K_w,
+        down_ctrl=pygame.K_s,
+        left_ctrl=pygame.K_a,
+        right_ctrl=pygame.K_d
+    )
+    max_cpus = 1
+    snakecpus=[]
     for i in range(max_cpus):
-        snakecpus[i].update()
-        # if the snake goes offscreen...
-        head_onscreen=SCREEN_RECT.collidepoint(snakecpus[i].head.pos.x,snakecpus[i].head.pos.y)
-        tail_onscreen=SCREEN_RECT.collidepoint(snakecpus[i].tail.pos.x,snakecpus[i].tail.pos.y)
-        if not head_onscreen and not tail_onscreen:
-            snakecpus[i]=SnakeCpu() # ...replace it with a new snake
+        snakecpus.append(SnakeCpu())
 
-    if snakepigs.hitbox is not None:
-        # check if they ate any food
-        if collision_with_food(snakepigs.hitbox):
-            snakepigs.add_seg()
-        # check if they ate the other player
-        collision_with_snake(snakepigs,snakesheep)
-        # check for interactions with cpu snakes
+    # FOOD STUFF
+
+    food=[]
+    food_colors=[]
+    food_rects=[]
+    food_size=10 # radius of the circles
+    def spawn_food(x_pos=None, y_pos=None):
+        if x_pos is None or y_pos is None:
+            x=random.randint(food_size,WIDTH-1-food_size)
+            y=random.randint(food_size+13,HEIGHT-1-food_size)
+        else:
+            x = x_pos
+            y = y_pos
+        food.append(pygame.math.Vector2(x,y))
+        food_colors.append(random.choice(FOOD_COLORS))
+        food_rect=pygame.Rect(
+            x-food_size, y-food_size, #top left corner
+            food_size*2, food_size*2 #width and height
+        )
+        food_rects.append(food_rect)
+
+    def spawn_foods(count):
+        for f in range(count):
+            spawn_food()
+
+    def update_foods():
+        pass
+
+    def draw_food():
+        for i in range(len(food_colors)):
+            food_pos = food[i]
+            food_color = food_colors[i]
+            pygame.draw.circle(screen, food_color ,food_pos, food_size)
+
+
+    def collision_with_food(mouth_rect)->None:
+        # it checks if it eats any of the food
+        food_index=mouth_rect.collidelist(food_rects)
+        if food_index != -1: # -1 means we ate no food
+            # if we DID eat food...
+            # make the food react to being eaten (get rid of the piece that was eaten)
+            food.pop(food_index) # ...remove the eaten food from the list
+            food_rects.pop(food_index) # ...remove the corresponding rectangle
+            eaten_color=food_colors.pop(food_index) # ...remove the corresponding color
+            return True
+        else:
+            return False
+
+    def collision_with_snake(this_snake, other_snake):
+        eat_collision = this_snake.hitbox.collidelist(other_snake.hurtboxes)
+        if eat_collision>0:
+            food_spots=other_snake.remove_segs(eat_collision)
+            # redistribute each segment as a piece of food
+            for i in range(len(food_spots)):
+                if i % 2 == 0:
+                    spawn_food() # half of them go to a random position onscreen
+                else:
+                    # half of them go in the place where the segment used to be
+                    spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
+
+    def collision_with_cpu(player_snake, cpu_snake):
+        eat_collision = player_snake.hitbox.collidelist(cpu_snake.hurtboxes)
+        if eat_collision>=0:
+            food_spots = cpu_snake.remove_segs(eat_collision)
+            # redistribute each segment as a piece of food
+            for i in range(len(food_spots)):
+                if i%2==0:
+                    spawn_food() # half of them go to a random position onscreen
+                else:
+                    # half of them go in the place where the segment used to be
+                    spawn_food(x_pos=food_spots[i][0], y_pos=food_spots[i][1])
+            if eat_collision == 0:
+                cpu_index = snakecpus.index(cpu_snake)
+                snakecpus[cpu_index] = SnakeCpu()
+
+
+    startimg_food_min=len_to_win
+    starting_food_max=len_to_win*5
+    spawn_foods(random.randint(startimg_food_min, starting_food_max))
+
+
+    while running:
+        # poll for events
+        # pygame.QUIT event means the user clicked X to close your window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        # UPDATE THE GAME
+        #HENRY MADE THE SNAKE NOT MOVE!!!
+        keys = pygame.key.get_pressed()
+        snakepigs.update(keys)
+        snakesheep.update(keys)
+        for i in range(max_cpus):
+            snakecpus[i].update()
+            # if the snake goes offscreen...
+            head_onscreen=SCREEN_RECT.collidepoint(snakecpus[i].head.pos.x,snakecpus[i].head.pos.y)
+            tail_onscreen=SCREEN_RECT.collidepoint(snakecpus[i].tail.pos.x,snakecpus[i].tail.pos.y)
+            if not head_onscreen and not tail_onscreen:
+                snakecpus[i]=SnakeCpu() # ...replace it with a new snake
+
+        if snakepigs.hitbox is not None:
+            # check if they ate any food
+            if collision_with_food(snakepigs.hitbox):
+                snakepigs.add_seg()
+            # check if they ate the other player
+            collision_with_snake(snakepigs,snakesheep)
+            # check for interactions with cpu snakes
+            for cpu in snakecpus:
+                collision_with_cpu(snakepigs,cpu)
+                if cpu.hitbox is not None:
+                    collision_with_snake(cpu,snakepigs)
+                
+        if snakesheep.hitbox is not None:
+            # check if they ate any food
+            if collision_with_food(snakesheep.hitbox):
+                snakesheep.add_seg()
+            # check if they ate the other player
+            collision_with_snake(snakesheep,snakepigs)
+            # check for interactions with cpu snakes
+            for cpu in snakecpus:
+                collision_with_cpu(snakesheep,cpu)
+                if cpu.hitbox is not None:
+                    collision_with_snake(cpu,snakesheep)
+
         for cpu in snakecpus:
-            collision_with_cpu(snakepigs,cpu)
             if cpu.hitbox is not None:
-                collision_with_snake(cpu,snakepigs)
-            
-    if snakesheep.hitbox is not None:
-        # check if they ate any food
-        if collision_with_food(snakesheep.hitbox):
-            snakesheep.add_seg()
-        # check if they ate the other player
-        collision_with_snake(snakesheep,snakepigs)
-        # check for interactions with cpu snakes
-        for cpu in snakecpus:
-            collision_with_cpu(snakesheep,cpu)
-            if cpu.hitbox is not None:
-                collision_with_snake(cpu,snakesheep)
+                if collision_with_food(cpu.hitbox):
+                    cpu.add_seg()
 
-    for cpu in snakecpus:
-        if cpu.hitbox is not None:
-            if collision_with_food(cpu.hitbox):
-                cpu.add_seg()
+        # DRAW THE GAME
 
-    # DRAW THE GAME
+        # fill the screen with a color to wipe away anything from last frame
+        screen.fill(BACKGROUND_COLOR)
 
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill(BACKGROUND_COLOR)
+        # draw_snake(screen)
+        snakepigs.draw(screen)
+        snakesheep.draw(screen)
+        for i in range(max_cpus):
+            snakecpus[i].draw(screen)
+        draw_food()
 
-    # draw_snake(screen)
-    snakepigs.draw(screen)
-    snakesheep.draw(screen)
-    for i in range(max_cpus):
-        snakecpus[i].draw(screen)
-    draw_food()
+        # draw the progress bars
+        sp_len = snakepigs.size
+        # sp_len = 100
+        sp_percent=sp_len/len_to_win
+        pygame.draw.rect(screen,'black',pygame.Rect(
+            WIDTH-PROGRESS_BAR_WIDTH,
+            0,
+            PROGRESS_BAR_WIDTH,
+            HEIGHT
+        ))
+        pygame.draw.rect(screen,snakepigs.head_color,pygame.Rect(
+            WIDTH-PROGRESS_BAR_WIDTH,
+            HEIGHT-HEIGHT*sp_percent,
+            PROGRESS_BAR_WIDTH,
+            HEIGHT*sp_percent
+        ))
 
-    # draw the progress bars
-    sp_len = snakepigs.size
-    # sp_len = 100
-    sp_percent=sp_len/LENGTH_TO_WIN
-    pygame.draw.rect(screen,'black',pygame.Rect(
-        WIDTH-PROGRESS_BAR_WIDTH,
-        0,
-        PROGRESS_BAR_WIDTH,
-        HEIGHT
-    ))
-    pygame.draw.rect(screen,snakepigs.head_color,pygame.Rect(
-        WIDTH-PROGRESS_BAR_WIDTH,
-        HEIGHT-HEIGHT*sp_percent,
-        PROGRESS_BAR_WIDTH,
-        HEIGHT*sp_percent
-    ))
-
-    ss_len = snakesheep.size
-    ss_percent = ss_len/LENGTH_TO_WIN
-    pygame.draw.rect(screen,'black',pygame.Rect(
-        0,
-        0,
-        PROGRESS_BAR_WIDTH,
-        HEIGHT
-    ))
-    pygame.draw.rect(screen, snakesheep.head_color,pygame.Rect(
-        0,
-        HEIGHT-HEIGHT*ss_percent,
-        PROGRESS_BAR_WIDTH,
-        HEIGHT*ss_percent
-    ))
+        ss_len = snakesheep.size
+        ss_percent = ss_len/len_to_win
+        pygame.draw.rect(screen,'black',pygame.Rect(
+            0,
+            0,
+            PROGRESS_BAR_WIDTH,
+            HEIGHT
+        ))
+        pygame.draw.rect(screen, snakesheep.head_color,pygame.Rect(
+            0,
+            HEIGHT-HEIGHT*ss_percent,
+            PROGRESS_BAR_WIDTH,
+            HEIGHT*ss_percent
+        ))
 
 
-    # flip() the display to put your work on screen
-    pygame.display.flip()
+        # flip() the display to put your work on screen
+        pygame.display.flip()
 
-    clock.tick(60)  # limits FPS to 60
+        clock.tick(60)  # limits FPS to 60
 
-pygame.quit()
+    pygame.quit()
+
+if __name__ == "__main__":
+    run(2500)
