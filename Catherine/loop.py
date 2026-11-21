@@ -1,11 +1,6 @@
-num = int(input("Pick a number! "))
-times = 0
-while num != 1:
-    print(num)
-    if num%2 == 0:
-        num = num/2
-    elif num%2 != 0:
-        num = num*3
-        num = num+1
-    times = times + 1
-print ("Your number has reached 1! It took " , times , "changes!")
+length = int(input("Enter the length of your shape! "))
+width = int(input("Enter the width of your shape! "))
+for i in range (0, length):
+    for j in range (0, width):
+        print ("*" , end="")
+    print ("")
