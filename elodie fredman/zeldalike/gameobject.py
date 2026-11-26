@@ -18,6 +18,10 @@ class GameObject:
         self._pos = new_pos
 
     @property
+    def left(self) -> int:
+        return self._image.rect.left
+
+    @property
     def x(self) -> float:
         return self.pos.x
 
