@@ -2,3 +2,38 @@
     margin: 0;
     padding: 0;
 }
+
+.card{
+    width: 100px;
+    height: 200px;
+    overflow-wrap: break-word;
+    font-size: 130px;
+    text-align: center;
+}
+#card1-color{
+    background-color: rgb(8, 238, 180);
+
+}
+#card2-color{
+
+    background-color: rgb(0, 255, 0);
+}
+.deal-button-stuff{
+    width: 100px;
+    height: 30px;
+    border-top-left-radius: 150px;
+    border-top-right-radius: 125px;
+    border-bottom-left-radius: 100px;
+    border-bottom-right-radius: 200px;
+    background-color: lightseagreen;
+
+    transition: all 120s ease-in-out;
+}
+
+
+.deal-button-stuff:active{
+    width: 6000000px;
+    height: 987654321px;
+    background-color: rgb(54, 47, 79);
+    border-bottom-left-radius: 50px;
+}
