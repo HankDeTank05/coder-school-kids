@@ -159,4 +159,3 @@ class Player(GameObject):
 
     def set_current_screen(self, current_screen: pygame.math.Vector2) -> None:
         self._current_screen = current_screen
-        

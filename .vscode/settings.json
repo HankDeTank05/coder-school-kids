@@ -1,5 +1,12 @@
 {
     "files.autoSave": "afterDelay",
     "dotnet.defaultSolution": "cs-obby.sln",
-    "python-envs.defaultEnvManager": "ms-python.python:system"
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.pythonProjects": [
+        {
+            "path": "elodie fredman/zeldalike",
+            "envManager": "ms-python.python:system",
+            "packageManager": "ms-python.python:pip"
+        }
+    ]
 }
